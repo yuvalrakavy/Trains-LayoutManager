@@ -1,5 +1,5 @@
-using System.Drawing;
 using LayoutManager.Model;
+using System.Drawing;
 
 namespace LayoutManager {
     /// <summary>

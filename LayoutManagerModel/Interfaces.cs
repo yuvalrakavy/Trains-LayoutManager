@@ -2,16 +2,14 @@
 /// Definition of interfaces
 /// 
 
-using System;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Xml;
-using System.Threading.Tasks;
-using MethodDispatcher;
-
-using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 #nullable enable
 namespace LayoutManager {
@@ -195,9 +193,9 @@ namespace LayoutManager {
         BestRoute FindBestRoute(ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, TripPlanDestinationInfo destination, Guid routeOwner, bool trainStopping);
     }
 
-#endregion
+    #endregion
 
-#region Object property interfaces (mostly UI related)
+    #region Object property interfaces (mostly UI related)
 
     public class CreateTrainSettings {
         public string? TrainName { get; set; }
@@ -361,9 +359,9 @@ namespace LayoutManager {
     public interface ILayoutCommandStationEmulator : IDisposable {
     }
 
-#endregion
+    #endregion
 
-#region Trip Route planning related interfaces
+    #region Trip Route planning related interfaces
 
     /// <summary>
     /// Describe one possible route from an origin to a destination.
@@ -476,9 +474,9 @@ namespace LayoutManager {
         void Apply(TripPlanInfo tripPlan);
     }
 
-#endregion
+    #endregion
 
-#region Model Commands interfaces
+    #region Model Commands interfaces
 
     /// <summary>
     /// Base class for all layout commands. Basically a command encapsulate an operation
@@ -570,9 +568,9 @@ namespace LayoutManager {
         string RedoCommandName { get; }
     }
 
-#endregion
+    #endregion
 
-#region Layout power related interfaces
+    #region Layout power related interfaces
     /// <summary>
     /// Enumeration of power type
     /// </summary>
@@ -687,9 +685,9 @@ namespace LayoutManager {
         bool IsConnected { get; }
     }
 
-#endregion
+    #endregion
 
-#region Script Editor related interfaces
+    #region Script Editor related interfaces
 
     /// <summary>
     /// Functionality implemented by the event script editor
@@ -710,9 +708,9 @@ namespace LayoutManager {
         void SetEventScriptEditor(IEventScriptEditor eventScriptEditor);
     }
 
-#endregion
+    #endregion
 
-#region Drawing region related interfaces
+    #region Drawing region related interfaces
 
     /// <summary>
     /// Implement by object referenced by Region.Info field to be notify when the region is clicked in editing mode.
@@ -742,7 +740,7 @@ namespace LayoutManager {
         bool OnRegionRightClick();
     }
 
-#endregion
+    #endregion
 }
 
 

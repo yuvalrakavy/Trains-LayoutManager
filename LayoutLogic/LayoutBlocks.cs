@@ -1,10 +1,9 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using MethodDispatcher;
-
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
     /// <summary>

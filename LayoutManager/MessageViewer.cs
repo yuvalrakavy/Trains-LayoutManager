@@ -1,14 +1,12 @@
-﻿using System;
+﻿using LayoutManager.Model;
+using MethodDispatcher;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
-
-using MethodDispatcher;
-using LayoutManager.Model;
+using System.Windows.Forms;
 
 namespace LayoutManager {
     /// <summary>

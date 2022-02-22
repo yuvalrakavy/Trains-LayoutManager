@@ -1,15 +1,14 @@
+using LayoutManager.CommonUI;
+using LayoutManager.CommonUI.Controls;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml;
-using MethodDispatcher;
-
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
-using LayoutManager.CommonUI.Controls;
-using System.Collections.Generic;
 
 #pragma warning disable IDE0051, IDE0060, IDE0052, IDE0067
 #nullable enable
@@ -74,8 +73,7 @@ namespace LayoutManager.Tools {
             var ifStringElement = Ensure.NotNull<XmlElement>(e.Sender, "ifStringElement");
             string compareOperator = ifStringElement.GetAttribute("Operation");
 
-            e.Info = compareOperator switch
-            {
+            e.Info = compareOperator switch {
                 "Equal" => "=",
                 "NotEqual" => "<>",
                 "Match" => "Match",
@@ -88,8 +86,7 @@ namespace LayoutManager.Tools {
             var ifNumberElement = Ensure.NotNull<XmlElement>(e.Sender, "ifNumberElement");
             string compareOperator = ifNumberElement.GetAttribute("Operation");
 
-            e.Info = compareOperator switch
-            {
+            e.Info = compareOperator switch {
                 "eq" => "=",
                 "ne" => "<>",
                 "gt" => ">",
@@ -105,8 +102,7 @@ namespace LayoutManager.Tools {
             var ifBooleanElement = Ensure.NotNull<XmlElement>(e.Sender, "ifBooleanElement");
             string compareOperator = ifBooleanElement.GetAttribute("Operation");
 
-            e.Info = compareOperator switch
-            {
+            e.Info = compareOperator switch {
                 "Equal" => "=",
                 "NotEqual" => "<>",
                 _ => "?"
@@ -283,7 +279,7 @@ namespace LayoutManager.Tools {
 
                 if (activeScript != null)
                     activeScript.Dispose();
-                else if(policy.EventScriptElement != null){
+                else if (policy.EventScriptElement != null) {
                     LayoutEventScript runningScript = EventManager.EventScript("Layout policy " + policy.Name, policy.EventScriptElement, Array.Empty<Guid>(), null);
                     runningScript.Id = policy.Id;
 
@@ -800,8 +796,7 @@ namespace LayoutManager.Tools {
             internal static string GetDescription(XmlElement element) {
                 LayoutComponentConnectionPoint from = LayoutComponentConnectionPoint.Parse(element.GetAttribute(EventScriptTools.A_From));
 
-                var fromText = (int)from switch
-                {
+                var fromText = (int)from switch {
                     LayoutComponentConnectionPoint.B => "bottom",
                     LayoutComponentConnectionPoint.T => "top",
                     LayoutComponentConnectionPoint.L => "left",
@@ -1127,8 +1122,7 @@ namespace LayoutManager.Tools {
                 TrainStateInfo train = (TrainStateInfo)oTrain;
 
                 var oSpeed = GetOperand("Value");
-                int speed = oSpeed switch
-                {
+                int speed = oSpeed switch {
                     string speedText => int.Parse(speedText),
                     int speedValue => speedValue,
                     _ => throw new ArgumentException("Invalid target speed value")
@@ -1244,8 +1238,7 @@ namespace LayoutManager.Tools {
                 TrainStateInfo train = (TrainStateInfo)oTrain;
 
                 var oState = GetOperand("Value");
-                bool state = oState switch
-                {
+                bool state = oState switch {
                     string stateText => bool.Parse(stateText),
                     bool stateValue => stateValue,
                     _ => throw new ArgumentException("Invalid lights state value")

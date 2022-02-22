@@ -1,9 +1,8 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Model;
 using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-using LayoutManager.Model;
-using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -80,7 +79,7 @@ namespace LayoutManager.Tools.Dialogs {
                 return;
             }
 
-            if(eventScriptEditor.EventScriptElement != null)
+            if (eventScriptEditor.EventScriptElement != null)
                 wayPoint.StartCondition = (XmlElement)wayPoint.Element.OwnerDocument.ImportNode(eventScriptEditor.EventScriptElement, true);
 
             DialogResult = DialogResult.OK;

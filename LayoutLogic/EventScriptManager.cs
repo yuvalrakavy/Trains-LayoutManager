@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using MethodDispatcher;
-using LayoutManager;
 using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
 
 #nullable enable
 namespace LayoutManager.Logic {
@@ -32,7 +30,7 @@ namespace LayoutManager.Logic {
 
         [DispatchTarget]
         private LayoutEventScript? GetActiveScript(Guid scriptId) {
-            if(activeScripts.TryGetValue(scriptId, out var activeScript)) {
+            if (activeScripts.TryGetValue(scriptId, out var activeScript)) {
                 return activeScript;
             }
             return null;
@@ -50,7 +48,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [DispatchTarget(Order =-1000)]
+        [DispatchTarget(Order = -1000)]
         private void OnExitOperationMode() {
             foreach (LayoutEventScript script in activeScripts.Values)
                 script.Dispose();

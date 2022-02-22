@@ -1,6 +1,5 @@
-using System.Xml;
-
 using LayoutManager.Model;
+using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>

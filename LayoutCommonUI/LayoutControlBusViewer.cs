@@ -1,7 +1,7 @@
+using LayoutManager.Model;
+using MethodDispatcher;
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
-using MethodDispatcher;
-using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI {
     /// <summary>
@@ -36,9 +36,9 @@ namespace LayoutManager.CommonUI {
         }
 
 
-    #region Public Properties
+        #region Public Properties
 
-    public ILayoutFrameWindow FrameWindow => frameWindow ??= (ILayoutFrameWindow)FindForm();
+        public ILayoutFrameWindow FrameWindow => frameWindow ??= (ILayoutFrameWindow)FindForm();
 
         public float Zoom {
             get {
@@ -300,7 +300,7 @@ namespace LayoutManager.CommonUI {
             base.Dispose(disposing);
         }
 
- 
+
         #region Drawing
 
         private void DrawBackground(Graphics g, RectangleF clipBounds) {
@@ -453,22 +453,34 @@ namespace LayoutManager.CommonUI {
         }
 
         [LayoutEvent("enter-design-mode")]
-        [LayoutEvent("control-module-removed")]
-        [LayoutEvent("control-module-added")]
         [LayoutEvent("control-module-address-changed")]
         [LayoutEvent("control-module-location-changed")]
         [LayoutEvent("control-bus-reconnected")]
-        [LayoutEvent("component-disconnected-from-control-module")]
-        [LayoutEvent("component-connected-to-control-module")]
         [LayoutEvent("control-module-label-changed")]
         [LayoutEvent("control-user-action-required-changed")]
         [LayoutEvent("control-address-programming-required-changed")]
-        [LayoutEvent("control-buses-added")]
-        [LayoutEvent("control-buses-removed")]
         [LayoutEvent("control-module-modified")]
         private void ChangeMode(LayoutEvent e) {
             Recalc();
         }
+
+        [DispatchTarget]
+        private void OnControlBusRemoved(IModelComponentIsBusProvider busProvider) => Recalc();
+
+        [DispatchTarget]
+        private void OnControlBusAdded(IModelComponentIsBusProvider busProvider) => Recalc();
+
+        [DispatchTarget]
+        private void OnControlModuleRemoved(ControlModule module) => Recalc();
+
+        [DispatchTarget]
+        private void OnControlModuleAdded(ControlModule module) => Recalc();
+
+        [DispatchTarget]
+        private void OnComponentConnectedToControlModule(IModelComponentConnectToControl component, ControlConnectionPoint connetionPoint) => Recalc();
+
+        [DispatchTarget]
+        private void OnComponentDisconnectedFromControlModule(ModelComponent component, ControlConnectionPoint connectionPoint) => Recalc();
 
         [LayoutEvent("component-disconnected-from-control-module")]
         private void ComponentDisconnectedFromControlModule(LayoutEvent e) {
@@ -1266,8 +1278,7 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        private string GetModulePhaseText() => Module.Phase switch
-        {
+        private string GetModulePhaseText() => Module.Phase switch {
             LayoutPhase.Construction => "(In construction)",
             LayoutPhase.Planned => "(Planned)",
             LayoutPhase.Operational => "",
@@ -1360,7 +1371,7 @@ namespace LayoutManager.CommonUI {
                 Enabled = false;
             }
             else {
-                IList<ControlModuleType> moduleTypes = bus.BusType.ModuleTypes;
+                var moduleTypes = bus.BusType.ModuleTypes.ToList();
 
                 if (moduleTypes.Count == 1)
                     text = "Click here to Add " + moduleTypes[0].Name;

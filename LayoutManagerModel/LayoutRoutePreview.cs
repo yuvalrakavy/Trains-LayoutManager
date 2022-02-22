@@ -1,10 +1,9 @@
+using LayoutManager.Components;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Diagnostics;
-using MethodDispatcher;
-
-using LayoutManager.Components;
+using System.Drawing;
 
 namespace LayoutManager.Model {
     public struct TrackSegment {

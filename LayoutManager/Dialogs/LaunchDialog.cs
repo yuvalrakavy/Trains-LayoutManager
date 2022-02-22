@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Threading.Tasks;
 using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LayoutManager.Dialogs {
     public partial class LaunchDialog : Form {
@@ -39,12 +39,12 @@ namespace LayoutManager.Dialogs {
             private set;
         }
 
-        private void buttonExit_Click(object? sender, EventArgs e) {
+        private void ButtonExit_Click(object? sender, EventArgs e) {
             Close();
             Action = LaunchAction.Exit;
         }
 
-        private void buttonNew_Click(object? sender, EventArgs e) {
+        private void ButtonNew_Click(object? sender, EventArgs e) {
             if (saveFileDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
                 LayoutFilename = saveFileDialog.FileName;
                 Close();
@@ -52,7 +52,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonOpen_Click(object? sender, EventArgs e) {
+        private void ButtonOpen_Click(object? sender, EventArgs e) {
             if (openFileDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
                 LayoutFilename = openFileDialog.FileName;
                 Close();
@@ -60,7 +60,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void linkLabelLastLayoutName_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e) {
+        private void LinkLabelLastLayoutName_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e) {
             LayoutFilename = linkLabelLastLayoutName.Text;
             UseLastOpenLayout = true;
             Close();

@@ -1,6 +1,4 @@
 using LayoutManager.Model;
-using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace LayoutManager.Tools.Dialogs {
@@ -38,7 +36,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void ButtonOK_Click(object? sender, System.EventArgs e) {
             var validationError = (string?)EventManager.Event(new LayoutEvent("validate-control-module-label", module, null).SetOption("ModuleTypeName", module.ModuleTypeName).SetOption("Label", textBoxLabel.Text));
 
-            if(validationError != null) {
+            if (validationError != null) {
                 MessageBox.Show(validationError, "Invalid label", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxLabel.Focus();
                 return;

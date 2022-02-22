@@ -48,7 +48,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             base.Dispose(disposing);
         }
 
-        
+
         private void NumericUpDownRandomSeconds_ValueChanged(object? sender, EventArgs e) {
             checkBoxRadomWait.Checked = true;
         }

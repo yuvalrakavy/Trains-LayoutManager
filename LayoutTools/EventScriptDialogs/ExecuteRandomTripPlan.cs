@@ -1,7 +1,6 @@
-using System.ComponentModel;
+using MethodDispatcher;
 using System.Windows.Forms;
 using System.Xml;
-using MethodDispatcher;
 
 namespace LayoutManager.Tools.EventScriptDialogs {
     /// <summary>

@@ -1,9 +1,9 @@
 ﻿#region Using directives
 
+using LayoutManager.Components;
+using LayoutManager.Model;
 using System;
 using System.Windows.Forms;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 #endregion
 

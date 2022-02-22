@@ -51,7 +51,7 @@ namespace LayoutManager.CommonUI.Controls {
 
                 if (runningScript != null)
                     runningScript.Dispose();
-                else if(selected.Policy.EventScriptElement != null){
+                else if (selected.Policy.EventScriptElement != null) {
                     runningScript = EventManager.EventScript("Layout policy " + selected.Policy.Name, selected.Policy.EventScriptElement, Array.Empty<Guid>(), null);
                     runningScript.Id = selected.Policy.Id;
 

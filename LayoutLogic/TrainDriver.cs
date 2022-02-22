@@ -1,7 +1,6 @@
-using System;
-using System.Xml;
-using MethodDispatcher;
 using LayoutManager.Model;
+using MethodDispatcher;
+using System.Xml;
 
 #nullable enable
 namespace LayoutManager.Logic {
@@ -135,7 +134,7 @@ namespace LayoutManager.Logic {
 
 
         [DispatchTarget]
-        private bool QueryDriverDialog_AutomaticDriver([DispatchFilter(Type="XPath",Value = "*[@Type='Automatic']")] XmlElement driverElement) => true;
+        private bool QueryDriverDialog_AutomaticDriver([DispatchFilter(Type = "XPath", Value = "*[@Type='Automatic']")] XmlElement driverElement) => true;
 
 
         [DispatchTarget]
@@ -146,7 +145,7 @@ namespace LayoutManager.Logic {
         #region Event handlers for events taken care by the automatic driver
 
         [DispatchTarget]
-        private void DriverEmergencyStop([DispatchFilter(Type="IsAutomaticTrainDriver")] TrainStateInfo train) {
+        private void DriverEmergencyStop([DispatchFilter(Type = "IsAutomaticTrainDriver")] TrainStateInfo train) {
             var _ = new TrainAutoDriverInfo(train) {
                 State = AutoDriverState.Stop
             };
@@ -155,7 +154,7 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget]
-        private void DriverStop([DispatchFilter(Type="IsAutomaticTrainDriver")] TrainStateInfo train) {
+        private void DriverStop([DispatchFilter(Type = "IsAutomaticTrainDriver")] TrainStateInfo train) {
             var _ = new TrainAutoDriverInfo(train) {
                 State = AutoDriverState.Stop
             };
@@ -191,7 +190,7 @@ namespace LayoutManager.Logic {
         }
 
         [DispatchTarget]
-        private void OnDriverTargetSpeedChanged([DispatchFilter(Type="IsAutomaticTrainDriver")] TrainStateInfo train) {
+        private void OnDriverTargetSpeedChanged([DispatchFilter(Type = "IsAutomaticTrainDriver")] TrainStateInfo train) {
             AutoDriverUpdateSpeed(train);
         }
 

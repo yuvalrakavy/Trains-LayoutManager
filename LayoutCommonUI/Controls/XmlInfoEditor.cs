@@ -52,7 +52,7 @@ namespace LayoutManager.CommonUI.Controls {
             base.Dispose(disposing);
         }
 
-       
+
         private void ButtonNewElement_Click(object? sender, EventArgs e) {
             contextMenuAddElement.Show(this, new Point(buttonNewElement.Bounds.Left, buttonNewElement.Bounds.Bottom));
         }

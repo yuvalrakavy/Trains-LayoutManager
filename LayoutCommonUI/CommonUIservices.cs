@@ -1,6 +1,6 @@
+using LayoutManager.Model;
 using System.ComponentModel;
 using System.Diagnostics;
-using LayoutManager.Model;
 using System.Xml.XPath;
 
 namespace LayoutManager.CommonUI {
@@ -229,7 +229,7 @@ namespace LayoutManager.CommonUI {
             this.Text = component.NameProvider.Name;
         }
 
-        public ComponentType Component { get => OptionalComponent ?? throw new NullReferenceException();  }
+        public ComponentType Component { get => OptionalComponent ?? throw new NullReferenceException(); }
 
         public ComponentType? OptionalComponent { get; init; }
     }

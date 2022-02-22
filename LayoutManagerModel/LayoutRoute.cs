@@ -1,7 +1,7 @@
+using LayoutManager.Components;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using MethodDispatcher;
-using LayoutManager.Components;
 
 #nullable enable
 namespace LayoutManager.Model {
@@ -213,7 +213,7 @@ namespace LayoutManager.Model {
         #region IComparable<RouteQuality> Members
 
         public int CompareTo(RouteQuality? other) {
-            if(other == null)
+            if (other == null)
                 throw new ArgumentNullException(nameof(other));
 
             // If are "free" then penalize one that willBeFree by a factor, so a route

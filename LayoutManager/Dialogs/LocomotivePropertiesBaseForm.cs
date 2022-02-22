@@ -1,13 +1,11 @@
+using LayoutManager.CommonUI.Controls;
+using LayoutManager.Model;
 using System;
-using System.Drawing;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Xml;
 using System.Diagnostics;
 using System.Linq;
-
-using LayoutManager.Model;
-using LayoutManager.CommonUI.Controls;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.Dialogs {
     /// <summary>
@@ -29,16 +27,16 @@ namespace LayoutManager.Dialogs {
             element = doc.DocumentElement!;
         }
 
-        private void addToNameToControlMap(Dictionary<string, Control> h, Control c) {
+        private void AddToNameToControlMap(Dictionary<string, Control> h, Control c) {
             if (c.Name != null && c.Name != "")
                 h.Add(c.Name, c);
 
             foreach (Control cc in c.Controls)
-                addToNameToControlMap(h, cc);
+                AddToNameToControlMap(h, cc);
         }
 
         protected void BuildControlNameMap() {
-            addToNameToControlMap(nameToControlMap, this);
+            AddToNameToControlMap(nameToControlMap, this);
         }
 
         protected LocomotiveCatalogInfo Catalog => LayoutModel.LocomotiveCatalog;
@@ -360,7 +358,7 @@ namespace LayoutManager.Dialogs {
                 FunctionItem selected = (FunctionItem)listViewFunctions.SelectedItems[0];
                 var functionsElement = element[E_Functions];
 
-                if(functionsElement != null)
+                if (functionsElement != null)
                     selected.Edit(this, Catalog, functionsElement);
             }
         }

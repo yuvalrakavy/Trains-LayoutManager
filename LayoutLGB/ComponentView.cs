@@ -1,10 +1,9 @@
-using System.ComponentModel;
-using System.Drawing;
-using System.Xml;
-
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
+using System.ComponentModel;
+using System.Drawing;
+using System.Xml;
 
 namespace LayoutLGB {
     /// <summary>

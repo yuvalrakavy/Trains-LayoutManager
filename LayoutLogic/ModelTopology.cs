@@ -1,10 +1,9 @@
-using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Xml;
-using LayoutManager.Model;
 using LayoutManager.Components;
-using LayoutManager;
+using LayoutManager.Model;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Xml;
 
 namespace LayoutManager.Logic {
     public class ModelTopology {

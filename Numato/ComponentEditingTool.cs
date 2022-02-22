@@ -1,10 +1,9 @@
+using LayoutManager;
+using LayoutManager.CommonUI;
+using MethodDispatcher;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.CommonUI;
 
 namespace NumatoController {
     /// <summary>

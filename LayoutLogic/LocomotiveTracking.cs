@@ -1,11 +1,10 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using MethodDispatcher;
-
-using LayoutManager.Model;
-using LayoutManager.Components;
 using System.Linq;
 
 namespace LayoutManager.Logic {
@@ -235,11 +234,11 @@ namespace LayoutManager.Logic {
 
             Dispatch.Notification.OnTrainCrossedBlockEdge(trackingResult.Train, trackingResult.BlockEdge);
         }
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
-#region Occupancy Block (train detection) based train tracking
+        #region Occupancy Block (train detection) based train tracking
 
         [DispatchTarget]
         private void OnTrainDetectionBlockWillBeOccupied(LayoutOccupancyBlock occupancyBlock) {
@@ -527,9 +526,9 @@ namespace LayoutManager.Logic {
             }
         }
 
-#endregion
+        #endregion
 
-#region Tracking Logic
+        #region Tracking Logic
 
         private IEnumerable<(LayoutBlock block, int distance, LayoutBlockEdgeBase blockEdge)> EnumBlocksByDistance(LayoutBlock block, LayoutBlockEdgeBase originBlockEdge, int distance = 0) {
             yield return (block, distance, originBlockEdge);
@@ -671,7 +670,7 @@ namespace LayoutManager.Logic {
             return null;
         }
 
-        [DispatchTarget(Order =-100)]
+        [DispatchTarget(Order = -100)]
         private void OnTrainEnteredBlock(TrainStateInfo train, LayoutBlock block) {
             train.RefreshSpeedLimit();
         }
@@ -1122,6 +1121,6 @@ namespace LayoutManager.Logic {
             return result;
         }
 
-#endregion
+        #endregion
     }
 }

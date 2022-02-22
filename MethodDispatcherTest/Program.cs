@@ -65,7 +65,8 @@ namespace MethodDispatcherTest {
 
             try {
                 Dispatch.InitializeDispatcher();
-            } catch(DispatcherErrorsException ex) {
+            }
+            catch (DispatcherErrorsException ex) {
                 ex.Save();
                 MessageBox.Show("Errors while initializing dispatcher (see dispatcher_errors.txt)");
                 Application.Exit();
@@ -73,7 +74,7 @@ namespace MethodDispatcherTest {
 
             Dispatch.Call.GetSomeClass(4);
 
-            foreach(var s in Dispatch.Call.CollectNames()) {
+            foreach (var s in Dispatch.Call.CollectNames()) {
                 Trace.WriteLine($"Collected {s}");
             }
 

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Reflection;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.Xml;
-using System.Threading.Tasks;
-
+﻿using LayoutManager.Model;
 using MethodDispatcher;
-
-using LayoutManager.Model;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager {
     /// <summary>

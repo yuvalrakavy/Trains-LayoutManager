@@ -1,10 +1,10 @@
+using LayoutManager.Components;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.Linq;
 using System.Diagnostics;
-
-using LayoutManager.Components;
+using System.Linq;
+using System.Xml;
 
 #pragma warning disable IDE0051, IDE0052, IDE0060, CA1032
 #nullable enable
@@ -362,10 +362,10 @@ namespace LayoutManager.Model {
                 }
 
                 if (previousComponent != null)
-                    EventManager.Event(new LayoutEvent("component-disconnected-from-control-module", previousComponent, this));
+                    Dispatch.Notification.OnComponentDisconnectedFromControlModule(previousComponent, connectionPoint: this);
 
                 if (value != null)
-                    EventManager.Event(new LayoutEvent("component-connected-to-control-module", value, this));
+                    Dispatch.Notification.OnComponentConnectedToControlModule(value, this);
             }
         }
 
@@ -494,7 +494,7 @@ namespace LayoutManager.Model {
                     module.ControlManager.ConnectionPoints.Add(connectionPoint);
                     theComponent.Redraw();
 
-                    EventManager.Event(new LayoutEvent("component-connected-to-control-module", connectionPoint.Component, connectionPoint));
+                    Dispatch.Notification.OnComponentConnectedToControlModule((IModelComponentConnectToControl)theComponent, connectionPoint);
                 }
             }
 
@@ -594,12 +594,7 @@ namespace LayoutManager.Model {
                     }
             }
 
-            if (moduleTypeFound)
-                // Check specifically if this connection point can be connected to this component
-                return (bool)
-                    (EventManager.Event(new LayoutEvent("can-control-be-connected", connectionDestination, (bool)true).SetOption("ModuleTypeName", module.ModuleTypeName).SetOption("ModuleID", XmlConvert.ToString(module.Id)).SetOption("Index", index)) ?? false);
-
-            return false;
+            return moduleTypeFound && Dispatch.Call.CanControlBeConnected(connectionDestination, module.Id, index, module.ModuleTypeName);
         }
 
         /// <summary>
@@ -755,7 +750,7 @@ namespace LayoutManager.Model {
     /// a controlled component.
     /// </para>
     /// </summary>
-    #pragma warning disable CA1036
+#pragma warning disable CA1036
     public class ControlModule : LayoutXmlWrapper, IComparable<ControlModule>, IControlSupportUserAction, IHasDecoder {
         private const string A_DefaultConnectionPointType = "DefaultConnectionPointType";
         private const string A_Address = "Address";
@@ -788,7 +783,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public ControlModuleType ModuleType {
             get {
-                return moduleType ??= LayoutControlManager.GetModuleType(ModuleTypeName);
+                return moduleType ??= Dispatch.Call.GetControlModuleType(ModuleTypeName);
             }
 
             set => ModuleTypeName = value.TypeName;
@@ -982,35 +977,13 @@ namespace LayoutManager.Model {
     /// Information about a "type" of a control module. The underlying XML object is returned by the control module
     /// handler to describe that control module.
     /// </summary>
-    public class ControlModuleType : LayoutXmlWrapper {
-        private const string A_TypeName = "TypeName";
-        private const string E_ModuleType = "ModuleType";
-        private const string A_Name = "Name";
-        private const string A_DefaultConnectionPointType = "DefaultConnectionPointType";
-        private const string A_NumberOfAddresses = "NumberOfAddresses";
-        private const string A_AddressAlignment = "AddressAlignment";
-        private const string A_ConnectionPointsPerAddress = "ConnectionPointsPerAddress";
-        private const string A_NumberOfConnectionPoints = "NumberOfConnectionPoints";
-        private const string A_ConnectionPointArrangement = "ConnectionPointArrangement";
-        private const string A_ConnectionPointLabelFormat = "ConnectionPointLabelFormat";
-        private const string A_ConnectionPointIndexBase = "ConnectionPointIndexBase";
-        private const string A_FirstAddress = "FirstAddress";
-        private const string A_LastAddress = "LastAddress";
-        private const string A_BuiltIn = "BuiltIn";
-
-        public ControlModuleType(XmlElement element) : base(element) {
-        }
-
+    public class ControlModuleType {
         /// <summary>
         /// Create a new module type, the element is appended as a child of parent.
         /// </summary>
-        /// <param name="parent">The Parent XML element</param>
         /// <param name="typeName">The module type name</param>
         /// <param name="name">User friendly module name</param>
-        public ControlModuleType(XmlElement parent, string typeName, string name) {
-            Element = parent.OwnerDocument.CreateElement(E_ModuleType);
-
-            parent.AppendChild(Element);
+        public ControlModuleType(string typeName, string name) {
             TypeName = typeName;
             Name = name;
         }
@@ -1018,128 +991,100 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Internal type name, used as a key by the control module to select this type
         /// </summary>
-        public string TypeName {
-            get => GetAttribute(A_TypeName);
-            set => SetAttributeValue(A_TypeName, value);
-        }
+        public string TypeName { get; set; }
 
         /// <summary>
         /// Human readable type name
         /// </summary>
-        public string Name {
-            get => GetAttribute(A_Name);
-            set => SetAttributeValue(A_Name, value);
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// The default of each connection point for modules in this type
         /// </summary>
-        public string DefaultControlConnectionPointType {
-            get => GetOptionalAttribute(A_DefaultConnectionPointType) ?? ControlConnectionPointTypes.OutputSolenoid;
-            set => SetAttributeValue(A_DefaultConnectionPointType, value);
-        }
+        public string DefaultControlConnectionPointType { get; set; } = ControlConnectionPointTypes.OutputSolenoid;
 
         /// <summary>
         /// Number of addresses that are taken by each module. In many cases it will be 1 (for example a decoder
         /// for a single turnout), however it may be more than one, for example for Marklin K83 or LGB 55025 which
         /// supports 4 turnouts, the value is 4
         /// </summary>
-        public int NumberOfAddresses {
-            get => (int?)AttributeValue(A_NumberOfAddresses) ?? 1;
-            set => SetAttributeValue(A_NumberOfAddresses, value);
-        }
+        public int NumberOfAddresses { get; set; } = 1;
 
         /// <summary>
         /// The first address assigned to this module must be a multiple of the address alignment. For example, if
         /// the address alignment is 4 than the module address must divide by 4 (0, 4, 8 etc.)
         /// </summary>
-        public int AddressAlignment {
-            get => (int?)AttributeValue(A_AddressAlignment) ?? NumberOfAddresses;
-            set => SetAttributeValue(A_AddressAlignment, value);
-        }
+        int? _addressAlignment = null;
+        public int AddressAlignment { get => _addressAlignment ?? NumberOfAddresses; set => _addressAlignment  = value; }
 
         /// <summary>
         /// The number of connection points for each address on the bus.
         /// </summary>
-        public int ConnectionPointsPerAddress {
-            get => (int?)AttributeValue(A_ConnectionPointsPerAddress) ?? 1;
-            set => SetAttributeValue(A_ConnectionPointsPerAddress, value);
-        }
+        public int ConnectionPointsPerAddress { get; set; } = 1;
 
         /// <summary>
         /// The total number of connection points
         /// </summary>
+        int? _numberOfConnectionPoints;
         public int NumberOfConnectionPoints {
-            get => (int?)AttributeValue(A_NumberOfConnectionPoints) ?? NumberOfAddresses * ConnectionPointsPerAddress;
-            set => SetAttributeValue(A_NumberOfConnectionPoints, value);
+            get => _numberOfConnectionPoints ?? NumberOfAddresses * ConnectionPointsPerAddress;
+            set => _numberOfConnectionPoints = value;
         }
 
         /// <summary>
         /// Provide information how a connection point label is to be displayed
         /// </summary>
-        public ControlModuleConnectionPointArrangementOptions ConnectionPointArrangement {
-            get => (ControlModuleConnectionPointArrangementOptions)((int?)AttributeValue(A_ConnectionPointArrangement) ?? 6);
-            set => SetAttributeValue(A_ConnectionPointArrangement, (int)value);
-        }
+        public ControlModuleConnectionPointArrangementOptions ConnectionPointArrangement { get; set; } = ControlModuleConnectionPointArrangementOptions.BottomRow | ControlModuleConnectionPointArrangementOptions.StartOnBottom;
 
         /// <summary>
         /// Provide information how a connection point label is to be displayed
         /// </summary>
-        public ControlConnectionPointLabelFormatOptions ConnectionPointLabelFormat {
-            get => (ControlConnectionPointLabelFormatOptions)((int?)AttributeValue(A_ConnectionPointLabelFormat) ?? 0);
-            set => SetAttributeValue(A_ConnectionPointLabelFormat, (int)value);
-        }
+        public ControlConnectionPointLabelFormatOptions ConnectionPointLabelFormat { get; set; } = ControlConnectionPointLabelFormatOptions.Numeric;
 
         /// <summary>
         /// The origin of connection point index, usually it will be either 0, or 1
         /// </summary>
-        public int ConnectionPointIndexBase {
-            get => (int?)AttributeValue(A_ConnectionPointIndexBase) ?? 0;
-            set => SetAttributeValue(A_ConnectionPointIndexBase, value);
-        }
+        public int ConnectionPointIndexBase { get; set; } = 0;
 
         /// <summary>
         /// The control module is connected using those buses (e.g. DCC, Motorola, LGBBUS, MarklinDigital etc.
         /// </summary>
-        public XmlAttributeListCollection BusTypeNames => new(Element, "BusTypeName");
+        public List<string> BusTypeNames => new();
 
         /// <summary>
         /// Return minimum address allowed for this module (if any or -1 if use the default bus addressing limits)
         /// </summary>
-        public int FirstAddress {
-            get => (int?)AttributeValue(A_FirstAddress) ?? -1;
-            set => SetAttributeValue(A_FirstAddress, value);
-        }
+        public int FirstAddress { get; set; } = -1;
 
         /// <summary>
         /// Return maximum address allowed for this module (if any or -1 if use the default bus addressing limits)
         /// </summary>
-        public int LastAddress {
-            get => (int?)AttributeValue(A_LastAddress) ?? -1;
-            set => SetAttributeValue(A_LastAddress, value);
-        }
+        public int LastAddress { get; set; } = -1;
 
         /// <summary>
         /// True if this control module type is "built-in" a component. For example, a decoder which snap in to a turnout
         /// (e.g. Marlin C-track turnouts).
         /// </summary>
-        public bool BuiltIn {
-            get => (bool?)AttributeValue(A_BuiltIn) ?? false;
-            set => SetAttributeValue(A_BuiltIn, value);
-        }
+        public bool BuiltIn { get; set; } = false;
 
         /// <summary>
         /// The name of the decoder type built into module of this type (or null if modules of this type has no decoder)
         /// </summary>
-        public string DecoderTypeName {
-            get => (string?)AttributeValue("DecoderType") ?? "GenericDCC";
-            set => SetAttributValue("DecoderType", value, removeIf: null);
-        }
+        public string DecoderTypeName { get; set; } = "GenericDCC";
 
         /// <summary>
         /// Get the decoder type associated with modules of this type
         /// </summary>
         public DecoderTypeInfo DecoderType => DecoderTypeInfo.GetDecoderType(DecoderTypeName);
+
+        /// <summary>
+        /// Add bus types on which this control modules can be
+        /// </summary>
+        /// <param name="moduleType"></param>
+        /// <param name="busTypes"></param>
+        public void AddBusTypes(params string[] busTypes) {
+            BusTypeNames.AddRange(busTypes);
+        }
 
         /// <summary>
         /// The printable label for an address
@@ -1149,7 +1094,7 @@ namespace LayoutManager.Model {
             string result;
 
             if ((format & ControlConnectionPointLabelFormatOptions.Custom) != 0)
-                result = Ensure.NotNull<string>(EventManager.Event(new LayoutEvent("control-get-connection-point-label", this).SetOption("Address", baseAddress).SetOption("Index", index)), "result");
+                result = Dispatch.Call.GetControlConnectPointLabel(this, baseAddress, index);
             else {
                 int address = baseAddress + (index / ConnectionPointsPerAddress);
                 string addressText;
@@ -1247,7 +1192,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The bus type object that define properties of this bus
         /// </summary>
-        public ControlBusType BusType => busType ??= ControlManager.GetBusType(BusTypeName);
+        public ControlBusType BusType => busType ??= Dispatch.Call.GetControlBusType(BusTypeName);
 
         /// <summary>
         /// Return the modules attached to this bus
@@ -1305,7 +1250,7 @@ namespace LayoutManager.Model {
             ResetAddressModuleMap();
 
             ControlManager.ModulesElement.AppendChild(moduleElement);
-            EventManager.Event(new LayoutEvent("control-module-added", module));
+            Dispatch.Notification.OnControlModuleAdded(module);
 
             return module;
         }
@@ -1337,7 +1282,7 @@ namespace LayoutManager.Model {
             var module = new ControlModule(ControlManager, moduleElement);
             ControlManager.ModulesElement.AppendChild(moduleElement);
 
-            EventManager.Event(new LayoutEvent("control-module-added", module));
+            Dispatch.Notification.OnControlModuleAdded(module);
 
             return module;
         }
@@ -1370,7 +1315,7 @@ namespace LayoutManager.Model {
             return DoAdd(controlModuleLocationId, moduleType, address);
         }
 
-        public ControlModule Add(Guid? controlModuleLocationId, string moduleTypeName, int address) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName), address);
+        public ControlModule Add(Guid? controlModuleLocationId, string moduleTypeName, int address) => Add(controlModuleLocationId, Dispatch.Call.GetControlModuleType(moduleTypeName), address);
 
         /// <summary>
         /// Add a new module at the end of a daisy chained bus.
@@ -1390,7 +1335,7 @@ namespace LayoutManager.Model {
             return DoAdd(controlModuleLocationId, moduleType, address);
         }
 
-        public ControlModule Add(Guid? controlModuleLocationId, string moduleTypeName) => Add(controlModuleLocationId, LayoutControlManager.GetModuleType(moduleTypeName));
+        public ControlModule Add(Guid? controlModuleLocationId, string moduleTypeName) => Add(controlModuleLocationId, Dispatch.Call.GetControlModuleType(moduleTypeName));
 
         /// <summary>
         /// Insert a new module after a given module in a daisy chained bus
@@ -1418,7 +1363,7 @@ namespace LayoutManager.Model {
         }
 
         public ControlModule Insert(Guid? controlModuleLocationId, ControlModule insertBeforeModule, string moduleTypeName) =>
-            Insert(controlModuleLocationId, insertBeforeModule, LayoutControlManager.GetModuleType(moduleTypeName));
+            Insert(controlModuleLocationId, insertBeforeModule, Dispatch.Call.GetControlModuleType(moduleTypeName));
 
         public ControlModule Insert(int address, XmlElement moduleElement) {
             if (BusType.Topology != ControlBusTopology.DaisyChain)
@@ -1437,7 +1382,7 @@ namespace LayoutManager.Model {
             }
 
             ControlManager.ModulesElement.AppendChild(moduleElement);
-            EventManager.Event(new LayoutEvent("control-module-added", insertedModule));
+            Dispatch.Notification.OnControlModuleAdded(insertedModule);
 
             return insertedModule;
         }
@@ -1459,7 +1404,7 @@ namespace LayoutManager.Model {
             ResetAddressModuleMap();
             ControlManager.ModulesElement.RemoveChild(module.Element);
 
-            EventManager.Event(new LayoutEvent("control-module-removed", module));
+            Dispatch.Notification.OnControlModuleRemoved(module);
         }
 
         /// <summary>
@@ -1548,7 +1493,7 @@ namespace LayoutManager.Model {
         private const string A_LastAddress = "LastAddress";
         private const string A_RecommendedStartAddress = "RecommendedStartAddress";
         private const string A_Usage = "Usage";
-        private const string A_ClickToAddEventName= "ClickToAddEventName";
+        private const string A_ClickToAddEventName = "ClickToAddEventName";
         private const string A_CanChangeAddress = "CanChangeAddress";
         private const string A_CanChangeLabel = "CanChangeLabel";
         private const string A_AllowEmptyLabel = "AllowEmptyLabel";
@@ -1645,38 +1590,9 @@ namespace LayoutManager.Model {
         }
 
         /// <summary>
-        /// Return an element whose children are all the module types
-        /// </summary>
-        /// <returns>An XML element with all module types</returns>
-        public static XmlElement GetAllModuleTypeElements() {
-            XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
-            XmlElement moduleTypesElement = doc.CreateElement(E_ModuleTypes);
-
-            doc.AppendChild(moduleTypesElement);
-
-            EventManager.Event(new LayoutEvent("enum-control-module-types", moduleTypesElement));
-
-            return moduleTypesElement;
-        }
-
-        /// <summary>
         /// Return an array of all module types that can be attached to this bus
         /// </summary>
-        public IList<ControlModuleType> ModuleTypes {
-            get {
-                List<ControlModuleType> moduleTypes = new();
-
-                foreach (XmlElement moduleTypeElement in GetAllModuleTypeElements()) {
-                    ControlModuleType moduleType = new(moduleTypeElement);
-
-                    foreach (string moduleBusTypeName in moduleType.BusTypeNames)
-                        if (moduleBusTypeName == BusTypeName)
-                            moduleTypes.Add(moduleType);
-                }
-
-                return moduleTypes.AsReadOnly();
-            }
-        }
+        public IEnumerable<ControlModuleType> ModuleTypes => Dispatch.Call.EnumControlModuleTypes();
 
         /// <summary>
         /// Get a list of all module types of this bus that can be connected to the given connection destination (component/connection description)
@@ -1686,7 +1602,7 @@ namespace LayoutManager.Model {
         public IList<string> GetConnectableControlModuleTypeNames(ControlConnectionPointDestination connectionDestination) {
             List<string> applicableModuleTypes = new();
 
-            EventManager.Event(new LayoutEvent("recommend-control-module-types", connectionDestination, applicableModuleTypes).SetOption("BusType", BusTypeName).SetOption("BusFamily", BusFamilyName));
+            Dispatch.Call.RecommendControlModuleTypes(connectionDestination, applicableModuleTypes, BusFamilyName, BusTypeName);
 
             return applicableModuleTypes.AsReadOnly();
         }
@@ -2037,7 +1953,7 @@ namespace LayoutManager.Model {
                 }
             }
 
-            EventManager.Event(new LayoutEvent("control-buses-added", busProvider));
+            Dispatch.Notification.OnControlBusAdded(busProvider);
         }
 
         /// <summary>
@@ -2058,7 +1974,7 @@ namespace LayoutManager.Model {
                 Remove(bus);
             }
 
-            EventManager.Event(new LayoutEvent("control-buses-removed", busProvider));
+            Dispatch.Notification.OnControlBusRemoved(busProvider);
         }
     }
 
@@ -2134,43 +2050,6 @@ namespace LayoutManager.Model {
         /// <param name="moduleLocationComponent">The control module location component</param>
         /// <returns>An array of all modules in this location</returns>
         public ControlModule[] GetModulesAtLocation(LayoutControlModuleLocationComponent moduleLocationComponent) => GetModulesAtLocation(moduleLocationComponent.Id);
-
-        /// <summary>
-        /// Return an object describing a module type based on the module type name.
-        /// </summary>
-        /// <param name="moduleTypeName">The module type name</param>
-        /// <returns>The module type object</returns>
-        public static ControlModuleType GetModuleType(string moduleTypeName) {
-            XmlDocument doc = LayoutXmlInfo.XmlImplementation.CreateDocument();
-            XmlElement moduleTypesElement = doc.CreateElement("ModuleTypes");
-
-            doc.AppendChild(moduleTypesElement);
-
-            EventManager.Event(new LayoutEvent("get-control-module-type", moduleTypesElement).SetOption("ModuleTypeName", moduleTypeName));
-
-            int count = moduleTypesElement.ChildNodes.Count;
-
-            if (count < 1)
-                throw new ArgumentException("Unable to locate control module type for module type: " + moduleTypeName);
-            else if (count > 1)
-                throw new ArgumentException("More than 1 control module type defined for module type: " + moduleTypeName);
-            else
-                return new ControlModuleType((XmlElement)moduleTypesElement.ChildNodes[0]!);
-        }
-
-        /// <summary>
-        /// Return an object describing bus type based on the bus type name
-        /// </summary>
-        /// <param name="busTypeName">The bus type name (e.g. LGBBUS)</param>
-        /// <returns>The object describing the bus type</returns>
-        public ControlBusType GetBusType(string busTypeName) {
-            var busType = (ControlBusType?)EventManager.Event(new LayoutEvent("get-control-bus-type", this).SetOption("BusTypeName", busTypeName));
-
-            if (busType == null)
-                throw new ArgumentException("Unable to obtain control bus type object for bus type: " + busTypeName);
-
-            return busType;
-        }
 
         /// <summary>
         /// Return a map from components (or component IDs) to connection points (usually one) that are connected to

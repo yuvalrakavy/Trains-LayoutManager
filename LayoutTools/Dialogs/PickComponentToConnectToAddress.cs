@@ -1,12 +1,12 @@
 ﻿#region Using directives
 
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
+using System.Windows.Forms;
 
 #endregion
 

@@ -1,8 +1,6 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Xml;
 using LayoutManager.Model;
+using System;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>

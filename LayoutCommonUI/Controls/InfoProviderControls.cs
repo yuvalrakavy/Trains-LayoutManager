@@ -1,6 +1,5 @@
-using System.Xml;
-
 using LayoutManager.Model;
+using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -216,8 +215,8 @@ namespace LayoutManager.CommonUI.Controls {
                                         origin.Y - rectSize.Height - d), rectSize),
                 LayoutDrawingSide.Bottom => new RectangleF(new PointF(GetAlignedValue(origin.X, rectSize.Width), origin.Y + d), rectSize),
                 LayoutDrawingSide.Left => new RectangleF(new PointF(origin.X - rectSize.Width - d, GetAlignedValue(origin.Y, rectSize.Height)), rectSize),
-                LayoutDrawingSide.Right => new RectangleF(new PointF(origin.X + d,GetAlignedValue(origin.Y, rectSize.Height)), rectSize),
-                LayoutDrawingSide.Center => new RectangleF(new PointF(origin.X - (rectSize.Width / 2), origin.Y - (rectSize.Height / 2)),rectSize),
+                LayoutDrawingSide.Right => new RectangleF(new PointF(origin.X + d, GetAlignedValue(origin.Y, rectSize.Height)), rectSize),
+                LayoutDrawingSide.Center => new RectangleF(new PointF(origin.X - (rectSize.Width / 2), origin.Y - (rectSize.Height / 2)), rectSize),
                 _ => throw new ArgumentException("Invalid LayoutDrawingSide value"),
             };
             using Pen p = new(Brushes.BlueViolet, 2);

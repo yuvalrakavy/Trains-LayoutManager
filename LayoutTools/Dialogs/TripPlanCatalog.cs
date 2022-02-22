@@ -1,7 +1,7 @@
+using LayoutManager.Model;
+using MethodDispatcher;
 using System.Windows.Forms;
 using System.Xml;
-using MethodDispatcher;
-using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>

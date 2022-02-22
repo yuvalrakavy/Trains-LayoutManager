@@ -1,17 +1,16 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using LayoutManager.View;
+using MethodDispatcher;
 using System;
-using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
 using System.Drawing;
-using System.Windows.Forms;
-using System.Reflection;
 using System.Linq;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.View;
-using LayoutManager.CommonUI;
+using System.Reflection;
+using System.Windows.Forms;
+using System.Xml;
 
 #nullable enable
 namespace LayoutManager.Tools {
@@ -145,7 +144,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [DispatchTarget(Order =500)]
+        [DispatchTarget(Order = 500)]
         private void AddComponentContextMenuEntries(Guid frameWindowId, ModelComponent component, MenuOrMenuItem menu) {
             foreach (PropertiesDialogMapEntry entry in propertiesDialogMap) {
                 if (entry.componentType.IsInstanceOfType(component)) {
@@ -189,7 +188,7 @@ namespace LayoutManager.Tools {
             return false;
         }
 
-        [DispatchTarget(Order =50)]
+        [DispatchTarget(Order = 50)]
         [DispatchFilter(Type = "InDesignMode")]
         private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] IModelComponentConnectToControl component, MenuOrMenuItem menu) {
             if (CanTestComponent(component)) {
@@ -315,7 +314,7 @@ namespace LayoutManager.Tools {
         }
 
         [DispatchTarget]
-        [DispatchFilter(Type="InDesignMode")]
+        [DispatchFilter(Type = "InDesignMode")]
         private void AddContextMenuTopEntries(Guid frameWindowId, [DispatchFilter] LayoutTrackPowerConnectorComponent component, MenuOrMenuItem menu) {
 
             menu.Items.Add(new LayoutMenuItem("Assign as block resource", null,
@@ -433,7 +432,7 @@ namespace LayoutManager.Tools {
                 : base("&Show other link", null, (s, ea) => {
                     if (trackLinkComponent.LinkedComponent != null)
                         Dispatch.Call.EnsureComponentVisible(frameWindowId, trackLinkComponent.LinkedComponent, true);
-            }) {
+                }) {
                 if (trackLinkComponent.LinkedComponent == null)
                     this.Enabled = false;
             }
@@ -1072,7 +1071,7 @@ namespace LayoutManager.Tools {
 
         #region Component independent handing of Details window
 
-        [DispatchTarget(Order =10 )]
+        [DispatchTarget(Order = 10)]
         private void AddDetailsWindowSections_HasName([DispatchFilter] IModelComponentHasName component, PopupWindowContainerSection container) {
             string name = component.NameProvider.Name;
 
@@ -1100,7 +1099,7 @@ namespace LayoutManager.Tools {
 
             if (connectionPoints != null) {
                 foreach (ControlConnectionPoint connectionPoint in connectionPoints)
-                    container.AddVerticalSection(new PopupWindowTextSection(connectionPoint.DisplayName + ": " + 
+                    container.AddVerticalSection(new PopupWindowTextSection(connectionPoint.DisplayName + ": " +
                         connectionPoint.Module.ModuleType.GetConnectionPointAddressText(connectionPoint.Module.ModuleType, connectionPoint.Module.Address, connectionPoint.Index, true)));
             }
 
@@ -1172,7 +1171,7 @@ namespace LayoutManager.Tools {
                         resourceList += ", ";
 
                     var resource = resourceInfo.GetResource(LayoutPhase.All);
-                    if(resource != null)
+                    if (resource != null)
                         resourceList += resource.ToString() + ": " + resource.NameProvider.Name;
                 }
 

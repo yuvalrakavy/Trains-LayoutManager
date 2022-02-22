@@ -1,6 +1,6 @@
 using System;
-using System.Windows.Forms.Design;
 using System.ComponentModel.Design;
+using System.Windows.Forms.Design;
 
 namespace Gui.Wizard {
     /// <summary>

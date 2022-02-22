@@ -68,7 +68,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region Constructors
 
-        #nullable disable
+#nullable disable
         protected XmlQueryListbox() {
             DrawMode = DrawMode.OwnerDrawVariable;
 
@@ -78,7 +78,7 @@ namespace LayoutManager.CommonUI.Controls {
             Root.List = this;
             Root.Expand();
         }
-        #nullable restore
+#nullable restore
 
         #endregion
 

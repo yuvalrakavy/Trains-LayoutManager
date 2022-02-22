@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LayoutManager;
+using System;
 using System.Windows.Forms;
-
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace TrainDetector.Dialogs {
     public partial class TrainDetectorProperties : Form {
@@ -33,7 +23,7 @@ namespace TrainDetector.Dialogs {
             set => checkBoxAutoDetect.Checked = value;
         }
 
-        private void buttonOK_Click(object? sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             if (!nameDefinition.Commit())
                 return;
 
@@ -44,7 +34,7 @@ namespace TrainDetector.Dialogs {
             DialogResult = DialogResult.OK;
         }
 
-        private void nameDefinition_Load(object? sender, EventArgs e) {
+        private void NameDefinition_Load(object? sender, EventArgs e) {
 
         }
     }

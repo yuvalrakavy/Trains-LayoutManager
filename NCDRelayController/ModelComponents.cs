@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.IO;
-using System.Diagnostics;
-using System.Xml;
-using System.Net.Sockets;
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.Model;
+﻿using LayoutManager;
 using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace NCDRelayController {
     public enum InterfaceType {
@@ -224,7 +222,7 @@ namespace NCDRelayController {
 
                 if (replySize > 0)
                     replyBuffer = new byte[replySize];
-               
+
             }
 
             public override void OnReply(object replyPacket) {

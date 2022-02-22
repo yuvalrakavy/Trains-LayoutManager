@@ -1,14 +1,13 @@
 ﻿#region Using directives
 
+using LayoutManager.CommonUI;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Xml;
 using System.Windows.Forms;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
 #endregion
 
@@ -100,7 +99,7 @@ namespace LayoutManager.Tools.Dialogs {
                     if (checkBoxReverseLogic.Enabled && checkBoxReverseLogic.Checked)
                         stateToSend = 1 - stateToSend;
 
-                    if(connectionPointRef != null)
+                    if (connectionPointRef != null)
                         Dispatch.Call.ChangeTrackComponentStateCommand(Dispatch.Call.GetCommandStation(connectionPointRef), connectionPointRef, stateToSend);
 
                     if (state == 0)

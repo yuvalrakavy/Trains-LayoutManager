@@ -1,12 +1,11 @@
+using LayoutManager.Components;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.Diagnostics;
 using System.Linq;
-using MethodDispatcher;
-
-using LayoutManager.Components;
 using System.Threading;
+using System.Xml;
 
 #nullable enable
 namespace LayoutManager.Model {
@@ -317,7 +316,7 @@ namespace LayoutManager.Model {
             return selection;
         }
 
-       public bool CheckForTrainRedetection() {
+        public bool CheckForTrainRedetection() {
             if (!BlockDefinintion.Info.IsOccupancyDetectionBlock)
                 return false;
 
@@ -497,10 +496,6 @@ namespace LayoutManager.Model {
         public LayoutLockRequest(Guid ownerId, Action onLockGranted)
             : this(ownerId) {
             this.OnLockGranted = onLockGranted;
-        }
-
-        public LayoutLockRequest(Guid ownerId, LayoutEvent lockedEvent) : this(ownerId) {
-            this.LockedEvent = lockedEvent;
         }
 
         #region Properties

@@ -1,12 +1,10 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.Reflection;
-using MethodDispatcher;
-
 using LayoutManager;
 using LayoutManager.CommonUI;
+using MethodDispatcher;
+using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace LayoutEventDebugger {
     /// <summary>

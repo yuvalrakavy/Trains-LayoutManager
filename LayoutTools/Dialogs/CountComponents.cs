@@ -1,7 +1,7 @@
-﻿using System;
+﻿using LayoutManager.Model;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class CountComponents : Form {

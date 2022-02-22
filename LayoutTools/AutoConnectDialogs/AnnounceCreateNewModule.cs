@@ -1,8 +1,7 @@
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Text.RegularExpressions;
-using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.Model;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools.AutoConnectDialogs {
     /// <summary>

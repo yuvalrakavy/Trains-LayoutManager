@@ -24,12 +24,12 @@ namespace LayoutManager.CommonUI {
         }
 
         public override void Do() {
-            if(control != null)
+            if (control != null)
                 control.Visible = false;
         }
 
         public override void Undo() {
-            if(control != null)
+            if (control != null)
                 control.Visible = true;
         }
     }
@@ -39,12 +39,12 @@ namespace LayoutManager.CommonUI {
         }
 
         public override void Do() {
-            if(control != null)
+            if (control != null)
                 control.Enabled = false;
         }
 
         public override void Undo() {
-            if(control != null)
+            if (control != null)
                 control.Enabled = true;
         }
     }

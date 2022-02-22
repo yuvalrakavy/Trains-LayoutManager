@@ -1,15 +1,13 @@
+using MethodDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
-using System.Reflection;
-
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Threading;
-
-using MethodDispatcher;
 
 namespace LayoutManager {
     /// <summary>
@@ -980,7 +978,7 @@ namespace LayoutManager {
         Action Action { get; set; }
 
         //public LayoutEvent Event { get; }
-        
+
         private async void DoDelay(int delayTime, CancellationToken cancellationToken) {
             try {
                 var tcs = new TaskCompletionSource<object>();

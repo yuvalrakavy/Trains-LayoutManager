@@ -1,36 +1,30 @@
+using LayoutManager.Model;
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using LayoutManager.Model;
+using MethodDispatcher;
 
 namespace LayoutManager.ControlComponents {
     [LayoutModule("Numato Relay Components")]
     internal class NumatoControlComponents : LayoutModuleBase {
         private ControlBusType? relayBus = null;
 
-        [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='NumatoRelayBus']")]
-        private void GetRelayBusBusType(LayoutEvent e) {
-            if (relayBus == null) {
-                relayBus = new ControlBusType {
-                    BusFamilyName = "RelayBus",
-                    BusTypeName = "NumatoRelayBus",
-                    Name = "Relays",
-                    Topology = ControlBusTopology.Fixed,       // Modules cannot be added/removed by the user
-                    AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
-                    FirstAddress = 0,
-                    LastAddress = 255,
-                    Usage = ControlConnectionPointUsage.Output
-                };
-            }
-
-            e.Info = relayBus;
+        [DispatchTarget]
+        private ControlBusType GetControlBusType_NumatoRelayBus([DispatchFilter] string busTypeName = "NumatoRelayBus") {
+            return relayBus ??= new ControlBusType {
+                BusFamilyName = "RelayBus",
+                BusTypeName = "NumatoRelayBus",
+                Name = "Relays",
+                Topology = ControlBusTopology.Fixed,       // Modules cannot be added/removed by the user
+                AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
+                FirstAddress = 0,
+                LastAddress = 255,
+                Usage = ControlConnectionPointUsage.Output
+            };
         }
 
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='RelayBus']")]
-        private void RecommendRelayBusControlModuleTypes(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender);
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info);
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_RelayBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "RelayBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Relay")) {
                 moduleTypeNames.Add("2_NumatoRelays");
                 moduleTypeNames.Add("4_NumatoRelays");
@@ -40,8 +34,8 @@ namespace LayoutManager.ControlComponents {
             }
         }
 
-        private ControlModuleType GetRelayModuleType(XmlElement parentElement, int nRelays) {
-            var moduleType = new ControlModuleType(parentElement, nRelays.ToString() + "_NumatoRelays", nRelays.ToString() + " Relays Module") {
+        private ControlModuleType GetRelayModuleType(int nRelays) {
+            var moduleType = new ControlModuleType($"{nRelays}_NumatoRelays", $"{nRelays} Relays Module") {
                 ConnectionPointsPerAddress = 1,
                 ConnectionPointIndexBase = 0,
                 DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputRelay,
@@ -55,26 +49,19 @@ namespace LayoutManager.ControlComponents {
             return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='2_NumatoRelays']")]
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='4_NumatoRelays']")]
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='8_NumatoRelays']")]
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='16_NumatoRelays']")]
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='32_NumatoRelays']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetRelayModule(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender);
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_2_NumatoRelays([DispatchFilter("RegEx", "(2_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(2);
 
-            if (e.EventName == "enum-control-module-types") {
-                foreach (var nRelays in new int[] { 2, 4, 8, 16, 32 })
-                    GetRelayModuleType(parentElement, nRelays);
-            }
-            else {
-                var moduleTypeName = e.GetOption("ModuleTypeName").ValidString();
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_4_NumatoRelays([DispatchFilter("RegEx", "(4_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(4);
 
-                int nRelay = Convert.ToInt32(moduleTypeName[..moduleTypeName.IndexOf('_')]);
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_8_NumatoRelays([DispatchFilter("RegEx", "(8_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(8);
 
-                GetRelayModuleType(parentElement, nRelay);
-            }
-        }
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_16_NumatoRelays([DispatchFilter("RegEx", "(16_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(16);
+
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_32_NumatoRelays([DispatchFilter("RegEx", "(32_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(32);
     }
 }

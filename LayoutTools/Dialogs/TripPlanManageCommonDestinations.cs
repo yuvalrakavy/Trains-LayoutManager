@@ -1,10 +1,9 @@
-using System.Drawing;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Linq;
-using MethodDispatcher;
-using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -61,7 +60,7 @@ namespace LayoutManager.Tools.Dialogs {
             selectedLocationSelection.Clear();
 
             if (selected != null) {
-                DestinationNode?selectedDestinationNode = null;
+                DestinationNode? selectedDestinationNode = null;
                 DestinationEntryNode? selectedDestinationEntryNode = null;
 
                 if (selected is DestinationNode destination)

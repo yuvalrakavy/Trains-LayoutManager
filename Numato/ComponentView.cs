@@ -1,11 +1,8 @@
-using System.Windows.Forms;
-using System.ComponentModel;
-using System.Drawing;
-using System.Xml;
-
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
+using System.Drawing;
+using System.Xml;
 
 namespace NumatoController {
     /// <summary>

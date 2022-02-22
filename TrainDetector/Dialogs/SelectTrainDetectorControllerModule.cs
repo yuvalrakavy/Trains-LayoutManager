@@ -1,18 +1,13 @@
-﻿using System;
+﻿using LayoutManager;
+using LayoutManager.ControlComponents;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using MethodDispatcher;
-using LayoutManager;
-using LayoutManager.Components;
-using LayoutManager.ControlComponents;
-using LayoutManager.Model;
-using TrainDetector;
 
 #nullable enable
 namespace TrainDetector.Dialogs {
@@ -25,7 +20,7 @@ namespace TrainDetector.Dialogs {
             labelDetectedTrainDetector.Text = $"Controller named '{detectedController.Name} at {detectedController.IpEndPoint.Address} with {detectedController.SensorsCount} {(detectedController.SensorsCount == 1 ? "sensor" : "sensors")} ";
             radioButtonAssignToController.Checked = true;
 
-            foreach(var module in modules) {
+            foreach (var module in modules) {
                 listViewControllerModules.Items.Add(new ModuleItem(module));
             }
 
@@ -35,7 +30,7 @@ namespace TrainDetector.Dialogs {
             get => radioButtonAddController.Checked ? null : (listViewControllerModules.SelectedItems.Count == 0 ? null : ((ModuleItem)listViewControllerModules.SelectedItems[0]).Module);
         }
 
-        private class ModuleItem : ListViewItem {  
+        private class ModuleItem : ListViewItem {
             public TrainDetectorControllerModule Module { get; private set; }
 
             public ModuleItem(TrainDetectorControllerModule module) {

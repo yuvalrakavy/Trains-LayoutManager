@@ -1,11 +1,10 @@
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Windows.Forms;
-using MethodDispatcher;
-using LayoutManager.Model;
 
 namespace LayoutManager.Tools.Controls {
     /// <summary>
@@ -338,8 +337,7 @@ namespace LayoutManager.Tools.Controls {
 
             #region Format field strings
 
-            private string GetDriverName() => tripAssignment.Train.Driver.Type switch
-            {
+            private string GetDriverName() => tripAssignment.Train.Driver.Type switch {
                 "ManualOnScreen" => "Manual (Dialog)",
                 _ => tripAssignment.Train.Driver.Type.ToString(),
             };
@@ -350,8 +348,7 @@ namespace LayoutManager.Tools.Controls {
                 return wayPoints.Count < 1 ? "<Empty>" : wayPoints[wayPoints.Count - 1].Destination.Name;
             }
 
-            private string GetTripState() => tripAssignment.Status switch
-            {
+            private string GetTripState() => tripAssignment.Status switch {
                 TripStatus.NotSubmitted => "New - not submitted",
                 TripStatus.Go => "Allowed to move",
                 TripStatus.PrepareStop => "Prepare to stop",
@@ -364,8 +361,7 @@ namespace LayoutManager.Tools.Controls {
                 _ => tripAssignment.Status.ToString(),
             };
 
-            private int GetStateImageIndex() => tripAssignment.Status switch
-            {
+            private int GetStateImageIndex() => tripAssignment.Status switch {
                 TripStatus.NotSubmitted => 0,
                 TripStatus.Go => 1,
                 TripStatus.PrepareStop => 2,

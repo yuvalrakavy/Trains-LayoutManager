@@ -1,6 +1,6 @@
-﻿using System;
+﻿using MethodDispatcher;
+using System;
 using System.Xml;
-using MethodDispatcher;
 
 namespace LayoutManager {
     public static class BaseServicesDispatchSources {

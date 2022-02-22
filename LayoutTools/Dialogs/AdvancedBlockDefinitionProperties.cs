@@ -1,9 +1,7 @@
-using System.Drawing;
-using System.ComponentModel;
-using System.Windows.Forms;
-
-using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.Model;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>

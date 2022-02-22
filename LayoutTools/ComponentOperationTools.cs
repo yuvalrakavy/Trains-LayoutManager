@@ -1,21 +1,20 @@
+using LayoutManager.CommonUI;
+using LayoutManager.CommonUI.Controls;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using LayoutManager.View;
+using MethodDispatcher;
 using System;
-using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Xml;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
 using System.Linq;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI.Controls;
-using LayoutManager.View;
-using LayoutManager.CommonUI;
-using LayoutManager.Logic;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.Tools {
     /// <summary>
@@ -267,7 +266,7 @@ namespace LayoutManager.Tools {
         }
         [DispatchTarget]
         private void DoDrop([DispatchFilter] LayoutStraightTrackComponent track, DragEventArgs dragEventArgs) {
-            if(track.BlockDefinitionComponent != null)
+            if (track.BlockDefinitionComponent != null)
                 Dispatch.Call.DoDrop(track.BlockDefinitionComponent, dragEventArgs);
         }
 
@@ -993,7 +992,7 @@ namespace LayoutManager.Tools {
 
         #endregion
 
-#region New/Use trip plan
+        #region New/Use trip plan
 
         private class NewTripPlanMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo train;
@@ -1075,9 +1074,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-#endregion
+        #endregion
 
-#region Save train in collection
+        #region Save train in collection
 
         private class SaveTrainInCollectionMenuItem : LayoutMenuItem {
             private readonly TrainStateInfo train;
@@ -1110,9 +1109,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-#endregion
+        #endregion
 
-#region Locomotive owner draw menu item base class
+        #region Locomotive owner draw menu item base class
 
         private class LocomotiveMenuItem : LayoutMenuItem {
             public LocomotiveMenuItem(XmlElement placedElement, LayoutBlock block) {
@@ -1149,8 +1148,8 @@ namespace LayoutManager.Tools {
                     }
 
                     using (Graphics g = Owner.CreateGraphics())
-                        using(Font titleFont = new("Arial", 8, FontStyle.Bold))
-                            textSize = g.MeasureString(name, titleFont);
+                    using (Font titleFont = new("Arial", 8, FontStyle.Bold))
+                        textSize = g.MeasureString(name, titleFont);
 
                     return new Size(Math.Max((int)textSize.Width + textShift, imageWidth), 50);
                 }
@@ -1223,9 +1222,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-#endregion
+        #endregion
 
-#region Relocate train menu item
+        #region Relocate train menu item
 
         private bool IsTrainOnSamePower(TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
             if (train.Locomotives.Count == 0)
@@ -1285,9 +1284,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-#endregion
+        #endregion
 
-#region Toggle train detection state
+        #region Toggle train detection state
 
         private class ToggleTrainDetectionStateMenuItem : LayoutMenuItem {
             private readonly LayoutBlockDefinitionComponent blockInfo;
@@ -1306,7 +1305,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-#endregion
+        #endregion
 
         #region Remove balloon if track is detected
 
@@ -1353,7 +1352,7 @@ namespace LayoutManager.Tools {
                         var subitems = new List<LayoutMenuItem>();
 
                         foreach (var subEntry in item.DropDownItems)
-                            if(subEntry is LayoutMenuItem subitem)
+                            if (subEntry is LayoutMenuItem subitem)
                                 subitems.Add(subitem);
 
                         var contextMenu = new ContextMenuStrip();
@@ -1373,7 +1372,7 @@ namespace LayoutManager.Tools {
 
         #region Track Power Connector component
 
-        [DispatchTarget(Order =1000)]
+        [DispatchTarget(Order = 1000)]
         private void AddDetailsWindowSections_PowerConnector([DispatchFilter] LayoutTrackPowerConnectorComponent component, PopupWindowContainerSection container) {
             if (!LayoutController.IsOperationMode)
                 return;
@@ -1419,9 +1418,9 @@ namespace LayoutManager.Tools {
                 container.AddText("Not connected to any power source");
         }
 
-#endregion
+        #endregion
 
-#region Extend train
+        #region Extend train
 
         [LayoutEvent("get-extend-train-menu")]
         private void GetExtendTrainMenu(LayoutEvent e) {
@@ -1602,15 +1601,15 @@ namespace LayoutManager.Tools {
                 menu.Items.Add("Close gate", null, (object? sender, EventArgs a) => Dispatch.Call.CloseGateRequest(component));
         }
 
-#endregion
+        #endregion
 
-#region Component Designer generated code
+        #region Component Designer generated code
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
         }
-#endregion
+        #endregion
     }
 }

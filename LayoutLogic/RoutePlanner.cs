@@ -1,12 +1,12 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.Diagnostics;
-using System.Threading;
 using System.Linq;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
+using System.Threading;
+using System.Xml;
 
 namespace LayoutManager.Logic {
     /// <summary>
@@ -263,9 +263,9 @@ namespace LayoutManager.Logic {
         }
 #endif
 
-#endregion
+        #endregion
 
-#region Figure out routing target
+        #region Figure out routing target
 
         private enum FirstBlockHandling {
             Ignore, AvoidIfNonWaitable, Processed
@@ -410,7 +410,7 @@ namespace LayoutManager.Logic {
         }
 
         private class TargetQualityComparer : IComparer<RouteTarget> {
-#region IComparer<RouteTarget> Members
+            #region IComparer<RouteTarget> Members
 
             public int Compare(RouteTarget? x, RouteTarget? y) => Ensure.NotNull<RouteTarget>(x).Quality.CompareTo(Ensure.NotNull<RouteTarget>(y).Quality);
 
@@ -418,7 +418,7 @@ namespace LayoutManager.Logic {
 
             public int GetHashCode(RouteTarget obj) => obj.GetHashCode();
 
-#endregion
+            #endregion
         }
 
         private SortTargetsResult SortTargets(IList<RouteTarget> targets, ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction) {
@@ -507,9 +507,9 @@ namespace LayoutManager.Logic {
             return result;
         }
 
-#endregion
+        #endregion
 
-#region Trip route planning
+        #region Trip route planning
 
         private LayoutTrackComponent TrackOf(ModelComponent component) {
             var track = component.Spot.Track;
@@ -519,9 +519,9 @@ namespace LayoutManager.Logic {
             return track;
         }
 
-#endregion
+        #endregion
 
-#region Find best route
+        #region Find best route
 
         public BestRoute FindBestRoute(ModelComponent sourceComponent, LayoutComponentConnectionPoint front, LocomotiveOrientation direction, ModelComponent destinationComponent, Guid routeOwner, bool trainStopping) {
             BestRoute bestRoute = new(sourceComponent, front, direction, routeOwner);
@@ -558,8 +558,7 @@ namespace LayoutManager.Logic {
             const int penaltyForLengthLimitViolation = 100000;
             var train = LayoutModel.StateManager.Trains[routeOwner];
             BestRoute bestRoute = new(sourceComponent, front, direction, routeOwner);
-            var sourceTrack = sourceComponent switch
-            {
+            var sourceTrack = sourceComponent switch {
                 LayoutBlockDefinitionComponent blockDefinition => blockDefinition.Track,
                 LayoutTrackComponent track => track,
                 _ => throw new ArgumentException("Invalid sourceComponent type (not track or block definition)")
@@ -837,7 +836,7 @@ namespace LayoutManager.Logic {
             return routeOptions.ToArray();
         }
 
-#region Helper classes
+        #region Helper classes
 
         private class RouteOption : IComparable {
             public int SwitchState;
@@ -949,11 +948,11 @@ namespace LayoutManager.Logic {
             }
         }
 
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
-        [DispatchTarget(Order =1100)]
+        [DispatchTarget(Order = 1100)]
         private bool RebuildLayoutState(LayoutPhase phase) {
             Debug.WriteLine("Rebuild trip plan catalog");
 
@@ -961,7 +960,7 @@ namespace LayoutManager.Logic {
             return true;
         }
 
-#region Data structures
+        #region Data structures
 
         private class RoutingTable {
             private const string E_RoutingTable = "RoutingTable";
@@ -1161,20 +1160,20 @@ namespace LayoutManager.Logic {
 
             public int SwitchStateCount { get; }
 
-#region IEnumerable< Dictionary<TrackEdgeID, int>> Members
+            #region IEnumerable< Dictionary<TrackEdgeID, int>> Members
 
             public IEnumerator<Dictionary<TrackEdgeId, int>> GetEnumerator() => Array.AsReadOnly<Dictionary<TrackEdgeId, int>>(reachableNodes).GetEnumerator();
 
-#endregion
+            #endregion
 
-#region IEnumerable Members
+            #region IEnumerable Members
 
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
-#endregion
+            #endregion
         }
 
-#endregion
+        #endregion
     }
 }
 

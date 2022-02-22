@@ -1,10 +1,8 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Xml;
-
 using LayoutManager;
 using LayoutManager.Model;
+using System;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace Intellibox.Dialogs {
     /// <summary>
@@ -179,7 +177,7 @@ namespace Intellibox.Dialogs {
                 SOitem item = (SOitem)listViewSO.SelectedItems[0];
 
                 // Make a temporary copy
-                var doc =Ensure.NotNull<XmlDocument>(LayoutXmlInfo.XmlImplementation.CreateDocument());
+                var doc = Ensure.NotNull<XmlDocument>(LayoutXmlInfo.XmlImplementation.CreateDocument());
                 doc.AppendChild(doc.ImportNode(item.SOinfo.Element, true));
 
                 SOinfo tempSOinfo = new(doc.DocumentElement!);

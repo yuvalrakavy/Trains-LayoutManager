@@ -1,8 +1,6 @@
-﻿using System;
+﻿using LayoutManager.Model;
+using System;
 using System.Collections.Generic;
-using System.Xml;
-
-using LayoutManager.Model;
 
 namespace LayoutManager.Components {
     public class SwitchingStateSupport {
@@ -38,7 +36,7 @@ namespace LayoutManager.Components {
 
             ControlConnectionPoint? connectionPoint = LayoutModel.ControlManager.ConnectionPoints[Component.Id, connectionPointName];
 
-            if(connectionPoint != null)
+            if (connectionPoint != null)
                 switchingCommands.Add(new SwitchingCommand(new ControlConnectionPointReference(connectionPoint), state));
         }
 

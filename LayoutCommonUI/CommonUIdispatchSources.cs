@@ -1,11 +1,7 @@
-﻿using System;
-using System.Windows.Forms;
-
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.View;
-using LayoutManager;
+﻿
 using LayoutManager.CommonUI;
+using LayoutManager.Model;
+using MethodDispatcher;
 
 namespace LayoutManager {
     public static class CommonUIDispatchSources {

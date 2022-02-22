@@ -1,6 +1,6 @@
-﻿using System;
+﻿using LayoutManager.Model;
+using System;
 using System.Windows.Forms;
-using LayoutManager.Model;
 
 namespace LayoutManager.ControlComponents.Dialogs {
     public partial class MassothFeedbackDecoderAddressSettings : Form {

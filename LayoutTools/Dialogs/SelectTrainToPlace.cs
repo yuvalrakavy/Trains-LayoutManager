@@ -1,14 +1,13 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using System.Diagnostics;
-
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class SelectTrainToPlace : Form {

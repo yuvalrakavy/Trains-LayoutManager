@@ -1,5 +1,5 @@
-using System;
 using MethodDispatcher;
+using System;
 
 namespace LayoutManager {
     public enum ExceptionMessageType {
@@ -37,7 +37,7 @@ namespace LayoutManager {
         /// error level (message, warning or error) that was designated by the exception creator
         /// </summary>
         virtual public void Report() {
-            switch(DefaultMessageType) {
+            switch (DefaultMessageType) {
                 case ExceptionMessageType.Message: ReportMessage(); break;
                 case ExceptionMessageType.Warning: ReportWarning(); break;
                 case ExceptionMessageType.Error: ReportError(); break;
@@ -75,7 +75,7 @@ namespace LayoutManager {
             return (T)v;
         }
 
-        public static T NotNull<T>(object? v) where T: class {
+        public static T NotNull<T>(object? v) where T : class {
             if (v == null)
                 throw new ArgumentNullException(nameof(v));
             return (T)v;

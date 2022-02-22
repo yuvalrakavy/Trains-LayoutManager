@@ -1,6 +1,6 @@
+using LayoutManager.Model;
 using System;
 using System.Windows.Forms;
-using LayoutManager.Model;
 using System.Xml;
 
 namespace LayoutManager.Dialogs {

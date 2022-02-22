@@ -1,7 +1,7 @@
-using LayoutManager.Model;
 using LayoutManager.Components;
-using System.Diagnostics;
+using LayoutManager.Model;
 using MethodDispatcher;
+using System.Diagnostics;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -71,7 +71,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void Initialize() {
-            if(DesignMode)
+            if (DesignMode)
                 throw new ApplicationException("Initialize called");
 
             layoutControlBusViewer.Initialize();
@@ -123,7 +123,7 @@ namespace LayoutManager.CommonUI.Controls {
             layoutControlBusViewer.Recalc();
         }
 
-        [DispatchTarget]        
+        [DispatchTarget]
         private void OnRemovedFromModel_ModuleLocation([DispatchFilter] LayoutControlModuleLocationComponent component) {
             Recalc();
         }
@@ -134,13 +134,17 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         [LayoutEvent("model-loaded")]
-        [LayoutEvent("control-buses-added")]
-        [LayoutEvent("control-buses-removed")]
         [LayoutEvent("added-to-model", SenderType = typeof(LayoutControlModuleLocationComponent))]
         private void DoUpdateSelectors(LayoutEvent e) {
             UpdateSelectors();
             layoutControlBusViewer.Recalc();
         }
+
+        [DispatchTarget]
+        private void OnControlBusRemoved(IModelComponentIsBusProvider busProvider) => Recalc();
+
+        [DispatchTarget]
+        private void OnControlBusAdded(IModelComponentIsBusProvider busProvider) => Recalc();
 
         [LayoutEvent("show-control-modules-location")]
         private void ShowControlModulesLocation(LayoutEvent e) {

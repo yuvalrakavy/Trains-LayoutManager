@@ -1,7 +1,7 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>

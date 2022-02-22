@@ -31,7 +31,7 @@ namespace LayoutManager.Model {
         private const string E_Ramp = "Ramp";
 
         public MotionRampInfo() {
-            
+
         }
 
         public MotionRampInfo(string name) : base(name) { }

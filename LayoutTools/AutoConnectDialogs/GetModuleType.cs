@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Forms;
 using LayoutManager.Model;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using MethodDispatcher;
 
 namespace LayoutManager.Tools.AutoConnectDialogs {
     /// <summary>
@@ -15,7 +15,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             InitializeComponent();
 
             foreach (string moduleTypeName in moduleTypeNames) {
-                ControlModuleType moduleType = LayoutControlManager.GetModuleType(moduleTypeName);
+                ControlModuleType moduleType = Dispatch.Call.GetControlModuleType(moduleTypeName);
 
                 comboBoxModuleTypes.Items.Add(new Item(moduleType));
             }

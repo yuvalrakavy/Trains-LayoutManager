@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Xml;
-using System.Windows.Forms;
-
+﻿using LayoutManager.Model;
 using MethodDispatcher;
-using LayoutManager.Model;
+using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class ChangeLocomotiveAddress : Form {
@@ -65,8 +63,8 @@ namespace LayoutManager.Tools.Dialogs {
         private bool ValidateAddress(out int address) {
             bool result = true;
 
-            if(CommandStation == null)
-               throw new NullReferenceException("CommandStation");
+            if (CommandStation == null)
+                throw new NullReferenceException("CommandStation");
 
             if (!int.TryParse(textBoxAddress.Text, out address)) {
                 MessageBox.Show(this, "Invalid address", "You have entered invalid locomotive address", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -92,7 +90,7 @@ namespace LayoutManager.Tools.Dialogs {
                         var isAddressValid = Dispatch.Call.IsLocomotiveAddressValid(Locomotive.Element, power, new IsLocomotiveAddressValidSettings { LocomotiveAddress = address });
 
                         if (!isAddressValid.CanBeResolved)
-                            result = MessageBox.Show(this, $"{isAddressValid.ToString()}\n\nDo you want to use this address?", "Address warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
+                            result = MessageBox.Show(this, $"{isAddressValid}\n\nDo you want to use this address?", "Address warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
                     }
                 }
 

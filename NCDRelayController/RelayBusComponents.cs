@@ -1,7 +1,8 @@
+using LayoutManager.Model;
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using LayoutManager.Model;
+using MethodDispatcher;
 
 namespace LayoutManager.ControlComponents {
     [LayoutModule("NCD Relay Components")]
@@ -9,47 +10,36 @@ namespace LayoutManager.ControlComponents {
         private ControlBusType? relayBus = null;
         private ControlBusType? inputBus = null;
 
-        [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='NCDRelayBus']")]
-        private void GetRelayBusBusType(LayoutEvent e) {
-            if (relayBus == null) {
-                relayBus = new ControlBusType {
-                    BusFamilyName = "RelayBus",
-                    BusTypeName = "NCDRelayBus",
-                    Name = "Relay Bus",
-                    Topology = ControlBusTopology.DaisyChain,
-                    AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
-                    FirstAddress = 0,
-                    LastAddress = 255,
-                    Usage = ControlConnectionPointUsage.Output
-                };
-            }
-
-            e.Info = relayBus;
+        [DispatchTarget]
+        private ControlBusType GetControlBusType_NCDRelayBus([DispatchFilter] string busTypeName = "NCDRelayBus") {
+            return relayBus ??= new ControlBusType {
+                BusFamilyName = "RelayBus",
+                BusTypeName = "NCDRelayBus",
+                Name = "Relay Bus",
+                Topology = ControlBusTopology.DaisyChain,
+                AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
+                FirstAddress = 0,
+                LastAddress = 255,
+                Usage = ControlConnectionPointUsage.Output
+            };
         }
 
-        [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='NCDInputBus']")]
-        private void GetInputBusBusType(LayoutEvent e) {
-            if (inputBus == null) {
-                inputBus = new ControlBusType {
-                    BusFamilyName = "NCDInputBus",
-                    BusTypeName = "NCDInputBus",
-                    Name = "Input Bus",
-                    Topology = ControlBusTopology.DaisyChain,
-                    AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
-                    FirstAddress = 0,
-                    LastAddress = 255,
-                    Usage = ControlConnectionPointUsage.Input
-                };
-            }
-
-            e.Info = inputBus;
+        [DispatchTarget]
+        private ControlBusType GetControlBusType_NCDInputBus([DispatchFilter] string busTypeName = "NCDInputBus") {
+            return inputBus ??= new ControlBusType {
+                BusFamilyName = "NCDInputBus",
+                BusTypeName = "NCDInputBus",
+                Name = "Input Bus",
+                Topology = ControlBusTopology.DaisyChain,
+                AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
+                FirstAddress = 0,
+                LastAddress = 255,
+                Usage = ControlConnectionPointUsage.Input
+            };
         }
 
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusTypeName='NCDRelayBus']")]
-        private void RecommendRelayBusControlModuleTypes(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender);
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info);
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_NCDRelayBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "NCDRelayBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Relay")) {
                 moduleTypeNames.Add("8_NCDRelays");
                 moduleTypeNames.Add("16_NCDRelays");
@@ -58,11 +48,8 @@ namespace LayoutManager.ControlComponents {
             }
         }
 
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusTypeName='NCDInputBus']")]
-        private void RecommendInputBusControlModuleTypes(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender);
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info);
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_NCDInputBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "NCDInputBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", ControlConnectionPointTypes.InputDryTrigger)) {
                 moduleTypeNames.Add("16_NCDContactsClosure");
                 moduleTypeNames.Add("32_NCDContactsClosure");
@@ -70,8 +57,8 @@ namespace LayoutManager.ControlComponents {
             }
         }
 
-        private ControlModuleType GetRelayModule(XmlElement parentElement, int nRelays) {
-            var moduleType = new ControlModuleType(parentElement, nRelays.ToString() + "_NCDRelays", nRelays.ToString() + " Relays Module") {
+        private ControlModuleType GetRelayModuleType(int nRelays) {
+            var moduleType = new ControlModuleType($"{nRelays}_NCDRelays", $"{nRelays} Relays Module") {
                 ConnectionPointsPerAddress = 1,
                 ConnectionPointIndexBase = 0,
                 DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputRelay,
@@ -85,28 +72,22 @@ namespace LayoutManager.ControlComponents {
             return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='8_NCDRelays']")]
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='16_NCDRelays']")]
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='24_NCDRelays']")]
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='32_NCDRelays']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetRelayModule(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender);
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_8relays([DispatchFilter("RegEx", "(8_NCDRelays|ALL)")] string moduleTypeName) => GetRelayModuleType
+            (8);
 
-            if (e.EventName == "enum-control-module-types") {
-                foreach (var nRelays in new int[] { 8, 16, 24, 32 })
-                    GetRelayModule(parentElement, nRelays);
-            }
-            else {
-                var moduleTypeName = e.GetOption("ModuleTypeName").ValidString();
-                int nRelay = Convert.ToInt32(moduleTypeName[..moduleTypeName.IndexOf('_')]);
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_16relays([DispatchFilter("RegEx", "(16_NCDRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(16);
 
-                GetRelayModule(parentElement, nRelay);
-            }
-        }
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_24relays([DispatchFilter("RegEx", "(24_NCDRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(24);
 
-        private ControlModuleType GetContactClosureModule(XmlElement parentElement, int nContacts) {
-            var moduleType = new ControlModuleType(parentElement, nContacts.ToString() + "_NCDContactsClosure", nContacts.ToString() + " Contacts Closure Module") {
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_32relays([DispatchFilter("RegEx", "(32_NCDRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(32);
+
+
+        private ControlModuleType GetContactClosureModuleType(int nContacts) {
+            var moduleType = new ControlModuleType($"{nContacts}_NCDContactsClosure", $"{nContacts} Contacts Closure Module") {
                 ConnectionPointsPerAddress = 1,
                 ConnectionPointIndexBase = 0,
                 DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger,
@@ -120,24 +101,14 @@ namespace LayoutManager.ControlComponents {
             return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='16_NCDContactsClosure']")]
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='32_NCDContactsClosure']")]
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='48_NCDContactsClosure']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetContactClosureModule(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender);
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_16contacts([DispatchFilter("RegEx", "(16_NCDContactsClosure|ALL)")] string moduleType) => GetContactClosureModuleType(16);
 
-            if (e.EventName == "enum-control-module-types") {
-                foreach (var nContacts in new int[] { 16, 32, 48 })
-                    GetContactClosureModule(parentElement, nContacts);
-            }
-            else {
-                var moduleTypeName = e.GetOption("ModuleTypeName").ValidString();
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_32contacts([DispatchFilter("RegEx", "(32_NCDContactsClosure|ALL)")] string moduleType) => GetContactClosureModuleType(32);
 
-                int nContacts = Convert.ToInt32(moduleTypeName[..moduleTypeName.IndexOf('_')]);
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_48contacts([DispatchFilter("RegEx", "(48_NCDContactsClosure|ALL)")] string moduleType) => GetContactClosureModuleType(48);
 
-                GetContactClosureModule(parentElement, nContacts);
-            }
-        }
     }
 }

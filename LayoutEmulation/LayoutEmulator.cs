@@ -1,14 +1,12 @@
-using System;
-using System.Diagnostics;
-using System.Collections;
-using System.Collections.Generic;
-using System.Xml;
-using System.Threading;
-using MethodDispatcher;
-
 using LayoutManager;
-using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Xml;
 
 #nullable enable
 #pragma warning disable IDE0051, IDE0060
@@ -370,7 +368,7 @@ namespace LayoutEmulation {
 
         [DispatchTarget]
         private void OnTrainIsRemoved(TrainStateInfo train) {
-             lock (Sync) {
+            lock (Sync) {
                 if (train.CommandStation != null) {
                     var commandStationId = train.CommandStation.Id;
 

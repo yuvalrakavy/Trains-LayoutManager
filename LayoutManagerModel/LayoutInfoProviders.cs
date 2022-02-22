@@ -1,14 +1,12 @@
-using System;
-using System.Drawing;
-using System.Xml;
-using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Diagnostics;
-
 //using LayoutManager.Components;
 
 using LayoutManager.Components;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
 
 #nullable enable
 namespace LayoutManager.Model {
@@ -311,8 +309,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="side"></param>
         /// <returns>The other side</returns>
-        static public LayoutDrawingSide GetAlternateLayoutDrawingSide(LayoutDrawingSide side) => side switch
-        {
+        static public LayoutDrawingSide GetAlternateLayoutDrawingSide(LayoutDrawingSide side) => side switch {
             LayoutDrawingSide.Left => LayoutDrawingSide.Right,
             LayoutDrawingSide.Right => LayoutDrawingSide.Left,
             LayoutDrawingSide.Top => LayoutDrawingSide.Bottom,
@@ -326,8 +323,7 @@ namespace LayoutManager.Model {
         /// <param name="side">A side</param>
         /// <returns>A XPath to a position element for this side</returns>
         static public string GetElementPathPositionPath(LayoutDrawingSide side) {
-            var positionStyleName = side switch
-            {
+            var positionStyleName = side switch {
                 LayoutDrawingSide.Top => "Top",
                 LayoutDrawingSide.Left => "Left",
                 LayoutDrawingSide.Right => "Right",

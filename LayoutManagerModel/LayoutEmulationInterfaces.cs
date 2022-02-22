@@ -1,6 +1,6 @@
+using LayoutManager.Components;
 using System;
 using System.Collections.Generic;
-using LayoutManager.Components;
 
 namespace LayoutManager.Model {
     public class LocomotiveMovedEventArgs : EventArgs {

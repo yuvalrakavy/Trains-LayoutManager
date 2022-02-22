@@ -1,11 +1,10 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Components;
+using LayoutManager.Model;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class BlockDefinitionResources : Form {

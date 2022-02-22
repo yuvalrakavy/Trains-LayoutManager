@@ -1,10 +1,8 @@
+using LayoutManager;
+using LayoutManager.CommonUI;
+using MethodDispatcher;
 using System;
 using System.ComponentModel;
-using System.Windows.Forms;
-using MethodDispatcher;
-
-using LayoutManager.CommonUI;
-using LayoutManager;
 
 namespace DiMAX {
     /// <summary>
@@ -63,7 +61,7 @@ namespace DiMAX {
         private bool IncludeInComponentContextMenu([DispatchFilter] DiMAXcommandStation _) => true;
 
         [DispatchTarget]
-        [DispatchFilter(Type="InDesignMode")]
+        [DispatchFilter(Type = "InDesignMode")]
         private void AddComponentContextMenuEntries_DesignMode(Guid frameWindowId, [DispatchFilter] DiMAXcommandStation component, MenuOrMenuItem menu) {
             menu.Items.Add(new DiMAXcommandStationMenuItemProperties(component));
         }

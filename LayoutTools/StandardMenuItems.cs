@@ -1,10 +1,8 @@
-using System;
-using System.Windows.Forms;
-using System.Reflection;
-using System.Drawing;
-
-using LayoutManager.Model;
 using LayoutManager.CommonUI;
+using LayoutManager.Model;
+using System;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools {
     public class LayoutComponentMenuItem : LayoutMenuItem {
@@ -44,7 +42,7 @@ namespace LayoutManager.Tools {
             if (constructor != null) {
                 dialog = (ILayoutComponentPropertiesDialog?)dialogType.Assembly.CreateInstance(
                     dialogTypeFullName, false, BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null,
-                    new Object[] { component, new PlacementInfo(component) }, null, new Object[] { });
+                    new Object[] { component, new PlacementInfo(component) }, null, Array.Empty<object>());
             }
             else {
                 constructor = dialogType.GetConstructor(new Type[] { typeof(ModelComponent) });
@@ -52,7 +50,7 @@ namespace LayoutManager.Tools {
                 if (constructor != null) {
                     dialog = (ILayoutComponentPropertiesDialog?)dialogType.Assembly.CreateInstance(
                         dialogTypeFullName, false, BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null,
-                        new Object[] { component }, null, new Object[] { });
+                        new Object[] { component }, null, Array.Empty<object>());
                 }
                 else
                     throw new ArgumentException("Invalid dialog class constructor (should be cons(LayoutModel, ModelComponent, [XmlElement]))");

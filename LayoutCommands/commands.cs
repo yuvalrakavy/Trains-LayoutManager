@@ -1,12 +1,11 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Diagnostics;
+using System.Drawing;
 using System.Xml;
-using MethodDispatcher;
-
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager {
     /// <summary>
@@ -300,8 +299,7 @@ namespace LayoutManager {
 
         public override void Do() {
             if (moduleElement == null) {
-                addedModuleReference = bus.BusType.Topology switch
-                {
+                addedModuleReference = bus.BusType.Topology switch {
                     ControlBusTopology.DaisyChain when insertBefore == null => new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName)),
                     ControlBusTopology.DaisyChain => new ControlModuleReference(bus.Insert(moduleLocationID, insertBefore!, moduleTypeName)),
                     var t when t == ControlBusTopology.Fixed || t == ControlBusTopology.RandomAddressing => new ControlModuleReference(bus.Add(moduleLocationID, moduleTypeName, address)),
@@ -323,7 +321,7 @@ namespace LayoutManager {
 
         public override void Undo() {
             Debug.Assert(addedModuleReference != null);
-            if(addedModuleReference != null)
+            if (addedModuleReference != null)
                 bus.Remove(Ensure.NotNull<ControlModule>(addedModuleReference.Module));
         }
 
@@ -706,8 +704,7 @@ namespace LayoutManager {
             Do();
         }
 
-        public override string ToString() => phase switch
-        {
+        public override string ToString() => phase switch {
             LayoutPhase.Planned => "Set default phase to 'Planned'",
             LayoutPhase.Construction => "Set default phase to 'In construction'",
             LayoutPhase.Operational => "Set default phase to 'Operational'",
@@ -740,5 +737,5 @@ namespace LayoutManager {
         public override string ToString() => "Change component phase";
     }
 
-#endregion
+    #endregion
 }

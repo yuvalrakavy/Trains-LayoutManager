@@ -1,14 +1,13 @@
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using MethodDispatcher;
-using LayoutManager.Model;
 
 #pragma warning disable IDE0051, IDE0060, RCS1135, RCS1154, RCS1213
 namespace LayoutManager.View {
@@ -461,8 +460,7 @@ namespace LayoutManager.View {
 
         public float GridLineWidthInModelCoordinates {
             get {
-                return showGrid switch
-                {
+                return showGrid switch {
                     ShowGridLinesOption.Hide => 0,
                     ShowGridLinesOption.Show => mpGridLineSize.Width,
                     ShowGridLinesOption.AutoHide => showingGrid ? mpGridLineSize.Width : 0,
@@ -473,8 +471,7 @@ namespace LayoutManager.View {
 
         private int DcGridLineWidth {
             get {
-                return showGrid switch
-                {
+                return showGrid switch {
                     ShowGridLinesOption.Hide => 0,
                     ShowGridLinesOption.Show => dcGridLineSize.Width,
                     ShowGridLinesOption.AutoHide => showingGrid ? dcGridLineSize.Width : 0,

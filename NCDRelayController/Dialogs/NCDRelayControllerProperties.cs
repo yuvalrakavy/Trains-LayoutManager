@@ -1,11 +1,8 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Xml;
-using System.IO.Ports;
-
 using LayoutManager;
 using LayoutManager.Model;
+using System;
+using System.IO.Ports;
+using System.Windows.Forms;
 
 namespace NCDRelayController.Dialogs {
     /// <summary>

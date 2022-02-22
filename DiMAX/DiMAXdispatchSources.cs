@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using LayoutManager.Model;
 using MethodDispatcher;
-using LayoutManager.Model;
+using System.Threading.Tasks;
 
 namespace DiMAX {
     public static class DiMAXdispatchSources {

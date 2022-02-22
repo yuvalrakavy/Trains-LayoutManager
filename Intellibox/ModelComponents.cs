@@ -1,15 +1,14 @@
+using LayoutManager;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Xml;
 using System.Threading.Tasks;
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.Components;
+using System.Xml;
 
 namespace Intellibox {
     internal interface ICommandStationServices {
@@ -196,7 +195,7 @@ namespace Intellibox {
         }
 
         [DispatchTarget]
-        private Task ChangeBatchOfTrackComponentStateCommand([DispatchFilter(Type="IsMyId")] Guid commandStationId, List<SwitchingCommand> switchingCommands) {
+        private Task ChangeBatchOfTrackComponentStateCommand([DispatchFilter(Type = "IsMyId")] Guid commandStationId, List<SwitchingCommand> switchingCommands) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
@@ -461,8 +460,7 @@ namespace Intellibox {
         protected void ReportError(byte errorCode) {
             string? message = null;
 
-            message = errorCode switch
-            {
+            message = errorCode switch {
                 0x02 => "Bad parameter value",
                 0x06 => "Command station power is off",
                 0x08 => "Locomotive command buffer out of space",

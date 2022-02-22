@@ -1,13 +1,13 @@
+using LayoutManager.Components;
+using MethodDispatcher;
 using System;
-using System.Xml;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Forms;
 using System.IO;
-using MethodDispatcher;
-using LayoutManager.Components;
-using System.Collections.Generic;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.Model {
     /// <summary>
@@ -910,7 +910,7 @@ namespace LayoutManager.Model {
         /// </summary>
         /// <param name="iconIndex"></param>
         public void Remove(int iconIndex) {
-            if(Element.ChildNodes[iconIndex] is XmlElement iconElement)
+            if (Element.ChildNodes[iconIndex] is XmlElement iconElement)
                 Element.RemoveChild(iconElement);
             iconIdMap = null;               // force rebuilding the icon ID to index map
 

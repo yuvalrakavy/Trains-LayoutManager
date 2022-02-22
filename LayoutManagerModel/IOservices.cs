@@ -1,9 +1,9 @@
+using MethodDispatcher;
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.IO;
-using System.Xml;
 using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles;
-using MethodDispatcher;
+using System.Xml;
 
 namespace LayoutManager.Components {
     [LayoutModule("Layout I/O Services")]

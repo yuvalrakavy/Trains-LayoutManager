@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using MethodDispatcher;
-
+﻿using LayoutManager.CommonUI;
+using LayoutManager.Components;
 using LayoutManager.Model;
 using LayoutManager.View;
-using LayoutManager.CommonUI;
-using LayoutManager.Components;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Xml;
+using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager {
     public partial class FrameWindow : Form, ILayoutFrameWindow {
@@ -90,7 +85,7 @@ namespace LayoutManager {
                 this.setting = setting;
             }
 
-            public ToolStripSeparator Separator { get;  }
+            public ToolStripSeparator Separator { get; }
         }
 
         private struct ZoomEntry {
@@ -164,7 +159,7 @@ namespace LayoutManager {
             messageViewVisible = frameWindowState.MessagesViewerVisible;
             locomotiveViewVisible = frameWindowState.LocomotiveViewerVisble;
             layoutControlVisible = frameWindowState.ControlViewerVisible;
-            
+
             UpdateMessageVisible();
             UpdateLayoutControlVisible();
             UpdateLocomotivesVisible();
@@ -658,12 +653,12 @@ namespace LayoutManager {
         }
 
         [DispatchTarget]
-        private void DeselectControlObjects([DispatchFilter(Type="IsMyId")] Guid frameWindowId) {
+        private void DeselectControlObjects([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
             layoutControlViewer.DeselectAll();
         }
 
         [DispatchTarget]
-        private void EnsureComponentVisible([DispatchFilter(Type="IsMyId")] Guid frameWindowId, ModelComponent component, bool markComponent) {
+        private void EnsureComponentVisible([DispatchFilter(Type = "IsMyId")] Guid frameWindowId, ModelComponent component, bool markComponent) {
             LayoutModelArea area = component.Spot.Area;
             LayoutFrameWindowAreaTabPage? areaPage = null;
 
@@ -730,7 +725,7 @@ namespace LayoutManager {
         }
 
         [DispatchTarget]
-        private void ShowMarker([DispatchFilter(Type="IsMyId")] Guid frameWindowId, object markedObject) {
+        private void ShowMarker([DispatchFilter(Type = "IsMyId")] Guid frameWindowId, object markedObject) {
             var markerSelection = markedObject switch {
                 ModelComponent component => new LayoutSelection {
                     component
@@ -842,7 +837,7 @@ namespace LayoutManager {
         }
 
         [DispatchTarget]
-        private void ShowLayoutControl([DispatchFilter(Type="IsMyId")] Guid frameWindowId) {
+        private void ShowLayoutControl([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
             layoutControlVisible = true;
             UpdateLayoutControlVisible();
         }

@@ -1,11 +1,11 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Model;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
-using LayoutManager.Model;
-using LayoutManager.CommonUI;
 
 namespace LayoutManager {
     #region Context Menu items
@@ -107,7 +107,7 @@ namespace LayoutManager {
             }
         }
 
-        private void clearLocation(LayoutCompoundCommand pasteCommand, LayoutModelArea area, Point ml) {
+        private void ClearLocation(LayoutCompoundCommand pasteCommand, LayoutModelArea area, Point ml) {
             var spot = area[ml, LayoutPhase.All];
 
             if (spot != null) {
@@ -147,7 +147,7 @@ namespace LayoutManager {
                     Point ml = new((int)GetAttribute("X") + hitTestResult.ModelLocation.X,
                         (int)GetAttribute("Y") + hitTestResult.ModelLocation.Y);
 
-                    clearLocation(pasteCommand, hitTestResult.Area, ml);
+                    ClearLocation(pasteCommand, hitTestResult.Area, ml);
 
                     // Create the component
                     string className = Ensure.NotNull<string>(r.GetAttribute("Class"));

@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Xml;
-
 using LayoutManager;
 using LayoutManager.Components;
 using LayoutManager.Model;
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace MarklinDigital.Dialogs {
     /// <summary>

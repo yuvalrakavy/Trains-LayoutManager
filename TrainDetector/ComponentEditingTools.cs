@@ -1,14 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.Model;
-using System.Linq;
+﻿using LayoutManager;
 using LayoutManager.CommonUI;
 using LayoutManager.ControlComponents;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace TrainDetector {
 
@@ -28,7 +25,7 @@ namespace TrainDetector {
 
                 if (propertiesDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     component.XmlInfo.XmlDocument = propertiesDialog.XmlInfo.XmlDocument;
-                    if(propertiesDialog.AutoDetect) { }
+                    if (propertiesDialog.AutoDetect) { }
 
                     e.Info = true;      // Place component
                 }
@@ -37,11 +34,11 @@ namespace TrainDetector {
             }
         }
 
-        [LayoutEvent("model-component-post-placement-request", SenderType =typeof(TrainDetectorsComponent))]
+        [LayoutEvent("model-component-post-placement-request", SenderType = typeof(TrainDetectorsComponent))]
         private async void CheckIfAutoDetect(LayoutEvent e) {
             var component = Ensure.NotNull<TrainDetectorsComponent>(e.Sender);
 
-            if(component.Info.AutoDetect) {
+            if (component.Info.AutoDetect) {
                 var detector = new TrainDetectorControllersDetection(component.TrainDetectorsBus, null);
 
                 var result = await detector.UpdateBus();
@@ -81,12 +78,12 @@ namespace TrainDetector {
         private void ClickToAddTrainDetector(LayoutEvent e) {
             var drawObject = Ensure.NotNull<DrawControlClickToAddModule>(e.Sender);
 
-            using var d = new Dialogs.AddTrainDetectorController(name => 
+            using var d = new Dialogs.AddTrainDetectorController(name =>
                 string.IsNullOrWhiteSpace(name) ? "You must specify a non-empty name" :
                 drawObject.Bus.Modules.Any(module => module.Label == name) ? $"A module named '{name}' is already defined" : null
             );
 
-            if(d.ShowDialog() == DialogResult.OK) {
+            if (d.ShowDialog() == DialogResult.OK) {
                 var bus = drawObject.Bus;
                 var moduleType = bus.BusType.ModuleTypes.First();
                 var address = drawObject.Bus.AllocateFreeAddress(moduleType, drawObject.Viewer.ModuleLocationID);
@@ -108,13 +105,14 @@ namespace TrainDetector {
             var controller = new TrainDetectorControllerModule(module);
 
             // If assigned - program the controller with the new name
-            if(controller.ControllerIpAddress != null) {
+            if (controller.ControllerIpAddress != null) {
                 using var networkHandler = new NetworkHandler(rawPacket => rawPacket.GetPacketHeader());
 
                 try {
                     networkHandler.Start();
                     await networkHandler.Request((requestNumber) => networkHandler.SendPacketAsync(new ConfigSetRequestPacket(requestNumber, "Name", name), controller.ControllerIpAddress));
-                } catch(TimeoutException) {
+                }
+                catch (TimeoutException) {
                     MessageBox.Show("Error: could not program train detector controller with the new name (it is online?)", "Timeout error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }

@@ -1,13 +1,11 @@
-using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Xml;
-using System.Windows.Forms;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
 using LayoutManager.CommonUI;
-using LayoutManager.Logic;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.Tools {
     public static class DispatchSources {

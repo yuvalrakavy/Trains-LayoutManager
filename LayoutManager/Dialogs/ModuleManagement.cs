@@ -1,7 +1,6 @@
 using System;
-using System.ComponentModel;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace LayoutManager.Dialogs {
 
@@ -27,8 +26,8 @@ namespace LayoutManager.Dialogs {
             TreeNode selected = treeViewAssemblies.SelectedNode;
 
             if (selected != null) {
-                if (selected is AssemblyNode) {
-                    LayoutAssembly la = ((AssemblyNode)selected).LayoutAssembly;
+                if (selected is AssemblyNode node) {
+                    LayoutAssembly la = node.LayoutAssembly;
 
                     if (la.SaveAssemblyReference)
                         buttonChangeStatus.Text = "&Temporary";
@@ -102,8 +101,8 @@ namespace LayoutManager.Dialogs {
             TreeNode selected = treeViewAssemblies.SelectedNode;
 
             if (selected != null) {
-                if (selected is AssemblyNode) {
-                    ((AssemblyNode)selected).ToggleSaveState();
+                if (selected is AssemblyNode node) {
+                    node.ToggleSaveState();
                     needToSaveState = true;
                 }
                 else
@@ -116,12 +115,10 @@ namespace LayoutManager.Dialogs {
         private void ButtonRemove_Click(object? sender, EventArgs e) {
             TreeNode selected = treeViewAssemblies.SelectedNode;
 
-            if (selected != null) {
-                if (selected is AssemblyNode) {
-                    LayoutController.ModuleManager.LayoutAssemblies.Remove(((AssemblyNode)selected).LayoutAssembly);
-                    selected.Remove();
-                    needToSaveState = true;
-                }
+            if (selected != null && selected is AssemblyNode node) {
+                LayoutController.ModuleManager.LayoutAssemblies.Remove(node.LayoutAssembly);
+                selected.Remove();
+                needToSaveState = true;
             }
 
             UpdateButtons();

@@ -21,7 +21,7 @@ namespace LayoutManager {
         }
 
         public void Save() {
-            if(filename != null)
+            if (filename != null)
                 Element.OwnerDocument.Save(filename);
         }
 

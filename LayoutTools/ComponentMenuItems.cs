@@ -1,9 +1,8 @@
-using System;
-using System.ComponentModel;
-using System.Xml;
-using System.Drawing;
 using LayoutManager.Components;
 using LayoutManager.Model;
+using System.ComponentModel;
+using System.Drawing;
+using System.Xml;
 
 namespace LayoutManager.Tools {
     /// <summary>

@@ -1,10 +1,7 @@
-using System;
-using System.Windows.Forms;
-using System.Reflection;
-using System.Diagnostics;
-
 using LayoutManager;
-using LayoutManager.CommonUI;
+using System;
+using System.Reflection;
+using System.Windows.Forms;
 
 #nullable enable
 #pragma warning disable IDE0051, IDE0060
@@ -113,8 +110,7 @@ namespace LayoutEventDebugger {
         }
 
         static public void AddSubscription(TreeNode parent, LayoutEventSubscriptionBase subscription, TitleFormat titleFormat) {
-            var subscriptionNode = titleFormat switch
-            {
+            var subscriptionNode = titleFormat switch {
                 TitleFormat.ShowEventName => new TreeNode($"Event: {subscription.EventName ?? "<any>"}"),
                 TitleFormat.ShowHandlerObject => new TreeNode($"Instance of {subscription.TargetObject?.GetType().FullName ?? "<static>"}"),
                 _ => throw new NotImplementedException()

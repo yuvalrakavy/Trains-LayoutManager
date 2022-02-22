@@ -1,16 +1,14 @@
-﻿using System;
+﻿using LayoutManager;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using System.Diagnostics;
-using System.Xml;
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace NumatoController {
     public enum InterfaceType {

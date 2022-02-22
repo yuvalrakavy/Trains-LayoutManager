@@ -1,17 +1,17 @@
 ﻿#region Using directives
 
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Resources;
-using System.IO;
-using System.Diagnostics;
-using System.Linq;
-using LayoutManager.Model;
-using LayoutManager.Components;
 using LayoutManager.CommonUI;
-using System.Media;
+using LayoutManager.Components;
+using LayoutManager.Model;
 using MethodDispatcher;
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Media;
+using System.Resources;
+using System.Windows.Forms;
 
 #endregion
 
@@ -112,26 +112,36 @@ namespace LayoutManager.Dialogs {
             UpdateButtons();
         }
 
-        [LayoutEvent("control-module-removed")]
-        [LayoutEvent("control-module-added")]
         [LayoutEvent("control-module-address-changed")]
         [LayoutEvent("control-module-location-changed")]
         [LayoutEvent("control-bus-reconnected")]
-        [LayoutEvent("component-disconnected-from-control-module")]
-        [LayoutEvent("component-connected-to-control-module")]
         [LayoutEvent("control-module-label-changed")]
         [LayoutEvent("control-user-action-required-changed")]
         [LayoutEvent("control-address-programming-required-changed")]
-        [LayoutEvent("control-buses-added")]
-        [LayoutEvent("control-buses-removed")]
         private void DoUpdateItems(LayoutEvent e) {
             UpdateItems();
         }
 
         [DispatchTarget]
-        private void OnComponentConfigurationChanged(ModelComponent component) {
-            UpdateItems();
-        }
+        private void OnControlBusRemoved(IModelComponentIsBusProvider busProvider) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnControlBusAdded(IModelComponentIsBusProvider busProvider) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnControlModuleRemoved(ControlModule module) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnControlModuleAdded(ControlModule module) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnComponentConnectedToControlModule(IModelComponentConnectToControl component, ControlConnectionPoint connetionPoint) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnComponentDisconnectedFromControlModule(ModelComponent component, ControlConnectionPoint connectionPoint) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnComponentConfigurationChanged(ModelComponent component) => UpdateItems();
 
         #region Event Item
 
@@ -255,7 +265,7 @@ namespace LayoutManager.Dialogs {
 
                 switch (selected.Status) {
                     case CommandStationEventStatus.Connected:
-                        if(selected.CommandStationEvent.ConnectionPointRef != null)
+                        if (selected.CommandStationEvent.ConnectionPointRef != null)
                             Dispatch.Call.ShowControlConnectionPoint(frameWindowId, selected.CommandStationEvent.ConnectionPointRef);
                         buttonAction.Enabled = false;   // Already connected
                         break;

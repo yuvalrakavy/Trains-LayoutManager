@@ -1,11 +1,11 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
-using System.Collections.Generic;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -176,8 +176,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             public LayoutSignalComponent SignalComponent { get; }
 
-            public override string ToString() => SignalComponent.Info.SignalType switch
-            {
+            public override string ToString() => SignalComponent.Info.SignalType switch {
                 LayoutSignalType.Lights => "Lights",
                 LayoutSignalType.Semaphore => "Semaphore",
                 LayoutSignalType.Distance => "Distance Signal",

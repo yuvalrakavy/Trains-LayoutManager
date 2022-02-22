@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Forms;
 using LayoutManager.Model;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools.AutoConnectDialogs {
     /// <summary>

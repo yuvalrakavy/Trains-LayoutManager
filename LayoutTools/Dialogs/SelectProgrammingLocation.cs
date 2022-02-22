@@ -1,8 +1,8 @@
-﻿using System;
+﻿using LayoutManager.Components;
+using MethodDispatcher;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using MethodDispatcher;
-using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class SelectProgrammingLocation : Form {

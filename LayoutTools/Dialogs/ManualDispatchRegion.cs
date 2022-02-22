@@ -1,14 +1,13 @@
-using System;
-using System.Drawing;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.Xml;
-using MethodDispatcher;
 using LayoutManager.CommonUI;
-using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -24,9 +23,9 @@ namespace LayoutManager.Tools.Dialogs {
         private readonly LayoutSelection selectedBlockSelection;
 
         public ManualDispatchRegion(ManualDispatchRegionInfo manualDispatchRegion) {
-        //
-        // Required for Windows Form Designer support
-        //
+            //
+            // Required for Windows Form Designer support
+            //
             InitializeComponent();
 
             this.manualDispatchRegion = manualDispatchRegion;
@@ -76,13 +75,13 @@ namespace LayoutManager.Tools.Dialogs {
 
         [LayoutEvent("query-edit-manual-dispatch-region-dialog")]
         private void QueryEditManualDispatchRegionDialog(LayoutEvent e) {
-            var componentReceiverDialogs = Ensure.NotNull<List <IModelComponentReceiverDialog>>(e.Info, "receiverDialogs");
+            var componentReceiverDialogs = Ensure.NotNull<List<IModelComponentReceiverDialog>>(e.Info, "receiverDialogs");
 
             componentReceiverDialogs.Add((IModelComponentReceiverDialog)this);
         }
 
         [DispatchTarget]
-        private void OnManualDispatchRegionActivationChanged([DispatchFilter(Type="IsMyId")] ManualDispatchRegionInfo manualDispatchRegion, bool active) {
+        private void OnManualDispatchRegionActivationChanged([DispatchFilter(Type = "IsMyId")] ManualDispatchRegionInfo manualDispatchRegion, bool active) {
             DialogResult = DialogResult.Cancel;
             Close();
         }

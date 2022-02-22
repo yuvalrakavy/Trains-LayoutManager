@@ -1,9 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using DigiFinder;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-
-using DigiFinder;
+using System.Windows.Forms;
 
 namespace NCDRelayController.Dialogs {
     public partial class DiscoverDigiDevicesDialog : Form {

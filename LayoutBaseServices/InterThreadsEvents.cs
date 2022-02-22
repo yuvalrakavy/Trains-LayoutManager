@@ -1,11 +1,9 @@
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Threading;
 using System.Diagnostics;
-
-using MethodDispatcher;
-using LayoutManager;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace LayoutManager {
     public static class InterthreadDispatchSources {

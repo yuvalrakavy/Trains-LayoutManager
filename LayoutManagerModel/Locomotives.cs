@@ -1,11 +1,10 @@
+using MethodDispatcher;
 using System;
-using System.Xml;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using MethodDispatcher;
+using System.Xml;
 
 #nullable enable
 namespace LayoutManager.Model {
@@ -1048,8 +1047,7 @@ namespace LayoutManager.Model {
 
         public override int GetHashCode() => length.GetHashCode();
 
-        public override string ToString() => length switch
-        {
+        public override string ToString() => length switch {
             KnownTrainLength.LocomotiveOnly => "LocomotiveOnly",
             KnownTrainLength.VeryShort => "VeryShort",
             KnownTrainLength.Short => "Short",

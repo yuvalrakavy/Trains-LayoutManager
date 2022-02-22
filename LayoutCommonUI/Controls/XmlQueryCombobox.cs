@@ -1,5 +1,5 @@
-using System.Xml;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>

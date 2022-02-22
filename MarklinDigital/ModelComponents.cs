@@ -1,17 +1,15 @@
+using LayoutManager;
+using LayoutManager.CommonUI;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Xml;
 using System.Threading;
 using System.Threading.Tasks;
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
-using LayoutManager.Logic;
+using System.Xml;
 
 namespace MarklinDigital {
     /// <summary>
@@ -190,7 +188,7 @@ namespace MarklinDigital {
         }
 
         [DispatchTarget]
-        private void ConnectPowerRequest([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) {
+        private void ConnectPowerRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
             commandStationManager?.AddCommand(queuePowerCommands, new MarklinGoCommand(CommunicationStream));
             PowerOn();
         }
@@ -205,7 +203,7 @@ namespace MarklinDigital {
 
         // Implement command events
         [DispatchTarget]
-        private Task ChangeTrackComponentStateCommand([DispatchFilter(Type="MyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, int state) {
+        private Task ChangeTrackComponentStateCommand([DispatchFilter(Type = "MyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, int state) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
@@ -242,7 +240,7 @@ namespace MarklinDigital {
         }
 
         [DispatchTarget]
-        private void LocomotiveReverseMotionDirectionCommand([DispatchFilter(Type="MyId")] IModelComponentHasPowerOutlets commandStation, LocomotiveInfo loco) {
+        private void LocomotiveReverseMotionDirectionCommand([DispatchFilter(Type = "MyId")] IModelComponentHasPowerOutlets commandStation, LocomotiveInfo loco) {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
@@ -254,7 +252,7 @@ namespace MarklinDigital {
             if (commandStationManager == null)
                 throw new NullReferenceException(nameof(commandStationManager));
 
-            var train =Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
+            var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
             bool auxFunction;
 
             var locoAuxFunction = loco.GetFunctionByNumber(0);
@@ -353,7 +351,7 @@ namespace MarklinDigital {
 
                         TrainLocationInfo? trainLocationInfo = train.LocationOfBlock(train.LocomotiveBlock);
 
-                        if(trainLocationInfo != null)
+                        if (trainLocationInfo != null)
                             trainLocationInfo.DisplayFront = front ?? train.LocomotiveBlock.TrackEdges[0].ConnectionPoint;
                     }
                 }

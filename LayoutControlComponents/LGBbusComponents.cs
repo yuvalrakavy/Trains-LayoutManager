@@ -1,60 +1,56 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.Windows.Forms;
-using MethodDispatcher;
-
-using LayoutManager.Model;
-using LayoutManager.CommonUI;
+using System.Xml;
 
 namespace LayoutManager.ControlComponents {
     [LayoutModule("LGBBUS Control Components")]
     internal class LGBBUScomponents : LayoutModuleBase {
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55070']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void Get55070(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            var moduleType = new ControlModuleType(parentElement, "LGB55070", "LGB Feedback Interface") {
-                AddressAlignment = 4
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_LGB55070([DispatchFilter("RegEx", "(LGB55070|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("LGB55070", "LGB Feedback Interface") {
+                AddressAlignment = 4,
+                ConnectionPointsPerAddress = 2,
+                NumberOfAddresses = 4,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger,
+                ConnectionPointIndexBase = 0,
+                ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.Alpha | ControlConnectionPointLabelFormatOptions.AlphaLowercase | ControlConnectionPointLabelFormatOptions.AttachAddress,
+                LastAddress = 256,
             };
-            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "LGBBUS"));
-            moduleType.ConnectionPointsPerAddress = 2;
-            moduleType.NumberOfAddresses = 4;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger;
-            moduleType.ConnectionPointIndexBase = 0;
-            moduleType.ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.Alpha | ControlConnectionPointLabelFormatOptions.AlphaLowercase | ControlConnectionPointLabelFormatOptions.AttachAddress;
-            moduleType.LastAddress = 256;
+            moduleType.AddBusTypes("LGBBUS");
+
+            return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55075']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void Get55075(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
-
-            var moduleType = new ControlModuleType(parentElement, "LGB55075", "LGB Train detection module") {
-                AddressAlignment = 4
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_LGB55075([DispatchFilter("RegEx", "(LGB55075|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("LGB55075", "LGB Train detection module") {
+                AddressAlignment = 4,
+                ConnectionPointsPerAddress = 1,
+                NumberOfAddresses = 4,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.InputCurrent,
+                ConnectionPointIndexBase = 0,
+                LastAddress = 256,
             };
-            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "LGBBUS"));
-            moduleType.ConnectionPointsPerAddress = 1;
-            moduleType.NumberOfAddresses = 4;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputCurrent;
-            moduleType.ConnectionPointIndexBase = 0;
-            moduleType.LastAddress = 256;
+
+            moduleType.AddBusTypes("LGBBUS");
+
+            return moduleType;
         }
 
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='LGBBUS']")]
-        private void RecommendLGBcompatibleBusControlModuleType(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_LGBBUS(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "LGBBUS") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("CurrentSensor"))
                 moduleTypeNames.Add("LGB55075");
             else if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact"))
                 moduleTypeNames.Add("LGB55070");
         }
 
-        [DispatchTarget(Order =100)]
+        [DispatchTarget(Order = 100)]
         private void AddControlModuleEditingContextMenuEntries([DispatchFilter] DrawControlModule drawModule, MenuOrMenuItem menu) {
             ControlModuleType moduleType = drawModule.Module.ModuleType;
 

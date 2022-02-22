@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace TrainDetector {
     [Flags]
+#pragma warning disable CA1069 // Enums values should not be duplicated
     public enum PacketType : byte {
         PacketClassRequest = 0x00,
         PacketClassReply = 0x80,
@@ -48,6 +49,7 @@ namespace TrainDetector {
         ConfigChangedNotification = ConfigChanged | PacketClassNotification,
         ConfigChangedAcknowledge = ConfigChanged | PacketClassAcknowledge,
     }
+#pragma warning restore CA1069 // Enums values should not be duplicated
 
     [Flags]
     public enum SubscribeTo : UInt16 {
@@ -81,8 +83,7 @@ namespace TrainDetector {
             var r = new BinaryReader(s);
             var h = new PacketHeader(r);
 
-            return h.Type switch
-            {
+            return h.Type switch {
                 PacketType.PleaseIdentify => new PleaseIdentifyPacket(h, r),
                 PacketType.IdentificationInfo => new IdentificationInfoPacket(h, r),
                 PacketType.IdentificationAcknowledge => new IdentificationAcknowledgePacket(h),
@@ -131,7 +132,7 @@ namespace TrainDetector {
         public PacketHeader(BinaryReader r) {
             this.Type = (PacketType)r.ReadByte();
             this.TypeCompliment = r.ReadByte();
-            if(!IsValid)
+            if (!IsValid)
                 throw new ArgumentException("Train Detector: Invalid packet");
             this.RequestNumber = r.ReadUInt16();
         }
@@ -273,7 +274,7 @@ namespace TrainDetector {
         public string Value { get; private set; }
 
         public ConfigGetReplyPacket(UInt16 requestNumber, string value, string? error = null) : base(PacketType.ConfigGetReply, requestNumber) {
-            if(error != null) {
+            if (error != null) {
                 IsError = true;
                 Value = error;
             }
@@ -381,7 +382,7 @@ namespace TrainDetector {
         public byte SensorNumber { get; private set; }
         public bool IsCovered { get; private set; }
         public UInt32 Version { get; private set; }
-        public List<bool>States { get; private set; }
+        public List<bool> States { get; private set; }
 
         public StateChangedNotificationPacket(UInt16 requestNumber, byte sensorNumber, bool isCovered, UInt32 version, List<bool> states) : base(PacketType.StateChangedNotification, requestNumber) {
             SensorNumber = sensorNumber;

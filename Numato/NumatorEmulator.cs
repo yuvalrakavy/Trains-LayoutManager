@@ -1,15 +1,14 @@
-﻿using System;
+﻿using LayoutManager;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
-
-using MethodDispatcher;
-using LayoutManager;
-using LayoutManager.Model;
 
 #pragma warning disable IDE0051, IDE0060, IDE0052
 namespace NumatoController {

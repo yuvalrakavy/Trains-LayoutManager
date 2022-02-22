@@ -1,8 +1,7 @@
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Windows.Forms;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Logic;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class CommandStationStopped : Form {

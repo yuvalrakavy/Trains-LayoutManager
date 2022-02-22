@@ -1,9 +1,8 @@
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.Diagnostics;
-using MethodDispatcher;
-using LayoutManager.Model;
 
 #nullable enable
 namespace LayoutManager.Logic {
@@ -137,7 +136,7 @@ namespace LayoutManager.Logic {
             commandStationCapabiltiesMap.Clear();
         }
 
-#region Utility methods
+        #region Utility methods
 
         /// <summary>
         /// Return the command station capabilities for a given train
@@ -162,7 +161,7 @@ namespace LayoutManager.Logic {
             return _commandStationCapabilties ?? throw new LayoutException($"Unable to get command station capabilities for train {train.Name}");
         }
 
-#endregion
+        #endregion
 
     }
 

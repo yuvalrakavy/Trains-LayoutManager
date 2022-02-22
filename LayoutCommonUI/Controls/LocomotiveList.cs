@@ -1,8 +1,7 @@
-using System.Xml;
-
-using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.Model;
 using MethodDispatcher;
+using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -132,7 +131,7 @@ namespace LayoutManager.CommonUI.Controls {
             foreach (TrainLocomotiveInfo trainLoco in trainState.Locomotives) {
                 XmlElement? element = LayoutModel.LocomotiveCollection[trainLoco.CollectionElementId];
 
-                if(element != null)
+                if (element != null)
                     InvalidateElement(element);
             }
         }
@@ -217,8 +216,8 @@ namespace LayoutManager.CommonUI.Controls {
             Invalidate();
         }
 
-        [LayoutEvent("locomotive-address-changed")]
-        private void LocomotiveAddressChanged(LayoutEvent e0) {
+        [DispatchTarget]
+        private void OnLocomotiveAddressChanged(LocomotiveInfo locomotive, int address) {
             UpdateElements();
             Invalidate();
         }
@@ -301,7 +300,7 @@ namespace LayoutManager.CommonUI.Controls {
                     foreach (XmlElement storeElement in storeElements) {
                         LocomotiveStorageInfo store = new(storeElement);
                         var q = list.AddQuery(store.StorageName, null);
-                        
+
                         q?.Add("Locomotives", "Locomotive[@Store='" + iStore + "']");
                         q?.Add("Trains", "Train[@Store='" + iStore + "']");
 

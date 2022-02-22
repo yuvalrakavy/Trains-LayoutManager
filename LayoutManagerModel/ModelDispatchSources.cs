@@ -1,13 +1,12 @@
-﻿using System;
-using System.Xml;
-using Microsoft.Win32.SafeHandles;
-
-using MethodDispatcher;
+﻿using LayoutManager.Components;
 using LayoutManager.Model;
-using LayoutManager.Components;
-using System.Threading.Tasks;
+using MethodDispatcher;
+using Microsoft.Win32.SafeHandles;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace LayoutManager {
     static public class ModelDispatchSources {
@@ -201,10 +200,26 @@ namespace LayoutManager {
             return d[nameof(QueryAction)].CallBoolFunctions(invokeUntil: true, invokeAll: false, target, actionName);
         }
 
+        static DispatchSource? ds_QueryControlModuleAction = null;
         [DispatchSource]
-        public static LayoutAction? GetAction(this Dispatcher d, XmlElement actionElement, object owner) {
-            return d[nameof(GetAction)].CallUntilNotNull<LayoutAction>(actionElement, owner);
+        public static bool QueryControlModuleAction(this Dispatcher d, string moduleTypeName, string actionName) {
+            ds_QueryControlModuleAction ??= d[nameof(QueryControlModuleAction)];
+            return ds_QueryControlModuleAction.CallBoolFunctions(invokeUntil: true, invokeAll: false, moduleTypeName, actionName);
         }
+
+
+        [DispatchSource]
+        public static LayoutAction? GetAction(this Dispatcher d, object owner, XmlElement actionElement, string actionType) {
+            return d[nameof(GetAction)].CallUntilNotNull<LayoutAction>(actionType, owner, actionElement);
+        }
+
+        static DispatchSource? ds_GetControlModuleAction = null;
+        [DispatchSource]
+        public static ILayoutAction? GetControlModuleAction(this Dispatcher d, XmlElement actionElement, ControlModule module, string moduleTypeName, string actionType) {
+            ds_GetControlModuleAction ??= d[nameof(GetControlModuleAction)];
+            return ds_GetControlModuleAction.CallUntilNotNull<ILayoutAction>(actionElement, module, moduleTypeName, actionType);
+        }
+
 
         [DispatchSource]
         public static Task SetPower(this Dispatcher d, object powerRegionObject, object powerObject, LayoutOperationContext operationContext) {
@@ -1242,5 +1257,96 @@ namespace LayoutManager {
         public static void OnLayoutControlHidden(this Dispatcher d, Guid frameWindowId) {
             d[nameof(OnLayoutControlHidden)].CallVoid(frameWindowId);
         }
+
+        static DispatchSource? ds_OnLocomotiveAddressChanged = null;
+        [DispatchSource]
+        public static void OnLocomotiveAddressChanged(this Dispatcher d, LocomotiveInfo locmotive, int address) {
+            ds_OnLocomotiveAddressChanged ??= d[nameof(OnLocomotiveAddressChanged)];
+            ds_OnLocomotiveAddressChanged.CallVoid(locmotive, address);
+        }
+
+        static DispatchSource? ds_OnComponentDisconnectedFromControlModule = null;
+        [DispatchSource]
+        public static void OnComponentDisconnectedFromControlModule(this Dispatcher d, ModelComponent component, ControlConnectionPoint connectionPoint) {
+            ds_OnComponentDisconnectedFromControlModule ??= d[nameof(OnComponentDisconnectedFromControlModule)];
+            ds_OnComponentDisconnectedFromControlModule.CallVoid(component, connectionPoint);
+        }
+
+        static DispatchSource? ds_OnComponentConnectedToControlModule = null;
+        [DispatchSource]
+        public static void OnComponentConnectedToControlModule(this Dispatcher d, IModelComponentConnectToControl component, ControlConnectionPoint connectionPoint) {
+            ds_OnComponentConnectedToControlModule ??= d[nameof(OnComponentConnectedToControlModule)];
+            ds_OnComponentConnectedToControlModule.CallVoid(component, connectionPoint);
+        }
+
+        static DispatchSource? ds_CanControlBeConnected = null;
+        [DispatchSource]
+        public static bool CanControlBeConnected(this Dispatcher d, ControlConnectionPointDestination destination, Guid moduleId, int index, string moduleTypeName) {
+            ds_CanControlBeConnected ??= d[nameof(CanControlBeConnected)];
+            return ds_CanControlBeConnected.CallBoolFunctions(invokeUntil: true, invokeAll: false, destination, moduleId, index, moduleTypeName);
+        }
+
+        static DispatchSource? ds_GetControlConnectPointLabel = null;
+        [DispatchSource]
+        public static string GetControlConnectPointLabel(this Dispatcher d, ControlModuleType moduleType, int address, int index) {
+            ds_GetControlConnectPointLabel ??= d[nameof(GetControlConnectPointLabel)];
+            return ds_GetControlConnectPointLabel.Call<string>(moduleType, address, index);
+        }
+
+        static DispatchSource? ds_OnControlModuleAdded = null;
+        [DispatchSource]
+        public static void OnControlModuleAdded(this Dispatcher d, ControlModule module) {
+            ds_OnControlModuleAdded ??= d[nameof(OnControlModuleAdded)];
+            ds_OnControlModuleAdded.CallVoid(module);
+        }
+
+        static DispatchSource? ds_OnControlModuleRemoved = null;
+        [DispatchSource]
+        public static void OnControlModuleRemoved(this Dispatcher d, ControlModule module) {
+            ds_OnControlModuleRemoved ??= d[nameof(OnControlModuleRemoved)];
+            ds_OnControlModuleRemoved.CallVoid(module);
+        }
+
+        static DispatchSource? ds_GetControlModuleType = null;
+        [DispatchSource]
+        public static ControlModuleType GetControlModuleType(this Dispatcher d, string moduleTypeName) {
+            ds_GetControlModuleType ??= d[nameof(GetControlModuleType)];
+            return ds_GetControlModuleType.Call<ControlModuleType>(moduleTypeName);
+        }
+
+        [DispatchSource]
+        public static IEnumerable<ControlModuleType> EnumControlModuleTypes(this Dispatcher d) {
+            ds_GetControlModuleType ??= d[nameof(GetControlModuleType)];
+            return ds_GetControlModuleType.CallCollect<ControlModuleType>("ALL");
+        }
+
+        static DispatchSource? ds_RecommendControlModuleTypes = null;
+        [DispatchSource]
+        public static void RecommendControlModuleTypes(this Dispatcher d, ControlConnectionPointDestination connectionPointDestination, List<string> applicableModuleTypes, string busFamilyName, string busTypeName) {
+            ds_RecommendControlModuleTypes ??= d[nameof(RecommendControlModuleTypes)];
+            ds_RecommendControlModuleTypes.CallVoid(connectionPointDestination, applicableModuleTypes, busFamilyName, busTypeName);
+        }
+
+        static DispatchSource? ds_OnControlBusAdded = null;
+        [DispatchSource]
+        public static void OnControlBusAdded(this Dispatcher d, IModelComponentIsBusProvider busProvider) {
+            ds_OnControlBusAdded ??= d[nameof(OnControlBusAdded)];
+            ds_OnControlBusAdded.CallVoid(busProvider);
+        }
+
+        static DispatchSource? ds_OnControlBusRemoved = null;
+        [DispatchSource]
+        public static void OnControlBusRemoved(this Dispatcher d, IModelComponentIsBusProvider busProvider) {
+            ds_OnControlBusRemoved ??= d[nameof(OnControlBusRemoved)];
+            ds_OnControlBusRemoved.CallVoid(busProvider);
+        }
+
+        static DispatchSource? ds_GetControlBusType = null;
+        [DispatchSource]
+        public static ControlBusType GetControlBusType(this Dispatcher d, string busTypeName) {
+            ds_GetControlBusType ??= d[nameof(GetControlBusType)];
+            return ds_GetControlBusType.Call<ControlBusType>(busTypeName);
+        }
+
     }
 }

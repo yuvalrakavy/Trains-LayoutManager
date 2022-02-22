@@ -1,14 +1,12 @@
-using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Diagnostics;
-using System.Windows.Forms;
-using MethodDispatcher;
-
 using LayoutManager.Components;
 using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 #pragma warning disable IDE0051
 #nullable enable
@@ -322,8 +320,7 @@ namespace LayoutManager.View {
                 this.component = (LayoutTriggerableBlockEdgeBase)component;
             }
 
-            public LayoutTriggerableBlockEdgePainter.ComponentType PainterComponentType => this.component switch
-            {
+            public LayoutTriggerableBlockEdgePainter.ComponentType PainterComponentType => this.component switch {
                 LayoutTrackContactComponent _ => LayoutTriggerableBlockEdgePainter.ComponentType.TrackContact,
                 LayoutProximitySensorComponent sensor when !sensor.IsTriggered => LayoutTriggerableBlockEdgePainter.ComponentType.ProximitySensor,
                 LayoutProximitySensorComponent sensor when sensor.IsTriggered => LayoutTriggerableBlockEdgePainter.ComponentType.ActiveProximitySensor,

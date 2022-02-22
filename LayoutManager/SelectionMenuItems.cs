@@ -1,8 +1,8 @@
-using System;
-using System.Windows.Forms;
-using System.Drawing;
-using LayoutManager.Model;
 using LayoutManager.CommonUI;
+using LayoutManager.Model;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 /// This file contain implementation of commands that are carried out on a selection
 /// 

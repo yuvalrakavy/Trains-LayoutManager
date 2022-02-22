@@ -1,13 +1,12 @@
-using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Xml;
-using MethodDispatcher;
-
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Xml;
 
 namespace Intellibox {
     /// <summary>

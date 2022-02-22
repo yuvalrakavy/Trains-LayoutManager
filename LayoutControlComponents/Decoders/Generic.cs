@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using LayoutManager.Model;
+﻿using LayoutManager.Model;
+using System.Collections.Generic;
 
 namespace LayoutManager.Decoders {
     [LayoutModule("Generic decoders")]

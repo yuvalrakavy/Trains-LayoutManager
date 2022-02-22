@@ -1,11 +1,10 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Tools.EventScriptDialogs {
     /// <summary>
@@ -59,7 +58,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
                 tripPlanEditor.EnablePreview = true;
             }
 
-            if(selectedTripPlan != null)
+            if (selectedTripPlan != null)
                 tripPlanEditor.TripPlan = selectedTripPlan;
         }
 
@@ -71,7 +70,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
 
             var applicableTripPlansData = Dispatch.Call.GetApplicableTripPlansRequest(block, true, front);
 
-            if(applicableTripPlansData.LocomtiveBlockId != Guid.Empty) {
+            if (applicableTripPlansData.LocomtiveBlockId != Guid.Empty) {
                 locomotiveBlock = LayoutModel.Blocks[applicableTripPlansData.LocomtiveBlockId];
                 locomotiveFront = applicableTripPlansData.LocomotiveFront;
             }

@@ -1,8 +1,8 @@
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using MethodDispatcher;
 
 #pragma warning disable IDE0051, IDE0060
 namespace LayoutManager.View {

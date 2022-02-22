@@ -1,17 +1,16 @@
-﻿using System;
+﻿using MethodDispatcher;
+using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text;
-using MethodDispatcher;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace LayoutManager.Model {
     [LayoutModule("Programming Operations Manager", UserControl = false)]
     internal class ActionManager : LayoutModuleBase {
 
-        [DispatchTarget]        
+        [DispatchTarget]
         private async Task<LayoutActionFailure?> DoCommandStationActions(IModelComponentCanProgramLocomotives commandStation, ILayoutActionContainer actions, bool usePOM) {
             actions.PrepareForProgramming();        // Ensure that actions are prepared for programming
 
@@ -35,6 +34,16 @@ namespace LayoutManager.Model {
 
             return null;
         }
+
+        [DispatchTarget]
+        private bool QueryAction(IHasDecoder target, string actionType) {
+            return target is ControlModule module && Dispatch.Call.QueryControlModuleAction(module.ModuleTypeName, actionType);
+        }
+
+        private ILayoutAction? GetAction(object owner, XmlElement actionElement, string actionType) {
+            return owner is ControlModule module ? Dispatch.Call.GetControlModuleAction(actionElement, module, module.ModuleTypeName, actionType) : null;
+        }
+
     }
 
     public interface ILayoutActionContainer : IEnumerable<LayoutAction> {
@@ -95,7 +104,7 @@ namespace LayoutManager.Model {
         private ILayoutAction? GetAction(XmlElement actionElement) {
             var actionType = (string?)actionElement.AttributeValue("Type");
 
-            return actionType != null ? Dispatch.Call.GetAction(actionElement, Owner) : null;
+            return actionType != null ? Dispatch.Call.GetAction(Owner, actionElement, actionType) : null;
         }
 
         public ILayoutAction? Add(string actionType) {
@@ -473,7 +482,7 @@ namespace LayoutManager.Model {
             ProgrammingTarget.SpeedSteps = SpeedSteps;
 
             LayoutModel.LocomotiveCollection.Save();
-            EventManager.Event(new LayoutEventInfoValueType<LocomotiveInfo, int>("locomotive-address-changed", this.ProgrammingTarget, Address));
+            Dispatch.Notification.OnLocomotiveAddressChanged(this.ProgrammingTarget, Address);
         }
     }
 }

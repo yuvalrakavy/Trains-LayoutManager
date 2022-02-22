@@ -1,9 +1,9 @@
-using System;
-using System.Xml;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
 using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Xml;
 
 namespace LayoutManager {
     public static class LayoutModuleDispatchExtensions {
@@ -146,7 +146,7 @@ namespace LayoutManager {
                 }
 
                 Dispatch.Notification.OnModuleEnabled();
-                               
+
                 // Create subscriptions for event handlers in the new module instance (will this one day become obsolete...)
                 EventManager.AddObjectSubscriptions(moduleInstance);
                 Dispatch.AddObjectInstanceDispatcherTargets(this);

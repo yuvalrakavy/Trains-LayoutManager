@@ -64,7 +64,7 @@ namespace LayoutManager.Dialogs {
             this.buttonBrowse.Size = new System.Drawing.Size(64, 20);
             this.buttonBrowse.TabIndex = 4;
             this.buttonBrowse.Text = "&Browse...";
-            this.buttonBrowse.Click += this.buttonBrowse_Click;
+            this.buttonBrowse.Click += this.ButtonBrowse_Click;
             // 
             // buttonOk
             // 
@@ -72,7 +72,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.TabIndex = 5;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.buttonOk_Click;
+            this.buttonOk.Click += this.ButtonOk_Click;
             // 
             // buttonCancel
             // 

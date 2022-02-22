@@ -1,10 +1,10 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
 using System;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.View {
     /// <summary>
@@ -198,7 +198,7 @@ namespace LayoutManager.View {
                 RectangleF extensionRect = new(new PointF((float)((locoRectSize.Width * -0.5) - extensionMarkSize), (float)(0 - (extensionMarkSize * 0.5))),
                     new SizeF(extensionMarkSize, extensionMarkSize));
 
-                if(BackgroundBrush != null)
+                if (BackgroundBrush != null)
                     g.FillEllipse(BackgroundBrush, extensionRect);
                 g.DrawEllipse(Pens.Black, extensionRect);
             }

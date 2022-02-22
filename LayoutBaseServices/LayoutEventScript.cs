@@ -1,10 +1,10 @@
+using MethodDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
-using System.Reflection;
 using System.Diagnostics;
-using MethodDispatcher;
+using System.Reflection;
+using System.Xml;
 
 namespace LayoutManager {
     #region Event Script Implementations
@@ -157,7 +157,7 @@ namespace LayoutManager {
         }
 
         protected virtual void Dispose(bool disposing) {
-            if(disposing) {
+            if (disposing) {
                 try {
                     EventManager.Event(new LayoutEvent("event-script-task-dispose", EventScript, this));
                     EventRoot.Dispose();
@@ -250,7 +250,7 @@ namespace LayoutManager {
 
                 if (task.EventRoot.IsErrorState && errorOccurredAction != null)
                     errorOccurredAction();
-                else 
+                else
                     scriptDoneAction?.Invoke();
             }
             else
@@ -276,7 +276,7 @@ namespace LayoutManager {
         public string Description => scriptElement != null ? ((string?)Dispatch.Call.GetEventScriptDescription(scriptElement) ?? $"({scriptElement.Name})") : "(null)";
 
         protected virtual void Dispose(bool disposing) {
-            if(disposing) {
+            if (disposing) {
                 Dispatch.Notification.OnEventScriptDispose(this);
 
                 foreach (LayoutEventScriptTask task in tasks) {
@@ -682,8 +682,7 @@ namespace LayoutManager {
             if (symbolAccess == "Value") {
                 var v = element.AttributeValue($"Value{suffix}");
 
-                return (element.GetAttribute("Type" + suffix)) switch
-                {
+                return (element.GetAttribute("Type" + suffix)) switch {
                     "Boolean" => (bool)v,
                     "Integer" => (int)v,
                     "Double" => (double)v,
@@ -736,7 +735,7 @@ namespace LayoutManager {
         /// Release all resources allocated by the node, do not forget to call base.Dispose()
         /// </summary>
         protected virtual void Dispose(bool disposing) {
-            if(disposing)
+            if (disposing)
                 EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
@@ -1700,8 +1699,7 @@ namespace LayoutManager {
                 var s1 = operand1.ToString() ?? "Invalid-operand1";
                 var s2 = operand2.ToString() ?? "Invalid-operand2";
 
-                return compareOperator switch
-                {
+                return compareOperator switch {
                     "Equal" => s1 == s2,
                     "NotEqual" => s1 != s2,
                     "Match" => System.Text.RegularExpressions.Regex.IsMatch(s1, s2),
@@ -1736,8 +1734,7 @@ namespace LayoutManager {
                 int i1 = GetNumber(operand1);
                 int i2 = GetNumber(operand2);
 
-                return compareOperator switch
-                {
+                return compareOperator switch {
                     "eq" => i1 == i2,
                     "ne" => i1 != i2,
                     "gt" => i1 > i2,
@@ -1763,8 +1760,7 @@ namespace LayoutManager {
             }
 
             private bool GetValue(object? o) {
-                return o switch
-                {
+                return o switch {
                     string s => bool.Parse(s),
                     bool b => b,
                     _ => throw new ArgumentException("Operand has invalid boolean value")
@@ -1778,8 +1774,7 @@ namespace LayoutManager {
                 bool v1 = GetValue(operand1);
                 bool v2 = GetValue(operand2);
 
-                return compareOperator switch
-                {
+                return compareOperator switch {
                     "Equal" => v1 == v2,
                     "NotEqual" => v1 != v2,
                     _ => throw new ArgumentException("Invalid compare operation: " + compareOperator)
@@ -1933,8 +1928,8 @@ namespace LayoutManager {
                     var symbolValue = Context[symbol];
 
                     return symbolValue != null && (
-                        !Element.HasAttribute("Attribute") || 
-                        symbolValue is IObjectHasAttributes symbolWithAttributes && 
+                        !Element.HasAttribute("Attribute") ||
+                        symbolValue is IObjectHasAttributes symbolWithAttributes &&
                         symbolWithAttributes.Attributes.ContainsKey(Element.GetAttribute("Attribute"))
                         );
                 }
@@ -2100,8 +2095,7 @@ namespace LayoutManager {
 
                     case "ValueOf":
 
-                        var v = (Element.GetAttribute("SymbolToAccess")) switch
-                        {
+                        var v = (Element.GetAttribute("SymbolToAccess")) switch {
                             "Property" => LayoutScriptContext.GetProperty(symbol, symbolValue, Element.GetAttribute("NameTo")),
                             _ => LayoutScriptContext.GetAttribute(symbol, symbolValue, Element.GetAttribute("NameTo")),
                         };
@@ -2130,8 +2124,7 @@ namespace LayoutManager {
             public LayoutEventScriptNodeActionGenerateEvent(LayoutEvent e) : base(e) {
             }
 
-            protected object? GetArgument(string name) => Element.GetAttribute(name + "Type") switch
-            {
+            protected object? GetArgument(string name) => Element.GetAttribute(name + "Type") switch {
                 "Null" => null,
                 "ValueOf" => GetOperand(name),
                 "Reference" => Context[Element.GetAttribute(name + "SymbolName")],

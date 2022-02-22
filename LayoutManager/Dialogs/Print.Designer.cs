@@ -63,7 +63,7 @@
 			this.buttonProperties.Name = "buttonProperties";
 			this.buttonProperties.TabIndex = 2;
 			this.buttonProperties.Text = "&Properties...";
-			this.buttonProperties.Click += new System.EventHandler(this.buttonProperties_Click);
+			this.buttonProperties.Click += new System.EventHandler(this.ButtonProperties_Click);
 // 
 // groupBox1
 // 
@@ -152,7 +152,7 @@
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.TabIndex = 6;
 			this.buttonOK.Text = "OK";
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
 // 
 // buttonCancel
 // 

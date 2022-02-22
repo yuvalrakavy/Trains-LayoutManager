@@ -1,8 +1,6 @@
-using System.ComponentModel;
-using System.Windows.Forms;
-using MethodDispatcher;
-
 using LayoutManager;
+using MethodDispatcher;
+using System.Windows.Forms;
 
 namespace LayoutEventDebugger {
     /// <summary>

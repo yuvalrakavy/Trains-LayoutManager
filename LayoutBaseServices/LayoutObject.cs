@@ -1,7 +1,8 @@
-using System;
-using System.Xml;
-using System.Diagnostics;
 using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Xml;
 
 #nullable enable
 namespace LayoutManager {
@@ -350,7 +351,7 @@ namespace LayoutManager {
     };
 
     static class DispatchFilters {
-        static private bool MyIdFilter(string? filterValue, object? targetObject, object? parameterValue) {
+        static private bool MyIdParameterFilter(string? filterValue, object? targetObject, object? parameterValue) {
             if (filterValue != null)
                 throw new DispatchFilterException("Unexpected Value in DispatchFilter attribute");
 
@@ -369,9 +370,39 @@ namespace LayoutManager {
                 throw new DispatchFilterException("Target object is not an object with Id");
         }
 
+        static readonly Dictionary<string, Regex> _regexCache = new();
+
+        static private bool RegExParameterFilter(string? filterValue, object? taretObject, object? parameterValue) {
+            if (filterValue == null)
+                throw new DispatchFilterException("Missing RegEx Value for Dispatch filter");
+
+            if (parameterValue == null)
+                return false;
+            else {
+                try {
+                    var parameterString = parameterValue.ToString();
+
+                    if (parameterString == null)
+                        return false;
+
+                    if (!_regexCache.TryGetValue(filterValue, out Regex? regex)) {
+                        regex = new Regex(filterValue);
+                        _regexCache[filterValue] = regex;
+                    }
+
+                    return regex.IsMatch(parameterString);
+                }
+                catch (Exception ex) {
+                    throw new DispatchFilterException($"Error in regular expression '{filterValue}': {ex.Message}");
+                }
+            }
+        }
+
         [DispatchTarget]
         public static void AddDispatcherFilters() {
-            Dispatch.AddCustomParameterFilter("IsMyId", MyIdFilter);
+            Dispatch.AddCustomParameterFilter("IsMyId", MyIdParameterFilter);
+            Dispatch.AddCustomParameterFilter("RegEx", RegExParameterFilter);
+
         }
     }
 }

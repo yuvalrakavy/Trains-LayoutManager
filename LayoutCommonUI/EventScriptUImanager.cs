@@ -1,6 +1,6 @@
-using System.Xml;
 using LayoutManager.CommonUI.Controls;
 using MethodDispatcher;
+using System.Xml;
 
 namespace LayoutManager.CommonUI {
     [LayoutModule("Event Script UI Manager", UserControl = false)]
@@ -136,7 +136,7 @@ namespace LayoutManager.CommonUI {
 
             if (IsTrivialContainer(element)) {
                 var childElement = (XmlElement?)element.ChildNodes[0]?.ChildNodes[0];
-                return childElement != null? (string)GetElementDescription(childElement) : String.Empty;
+                return childElement != null ? (string)GetElementDescription(childElement) : String.Empty;
             }
             else {
                 substrings.Add(prefix);
@@ -236,7 +236,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [DispatchTarget]
-        private string GetEventScriptDescription_Sequence([DispatchFilter(Type="XPatt", Value = "Sequence")] XmlElement element) {
+        private string GetEventScriptDescription_Sequence([DispatchFilter(Type = "XPatt", Value = "Sequence")] XmlElement element) {
             return GetEventOrEventContainerDescription(element, "Sequence");
         }
 
@@ -264,7 +264,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [DispatchTarget]
-        private string GetEventScriptDescription_All([DispatchFilter(Type="XPath", Value="All")] XmlElement element) {
+        private string GetEventScriptDescription_All([DispatchFilter(Type = "XPath", Value = "All")] XmlElement element) {
             return GetEventOrEventContainerDescription(element, "All");
         }
 
@@ -290,7 +290,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [DispatchTarget]
-        private string GetEventScriptDescription_Any([DispatchFilter(Type = "XPath",Value ="Any")] XmlElement element) {
+        private string GetEventScriptDescription_Any([DispatchFilter(Type = "XPath", Value = "Any")] XmlElement element) {
             return GetEventOrEventContainerDescription(element, "Any");
         }
 
@@ -344,8 +344,7 @@ namespace LayoutManager.CommonUI {
 
             protected override int IconIndex => IconEvent;
 
-            static public string GetDescription(XmlElement element) => (int)element.AttributeValue(A_Count) switch
-            {
+            static public string GetDescription(XmlElement element) => (int)element.AttributeValue(A_Count) switch {
                 int c when c < 0 => "Repeat",
                 1 => "Repeat once",
                 int c => $"Repeat {c} time"
@@ -377,7 +376,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [DispatchTarget]
-        private string GetEventScriptDescription_RandomChoice([DispatchFilter(Type="XPath", Value="RandomChoice")] XmlElement element) {
+        private string GetEventScriptDescription_RandomChoice([DispatchFilter(Type = "XPath", Value = "RandomChoice")] XmlElement element) {
             var substrings = new List<string> {
                 "Random-Choice [ "
             };
@@ -663,7 +662,7 @@ namespace LayoutManager.CommonUI {
         }
 
         [DispatchTarget]
-        private string GetEventScriptDescription_And([DispatchFilter(Type="XPath", Value ="And")] XmlElement element) {
+        private string GetEventScriptDescription_And([DispatchFilter(Type = "XPath", Value = "And")] XmlElement element) {
             return GetConditionContainerDescription(element, "And");
         }
 
@@ -1185,8 +1184,7 @@ namespace LayoutManager.CommonUI {
 
             private static string? GetArgumentDescription(XmlElement element, string prefix) {
                 string getValueOf(string constant) =>
-                    element.GetAttribute($"Type{prefix}") switch
-                    {
+                    element.GetAttribute($"Type{prefix}") switch {
                         "Boolean" => $"is boolean {constant}",
                         "String" => $"is string \"{constant}\"",
                         "Integer" => $"is integer {constant}",
@@ -1194,8 +1192,7 @@ namespace LayoutManager.CommonUI {
                         _ => $"is unkown type {constant}"
                     };
 
-                return element.GetAttribute(prefix + "Type") switch
-                {
+                return element.GetAttribute(prefix + "Type") switch {
                     "Reference" => $"is {element.GetAttribute($"{prefix}SymbolName")}",
                     "ValueOf" when element.GetAttribute($"Symbol{prefix}Access") == "Value" =>
                       getValueOf(element.GetAttribute($"Value{prefix}")),

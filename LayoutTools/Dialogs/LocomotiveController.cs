@@ -1,15 +1,14 @@
+using LayoutManager.CommonUI;
+using LayoutManager.CommonUI.Controls;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
-using System.Drawing;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-using System.Diagnostics;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.CommonUI.Controls;
-using LayoutManager.CommonUI;
-using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -83,13 +82,13 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [DispatchTarget]
-        private void OnTrainPowerChanged([DispatchFilter(Type="IsMyId")] TrainStateInfo train, ILayoutPower power) {
+        private void OnTrainPowerChanged([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, ILayoutPower power) {
             if (power.Type != LayoutPowerType.Digital)
                 this.Close();
         }
 
         [DispatchTarget]
-        private void OnTrainSpeedChanged([DispatchFilter(Type="IsMyId")] TrainStateInfo train, int speed) {
+        private void OnTrainSpeedChanged([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, int speed) {
             panelInfo.Invalidate();
         }
 
@@ -104,12 +103,12 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         [DispatchTarget]
-        private void OnTrainEnteredBlock([DispatchFilter(Type="IsMyId")] TrainStateInfo train, LayoutBlock block) {
+        private void OnTrainEnteredBlock([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, LayoutBlock block) {
             panelInfo.Invalidate();
         }
 
         [DispatchTarget]
-        private void OnTrainCreated([DispatchFilter(Type="IsMyId")] TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
+        private void OnTrainCreated([DispatchFilter(Type = "IsMyId")] TrainStateInfo train, LayoutBlockDefinitionComponent blockDefinition) {
             panelInfo.Invalidate();
         }
 
@@ -152,7 +151,7 @@ namespace LayoutManager.Tools.Dialogs {
 #endif
 
         [DispatchTarget]
-        private void DriverStop([DispatchFilter(Type="IsMyId")] TrainStateInfo train) {
+        private void DriverStop([DispatchFilter(Type = "IsMyId")] TrainStateInfo train) {
             labelDriverInstructions.BackColor = Color.Red;
             labelDriverInstructions.ForeColor = Color.Yellow;
             labelDriverInstructions.Font = new Font(labelDriverInstructions.Font, FontStyle.Bold);
@@ -303,13 +302,13 @@ namespace LayoutManager.Tools.Dialogs {
         protected static string GetFunctionDescription(LocomotiveInfo loco, string functionName) {
             var function = loco.GetFunctionByName(functionName);
 
-            
-            return function != null ? 
+
+            return function != null ?
                 (!string.IsNullOrEmpty(function.Description) ? function.Description : function.Name) :
                 $"Function {functionName} not defined";
         }
 
-#region Menu Items
+        #region Menu Items
 
         private class LocomotiveFunctionMenuItem : LayoutMenuItem {
             private readonly LocomotiveFunctionInfo function;
@@ -401,9 +400,9 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Clean up any resources being used.
@@ -477,7 +476,7 @@ namespace LayoutManager.Tools.Dialogs {
                         locoLocation = train.LocomotiveBlock.TrackEdges[0].Track;
                 }
 
-                if(locoLocation != null)
+                if (locoLocation != null)
                     Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, locoLocation, true);
             }
         }
@@ -534,7 +533,7 @@ namespace LayoutManager.Tools.Dialogs {
             e.Graphics.FillEllipse(Brushes.White, boarderSize, boarderSize, panelSpeedLimit.Width - (2 * boarderSize), panelSpeedLimit.Height - (2 * boarderSize));
         }
 
-#region Speed change menu
+        #region Speed change menu
 
         private void AddAccelerationMenuEntries(object menuOrMenuItem, int speed) {
             foreach (MotionRampInfo ramp in LayoutModel.Instance.Ramps)
@@ -544,7 +543,7 @@ namespace LayoutManager.Tools.Dialogs {
         private MotionRampInfo GetDefaultRamp(int speed) {
             if (speed == 0)
                 return LayoutModel.StateManager.DefaultStopRamp;
-            else 
+            else
                 return speed > train.Speed ? LayoutModel.StateManager.DefaultAccelerationRamp : LayoutModel.StateManager.DefaultDecelerationRamp;
         }
 
@@ -611,6 +610,6 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-#endregion
+        #endregion
     }
 }

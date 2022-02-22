@@ -1,7 +1,4 @@
-using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager.View;
 
 namespace LayoutManager.Dialogs {
     /// <summary>

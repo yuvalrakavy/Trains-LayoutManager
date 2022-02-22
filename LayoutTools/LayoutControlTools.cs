@@ -1,14 +1,12 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Forms;
 using System.Linq;
-using MethodDispatcher;
-
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools {
     [LayoutModule("Layout Control Tools", UserControl = false)]
@@ -115,8 +113,7 @@ namespace LayoutManager.Tools {
             }
 
             public static LayoutPhase ModuleLocationPhase(LayoutPhase componentPhase) {
-                return componentPhase switch
-                {
+                return componentPhase switch {
                     LayoutPhase.Operational => LayoutPhase.Operational,
                     LayoutPhase.Construction => LayoutPhase.NotPlanned,
                     LayoutPhase.Planned => LayoutPhase.All,
@@ -182,7 +179,7 @@ namespace LayoutManager.Tools {
             if (command == null)
                 command = new LayoutCompoundCommand("Automatically connect " + request.ConnectionDescription.DisplayName, true);
 
-            if(command != null)
+            if (command != null)
                 e.Info = DoAutoConnect(request, false, command);
         }
 
@@ -206,7 +203,7 @@ namespace LayoutManager.Tools {
 
         [LayoutEvent("get-nearest-control-module-location")]
         private void GetNearestControlModuleLocation(LayoutEvent e) {
-            var component = Ensure.NotNull< IModelComponentConnectToControl>(e.Sender);
+            var component = Ensure.NotNull<IModelComponentConnectToControl>(e.Sender);
 
             e.Info = FindNearestModuleLocation(ControlAutoConnectRequest.ModuleLocationPhase(component), component);
         }
@@ -309,7 +306,7 @@ namespace LayoutManager.Tools {
 
                     if (request.Bus != null)
                         buses.Add(request.Bus);
-                    else if(request.CommandStation != null)
+                    else if (request.CommandStation != null)
                         buses.AddRange(LayoutModel.ControlManager.Buses.Buses(request.CommandStation));
 
                     foreach (ControlBus bus in buses) {
@@ -327,7 +324,7 @@ namespace LayoutManager.Tools {
                                 moduleTypeName = moduleTypeNames[0];
 
                                 if (!connectLayout) {
-                                    var d = new AutoConnectDialogs.AnnounceCreateNewModule(LayoutControlManager.GetModuleType(moduleTypeName), request.ModuleLocation);
+                                    var d = new AutoConnectDialogs.AnnounceCreateNewModule(Dispatch.Call.GetControlModuleType(moduleTypeName), request.ModuleLocation);
 
                                     EnsureVisible(request);
                                     if (d.ShowDialog(LayoutController.ActiveFrameWindow) == DialogResult.Cancel)
@@ -417,7 +414,7 @@ namespace LayoutManager.Tools {
                                     }
                                 }
                                 else {      // Not daisy chain bus
-                                    int address = moduleTypeName != null ? bus.AllocateFreeAddress(LayoutControlManager.GetModuleType(moduleTypeName), moduleLocationID) : -1;
+                                    int address = moduleTypeName != null ? bus.AllocateFreeAddress(Dispatch.Call.GetControlModuleType(moduleTypeName), moduleLocationID) : -1;
 
                                     if (address < 0) {
                                         EnsureVisible(request);
@@ -425,13 +422,13 @@ namespace LayoutManager.Tools {
                                             MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                                         return null;
                                     }
-                                    else if(moduleTypeName != null)
+                                    else if (moduleTypeName != null)
                                         addCommand = new AddControlModuleCommand(bus, moduleTypeName, moduleLocationID, address);
                                 }
                             }
                             else {      // There is an address constraint
                                 if (moduleTypeName != null) {
-                                    ControlModuleType moduleType = LayoutControlManager.GetModuleType(moduleTypeName);
+                                    ControlModuleType moduleType = Dispatch.Call.GetControlModuleType(moduleTypeName);
 
                                     if (bus.BusType.Topology == ControlBusTopology.DaisyChain) {
                                         if (request.Bus != null) {
@@ -449,7 +446,7 @@ namespace LayoutManager.Tools {
                                     else {
                                         int moduleAddress = request.Address - ((request.Address - bus.BusType.FirstAddress) % moduleType.AddressAlignment);
 
-                                        if(moduleTypeName !=null)
+                                        if (moduleTypeName !=null)
                                             addCommand = new AddControlModuleCommand(bus, moduleTypeName, moduleLocationID, moduleAddress);
                                     }
                                 }
@@ -553,7 +550,7 @@ namespace LayoutManager.Tools {
 
                 if (request.Bus != null)
                     buses.Add(request.Bus);
-                else if(request.CommandStation != null)
+                else if (request.CommandStation != null)
                     buses.AddRange(LayoutModel.ControlManager.Buses.Buses(request.CommandStation));
 
                 if (request.CommandStation != null) {
@@ -1058,7 +1055,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [DispatchTarget(Order =200)]
+        [DispatchTarget(Order = 200)]
         [DispatchFilter(Type = "InOperationMode")]
         private void AddComponentContextMenuEntries_Operation(Guid frameWindowId, [DispatchFilter] IModelComponentConnectToControl component, MenuOrMenuItem menu) {
             var connectionPoints = LayoutModel.ControlManager.ConnectionPoints[component];
@@ -1191,7 +1188,7 @@ namespace LayoutManager.Tools {
         private void DefaultClickToAddAction(LayoutEvent e) {
             DrawControlClickToAddModule drawObject = Ensure.NotNull<DrawControlClickToAddModule>(e.Sender);
             ControlBus bus = drawObject.Bus;
-            IList<ControlModuleType> moduleTypes = bus.BusType.ModuleTypes;
+            IList<ControlModuleType> moduleTypes = bus.BusType.ModuleTypes.ToList();
 
             if (moduleTypes.Count == 1) {
                 AddControlModuleMenuItem m = new(drawObject.Viewer.ModuleLocationID, bus, moduleTypes[0]);
@@ -1262,7 +1259,7 @@ namespace LayoutManager.Tools {
 
             menu.Items.Add(new SetModuleLocationMenuItem(drawModule.Viewer.ModuleLocationID == Guid.Empty, module));
 
-            if(drawModule.Module.Bus.BusType.CanChangeLabel)
+            if (drawModule.Module.Bus.BusType.CanChangeLabel)
                 menu.Items.Add(new SetModuleLabelMenuItem(module));
 
             menu.Items.Add(new ToggleUserActionRequiredMenuItem(module));
@@ -1282,9 +1279,8 @@ namespace LayoutManager.Tools {
             drawObject.Selected = !drawObject.Selected;
         }
 
-        [LayoutEvent("control-module-removed")]
-        private void ControlModuleRemoved(LayoutEvent e) {
-            var module = Ensure.NotNull<ControlModule>(e.Sender);
+        [DispatchTarget]
+        private void OnControlModuleRemoved(ControlModule module) {
             var pendingConnectionPointConnect = (ControlConnectionPointReference?)EventManager.Event(new LayoutEvent("get-control-to-component-connect", this));
 
             if (pendingConnectionPointConnect != null && pendingConnectionPointConnect.Module?.Id == module.Id)
@@ -1372,7 +1368,7 @@ namespace LayoutManager.Tools {
             }
 
             if (drawObject.Module.ConnectionPoints.Usage(drawObject.Index) == ControlConnectionPointUsage.Output)
-                menu.Items.Add(new LayoutMenuItem("&Test", null, (sender, ea) => 
+                menu.Items.Add(new LayoutMenuItem("&Test", null, (sender, ea) =>
                     Dispatch.Call.TestLayoutObjectRequest(LayoutController.ActiveFrameWindow.Id, new ControlConnectionPointReference(drawObject.Module, drawObject.Index))));
 
             menu.Items.Add(new ToggleUserActionRequiredMenuItem(new ControlConnectionPointReference(drawObject.Module, drawObject.Index)));
@@ -1475,7 +1471,7 @@ namespace LayoutManager.Tools {
                 }
                 else {
                     int address = 0;
-                    bool userActionRequired = true; 
+                    bool userActionRequired = true;
                     bool addModule = true;
 
                     var d = new Dialogs.SetControlModuleAddress(bus, moduleType, moduleLocationID, null);
@@ -1527,7 +1523,7 @@ namespace LayoutManager.Tools {
                 this.moduleLocationID = moduleLocationID;
                 this.insertBefore = insertBefore;
 
-                IList<ControlModuleType> moduleTypes = insertBefore.Bus.BusType.ModuleTypes;
+                IList<ControlModuleType> moduleTypes = insertBefore.Bus.BusType.ModuleTypes.ToList();
 
                 if (moduleTypes.Count == 1) {
                     this.moduleType = moduleTypes[0];
@@ -1953,7 +1949,7 @@ namespace LayoutManager.Tools {
 
             protected override void OnClick(EventArgs e) {
                 Dialogs.SetControlModuleLabel d = new(module);
-                
+
                 if (d.ShowDialog(LayoutController.ActiveFrameWindow) == DialogResult.OK) {
                     SetControlModuleLabelCommand command = new(module, d.Label);
 

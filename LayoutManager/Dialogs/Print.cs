@@ -2,9 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Drawing.Printing;
 
 #endregion
 
@@ -17,7 +17,7 @@ namespace LayoutManager {
 namespace LayoutManager.Dialogs {
     internal partial class Print : Form {
         private readonly PrintDocument printDoc;
-        private readonly Dictionary<string, IntPtr> devModes = new();
+        //private read-only Dictionary<string, IntPtr> devModes = new();
 
         public Print(PrintDocument printDoc) {
             InitializeComponent();
@@ -50,29 +50,24 @@ namespace LayoutManager.Dialogs {
 
         public bool GridLines => checkBoxGridLines.Checked;
 
-        private void buttonOK_Click(object? sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             printDoc.PrinterSettings.PrinterName = comboBoxPrinters.SelectedItem.ToString() ?? String.Empty;
 
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void buttonProperties_Click(object? sender, EventArgs e) {
+        private void ButtonProperties_Click(object? sender, EventArgs e) {
             string printerName = comboBoxPrinters.SelectedItem.ToString() ?? String.Empty;
-
-            IntPtr devModeHandle = IntPtr.Zero;
-            IntPtr devModePtr = IntPtr.Zero;
-
             if (printDoc.PrinterSettings.PrinterName != printerName)
                 printDoc.PrinterSettings.PrinterName = printerName;
 
-            devModeHandle = printDoc.PrinterSettings.GetHdevmode();
-            devModePtr = NativeMethods.GlobalLock(new HandleRef(null, devModeHandle));
-
+            IntPtr devModeHandle = printDoc.PrinterSettings.GetHdevmode();
+            IntPtr devModePtr = NativeMethods.GlobalLock(new HandleRef(null, devModeHandle));
             int result = NativeMethods.DocumentProperties(new HandleRef(this, this.Handle), NativeMethods.nullHandleRef, printerName, devModePtr, new HandleRef(null, devModePtr),
                 NativeMethods.DocumentPropertyOptions.InBuffer | NativeMethods.DocumentPropertyOptions.Prompt | NativeMethods.DocumentPropertyOptions.OutBuffer);
 
-            NativeMethods.GlobalUnlock(new HandleRef(null, devModeHandle));
+            _ = NativeMethods.GlobalUnlock(new HandleRef(null, devModeHandle));
 
             int error = Marshal.GetLastWin32Error();
 
@@ -99,10 +94,10 @@ namespace LayoutManager.Dialogs {
             [DllImport("kernel32.dll", PreserveSig = true, CallingConvention = CallingConvention.Winapi)]
             static internal extern int GlobalUnlock(HandleRef hGlobal);
 
-            [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
+            [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
             internal static extern int DocumentProperties(HandleRef hwnd, HandleRef hPrinter, string pDeviceName, IntPtr pDevModeOutput, HandleRef pDevModeInput, DocumentPropertyOptions fMode);
 
-            [DllImport("winspool.drv", SetLastError = true)]
+            [DllImport("winspool.drv", SetLastError = true, CharSet = CharSet.Unicode)]
             static internal extern int OpenPrinter(string pPrinterName, out IntPtr phPrinter, int pDefault);
 
             [DllImport("winspool.drv", SetLastError = true)]

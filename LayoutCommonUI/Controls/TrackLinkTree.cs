@@ -1,6 +1,6 @@
 
-using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>

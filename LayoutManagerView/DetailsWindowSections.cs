@@ -1,8 +1,7 @@
-﻿using System;
+﻿using LayoutManager.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using LayoutManager.Model;
-
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
@@ -129,7 +128,7 @@ namespace LayoutManager.View {
         }
 
         public void AddVerticalSection(IPopupWindowSection section) {
-            if(Parent != null)
+            if (Parent != null)
                 AddVerticalSection(Parent, section);
         }
 
@@ -151,12 +150,12 @@ namespace LayoutManager.View {
         }
 
         public void AddHorizontalSection(IPopupWindowSection section) {
-            if(Parent != null)
+            if (Parent != null)
                 AddHorizontalSection(this.Parent, section);
         }
 
         public void AddText(Control parent, string text) {
-            if(Parent != null)
+            if (Parent != null)
                 AddVerticalSection(parent, new PopupWindowTextSection(text));
         }
 
@@ -221,7 +220,7 @@ namespace LayoutManager.View {
             this.Text = String.Empty;
 
         }
-        public PopupWindowTextSection(string text) : this(){
+        public PopupWindowTextSection(string text) : this() {
             this.Text = text;
         }
 

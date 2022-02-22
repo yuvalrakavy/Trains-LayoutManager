@@ -1,6 +1,6 @@
-using System.Xml;
-using System.Diagnostics;
 using LayoutManager.Model;
+using System.Diagnostics;
+using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>

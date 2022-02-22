@@ -1,5 +1,5 @@
-using System.Xml;
 using LayoutManager.Components;
+using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -37,8 +37,8 @@ namespace LayoutManager.CommonUI.Controls {
 
         public Form Form => FindForm();
 
-        public LayoutBlockDefinitionComponent BlockDefinition { 
-            get => Ensure.NotNull<LayoutBlockDefinitionComponent>(OptionalBlockDefinition); 
+        public LayoutBlockDefinitionComponent BlockDefinition {
+            get => Ensure.NotNull<LayoutBlockDefinitionComponent>(OptionalBlockDefinition);
             set => OptionalBlockDefinition = value;
         }
 

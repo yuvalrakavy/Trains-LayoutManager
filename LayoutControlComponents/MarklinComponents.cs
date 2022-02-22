@@ -1,10 +1,10 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.Windows.Forms;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.CommonUI;
+using System.Xml;
 
 namespace LayoutManager.ControlComponents {
     public interface IMarklinControlModuleSettingDialog {
@@ -18,46 +18,35 @@ namespace LayoutManager.ControlComponents {
         private ControlBusType? motorola = null;
         private ControlBusType? s88bus = null;
 
-        [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='Motorola']")]
-        private void GetMotorolaBusType(LayoutEvent e) {
-            if (motorola == null) {
-                motorola = new ControlBusType {
-                    BusFamilyName = "Motorola",
-                    BusTypeName = "Motorola",
-                    Name = "Tracks (Motorola)",
-                    Topology = ControlBusTopology.RandomAddressing,
-                    FirstAddress = 1,
-                    LastAddress = 256,
-                    Usage = ControlConnectionPointUsage.Output
-                };
-            }
-
-            e.Info = motorola;
+        [DispatchTarget]
+        private ControlBusType GetControlBusType_Motorola([DispatchFilter] string busTypeName = "Motorola") {
+            return motorola ??= new ControlBusType {
+                BusFamilyName = "Motorola",
+                BusTypeName = "Motorola",
+                Name = "Tracks (Motorola)",
+                Topology = ControlBusTopology.RandomAddressing,
+                FirstAddress = 1,
+                LastAddress = 256,
+                Usage = ControlConnectionPointUsage.Output
+            };
         }
 
-        [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='S88BUS']")]
-        private void Gets88busType(LayoutEvent e) {
-            if (s88bus == null) {
-                s88bus = new ControlBusType {
-                    BusFamilyName = "S88BUS",
-                    BusTypeName = "S88BUS",
-                    Name = "S88 Bus",
-                    Topology = ControlBusTopology.DaisyChain,
-                    AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
-                    FirstAddress = 1,
-                    LastAddress = 31,
-                    Usage = ControlConnectionPointUsage.Input
-                };
-            }
-
-            e.Info = s88bus;
+        [DispatchTarget]
+        private ControlBusType GetControlBusType_S88BUS([DispatchFilter] string busTypeName = "S88BUS") {
+            return s88bus ??= new ControlBusType {
+                BusFamilyName = "S88BUS",
+                BusTypeName = "S88BUS",
+                Name = "S88 Bus",
+                Topology = ControlBusTopology.DaisyChain,
+                AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
+                FirstAddress = 1,
+                LastAddress = 31,
+                Usage = ControlConnectionPointUsage.Input
+            };
         }
 
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='Motorola']")]
-        private void RecommendMotorolaDCCcontrolModuleTypes(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_Motorola(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "Motorola") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", "Solenoid")) {
                 moduleTypeNames.Add("K83");
                 moduleTypeNames.Add("K73");
@@ -65,82 +54,74 @@ namespace LayoutManager.ControlComponents {
             }
         }
 
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='S88BUS']")]
-        private void RecommendS88BUScontrolModuleTypes(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_S88BUS(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "S88BUS") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact"))
                 moduleTypeNames.Add("S88");
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='S88']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetS88(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
-
-            var moduleType = new ControlModuleType(parentElement, "S88", "S88 Decoder");
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_S88([DispatchFilter("RegEx", "(S88|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("S88", "S88 Decoder") {
+                ConnectionPointsPerAddress = 16,
+                ConnectionPointIndexBase = 1,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger,
+                NumberOfAddresses = 1,
+                ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.NoAttachedAddress,
+                ConnectionPointArrangement = ControlModuleConnectionPointArrangementOptions.BothRows | ControlModuleConnectionPointArrangementOptions.TopRightToLeft,
+            };
 
             moduleType.BusTypeNames.Add("S88BUS");
-            moduleType.ConnectionPointsPerAddress = 16;
-            moduleType.ConnectionPointIndexBase = 1;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger;
-            moduleType.NumberOfAddresses = 1;
-            moduleType.ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.NoAttachedAddress;
-            moduleType.ConnectionPointArrangement = ControlModuleConnectionPointArrangementOptions.BothRows | ControlModuleConnectionPointArrangementOptions.TopRightToLeft;
+            return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='K83']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetK83(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
-
-            var moduleType = new ControlModuleType(parentElement, "K83", "K83 Turnouts Decoder");
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_K83([DispatchFilter("RegEx", "(K83|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("K83", "K83 Turnouts Decoder") {
+                ConnectionPointsPerAddress = 1,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputSolenoid,
+                NumberOfAddresses = 4,
+            };
 
             moduleType.BusTypeNames.Add("Motorola");
-            moduleType.ConnectionPointsPerAddress = 1;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputSolenoid;
-            moduleType.NumberOfAddresses = 4;
+            return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='K73']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetK73(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
-
-            var moduleType = new ControlModuleType(parentElement, "K73", "K73 Turnout Decoder");
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_K73([DispatchFilter("RegEx", "(K73|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("K73", "K73 Turnout Decoder") {
+                ConnectionPointsPerAddress = 1,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputSolenoid,
+                NumberOfAddresses = 1,
+            };
 
             moduleType.BusTypeNames.Add("Motorola");
-            moduleType.ConnectionPointsPerAddress = 1;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputSolenoid;
-            moduleType.NumberOfAddresses = 1;
+            return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='K84']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetK84(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
-
-            var moduleType = new ControlModuleType(parentElement, "K84", "K84 Accessories Decoder");
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_K84([DispatchFilter("RegEx", "(K84|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("K84", "K84 Accessories Decoder") {
+                ConnectionPointsPerAddress = 1,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputRelay,
+                NumberOfAddresses = 4,
+            };
 
             moduleType.BusTypeNames.Add("Motorola");
-            moduleType.ConnectionPointsPerAddress = 1;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputRelay;
-            moduleType.NumberOfAddresses = 4;
+            return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='74460']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void Get74460(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
-
-            var moduleType = new ControlModuleType(parentElement, "74460", "C-Track Turnout Decoder");
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_74460([DispatchFilter("RegEx", "(74460|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("74460", "C-Track Turnout Decoder") {
+                ConnectionPointsPerAddress = 1,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputSolenoid,
+                NumberOfAddresses = 1,
+                BuiltIn = true,
+            };
 
             moduleType.BusTypeNames.Add("Motorola");
-            moduleType.ConnectionPointsPerAddress = 1;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputSolenoid;
-            moduleType.NumberOfAddresses = 1;
-            moduleType.BuiltIn = true;
+            return moduleType;
         }
 
         [DispatchTarget(Order = 100)]

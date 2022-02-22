@@ -56,4 +56,4 @@ using System.Runtime.Versioning;
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
-[assembly: SupportedOSPlatform("windows")]
+[assembly: SupportedOSPlatform("windows")] 

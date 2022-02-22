@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace LayoutManager.Dialogs {
@@ -41,7 +40,7 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        private void buttonOK_Click(object? sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

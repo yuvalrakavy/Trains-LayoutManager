@@ -66,7 +66,7 @@
 			this.buttonNew.TabIndex = 3;
 			this.buttonNew.Text = "&New...";
 			this.buttonNew.UseVisualStyleBackColor = true;
-			this.buttonNew.Click += new System.EventHandler(this.buttonNew_Click);
+			this.buttonNew.Click += new System.EventHandler(this.ButtonNew_Click);
 			// 
 			// buttonOpen
 			// 
@@ -76,7 +76,7 @@
 			this.buttonOpen.TabIndex = 3;
 			this.buttonOpen.Text = "&Open...";
 			this.buttonOpen.UseVisualStyleBackColor = true;
-			this.buttonOpen.Click += new System.EventHandler(this.buttonOpen_Click);
+			this.buttonOpen.Click += new System.EventHandler(this.ButtonOpen_Click);
 			// 
 			// buttonExit
 			// 
@@ -86,7 +86,7 @@
 			this.buttonExit.TabIndex = 3;
 			this.buttonExit.Text = "&Exit";
 			this.buttonExit.UseVisualStyleBackColor = true;
-			this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
+			this.buttonExit.Click += new System.EventHandler(this.ButtonExit_Click);
 			// 
 			// linkLabelLastLayoutName
 			// 
@@ -98,7 +98,7 @@
 			this.linkLabelLastLayoutName.TabIndex = 2;
 			this.linkLabelLastLayoutName.TabStop = true;
 			this.linkLabelLastLayoutName.Text = "Last layout name";
-			this.linkLabelLastLayoutName.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelLastLayoutName_LinkClicked);
+			this.linkLabelLastLayoutName.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelLastLayoutName_LinkClicked);
 			// 
 			// checkBoxResetToDefaultDisplayLayout
 			// 

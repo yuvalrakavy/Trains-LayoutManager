@@ -1,12 +1,12 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Xml;
 using System.Diagnostics;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
+using System.Xml;
 
 #nullable enable
 namespace LayoutManager.Logic {
@@ -1237,7 +1237,7 @@ namespace LayoutManager.Logic {
             }
         }
 
-       [DispatchTarget]
+        [DispatchTarget]
         private bool DispatcherSetSwitches(Guid ownerId, ITripRoute route) {
             var destinationTrack = Ensure.NotNull<LayoutTrackComponent>(route.DestinationTrack, "destinationTrack");
             var edge = route.SourceEdge;
@@ -1858,7 +1858,7 @@ namespace LayoutManager.Logic {
                         foreach (TrackEdge edge in result.InvalidSourceEdges) {
                             var blockInfo = edge.Track.BlockDefinitionComponent;
 
-                            if(blockInfo != null)
+                            if (blockInfo != null)
                                 actions.Add(new RouteValidationActionRemoveLocation(wayPointIndex - 1, blockInfo));
                         }
 

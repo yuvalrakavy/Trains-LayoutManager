@@ -1,15 +1,13 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
-using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Xml;
-using System.Windows.Forms;
 using System.Linq;
-using System.Threading.Tasks;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.Tools {
     /// <summary>
@@ -195,10 +193,8 @@ namespace LayoutManager.Tools {
         }
 
         private static string ExtractTrainDisplayName(object something) {
-            return something switch
-            {
-                XmlElement element => element.Name switch
-                {
+            return something switch {
+                XmlElement element => element.Name switch {
                     "Locomotive" => new LocomotiveInfo(element).DisplayName,
                     "Train" => new TrainInCollectionInfo(element).DisplayName,
                     "TrainState" => new TrainStateInfo(element).DisplayName,
@@ -228,7 +224,7 @@ namespace LayoutManager.Tools {
         }
 
         [DispatchTarget]
-        private TrainFrontAndLength? GetTrainFrontAndLength(LayoutBlockDefinitionComponent blockDefinition, XmlElement collectionElement) { 
+        private TrainFrontAndLength? GetTrainFrontAndLength(LayoutBlockDefinitionComponent blockDefinition, XmlElement collectionElement) {
             var name = ExtractTrainDisplayName(collectionElement);
 
             Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, blockDefinition);
@@ -264,7 +260,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #region Locomoative Programming menu entries
+        #region Locomotive Programming menu entries
 
         [LayoutEvent("add-locomotive-programming-menu-entries")]
         private void AddSetLocomotiveSetAddress(LayoutEvent e) {

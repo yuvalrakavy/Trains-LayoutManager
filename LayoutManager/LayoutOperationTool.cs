@@ -1,8 +1,5 @@
-using System;
-using System.Windows.Forms;
-using MethodDispatcher;
 using LayoutManager.Model;
-using LayoutManager.CommonUI;
+using System.Windows.Forms;
 
 //****
 // This file is no longer used, its functionality was moved to the new publish/subscribe model

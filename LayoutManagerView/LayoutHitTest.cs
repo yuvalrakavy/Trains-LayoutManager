@@ -1,8 +1,7 @@
-using System.Collections.Generic;
-using System.Drawing;
-
 using LayoutManager.Model;
 using LayoutManager.View;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace LayoutManager {

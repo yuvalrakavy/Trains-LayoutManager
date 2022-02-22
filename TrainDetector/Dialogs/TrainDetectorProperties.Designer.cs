@@ -40,7 +40,7 @@
             this.nameDefinition.Size = new System.Drawing.Size(280, 66);
             this.nameDefinition.TabIndex = 0;
             this.nameDefinition.XmlInfo = null;
-            this.nameDefinition.Load += new System.EventHandler(this.nameDefinition_Load);
+            this.nameDefinition.Load += new System.EventHandler(this.NameDefinition_Load);
             // 
             // buttonOK
             // 
@@ -51,7 +51,7 @@
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

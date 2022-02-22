@@ -1,13 +1,11 @@
-﻿using System;
+﻿using LayoutManager;
+using LayoutManager.ControlComponents;
+using LayoutManager.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using System.Net;
-using LayoutManager.Model;
-using System.Diagnostics;
-using LayoutManager.ControlComponents;
 using System.Threading.Tasks;
-using LayoutManager;
 using System.Windows.Forms;
 
 #nullable enable
@@ -26,7 +24,7 @@ namespace TrainDetector {
         IEnumerable<TrainDetectorControllerModule> UnassignedModules => from module in Modules where module.ControllerIpAddress == null select module;
 
         IEnumerable<TrainDetectorControllerModule> AssignedModules => from module in Modules where module.ControllerIpAddress != null select module;
-           
+
 
         async Task<List<DetectedTrainDetectorController>> DetectControllers(int detectionTimeMs = 500) {
             var detectedContollers = new Dictionary<EndPoint, DetectedTrainDetectorController>();
@@ -37,7 +35,7 @@ namespace TrainDetector {
                 var packet = rawPacket.GetPacket();
 
                 if (packet is IdentificationInfoPacket identificationPacket) {
-                    if(!detectedContollers.ContainsKey(rawPacket.RemoteEndPoint))
+                    if (!detectedContollers.ContainsKey(rawPacket.RemoteEndPoint))
                         detectedContollers.Add(rawPacket.RemoteEndPoint, new DetectedTrainDetectorController(rawPacket.RemoteEndPoint, identificationPacket.SensorCount, identificationPacket.Name));
                     networkHandler.SendPacketAsync(new IdentificationAcknowledgePacket((UInt16)identificationPacket.RequestNumber), rawPacket.RemoteEndPoint);
                 }
@@ -49,7 +47,7 @@ namespace TrainDetector {
 
             return new List<DetectedTrainDetectorController>(detectedContollers.Values);
         }
-        
+
         public async Task<TrainDetectorControllersDetectionResult> UpdateBus() {
             var commands = new LayoutCompoundCommand("Detect controllers", true);
             var detectedControllers = await DetectControllers();
@@ -88,7 +86,7 @@ namespace TrainDetector {
 
                 var sameNameAndSensorCountModule = (from module in Modules where module.NumberOfConnectionPoints == detectedController.SensorsCount && module.Label == detectedController.Name select module).FirstOrDefault();
 
-                if(sameNameAndSensorCountModule != null) {
+                if (sameNameAndSensorCountModule != null) {
                     // Assign the new IPaddress
                     commands.Add(new SetTrainDetectorIpEndPointCommand(sameNameAndSensorCountModule, detectedController.IpEndPoint));
                     result.IpAddressChanged++;
@@ -97,7 +95,7 @@ namespace TrainDetector {
 
                 var unassignedSameSensorCountList = from module in UnassignedModules where module.NumberOfConnectionPoints == detectedController.SensorsCount select module;
 
-                if(unassignedSameSensorCountList.Any()) {
+                if (unassignedSameSensorCountList.Any()) {
                     var unassignedModule = unassignedSameSensorCountList.Count() == 1 ? unassignedSameSensorCountList.First() : SelectUnassignedModule(unassignedSameSensorCountList, detectedController);
 
                     if (unassignedModule != null) {
@@ -121,7 +119,7 @@ namespace TrainDetector {
                 commands.Add(new SetControlModuleConnectionPointsCount(addCommand.AddedModule.Module, detectedController.SensorsCount));
 
                 // Rename the controller with the new unique name
-                if(name != detectedController.Name)
+                if (name != detectedController.Name)
                     await RenameController(detectedController, name);
                 result.AddedControllers++;
             }
@@ -148,7 +146,7 @@ namespace TrainDetector {
         private string FormUniqueName(string existingName) {
             int suffix = 1;
 
-            while(true) {
+            while (true) {
                 var newName = $"{existingName}{suffix}";
 
                 if (!Modules.Any(module => module.Label == newName))

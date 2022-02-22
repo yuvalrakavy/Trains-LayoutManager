@@ -1,13 +1,11 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.ComponentModel;
-using MethodDispatcher;
-
+using LayoutManager.CommonUI;
 using LayoutManager.Model;
 using LayoutManager.View;
+using MethodDispatcher;
 using System.Collections.Generic;
-using LayoutManager.CommonUI;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace LayoutManager {
     /// <summary>
@@ -78,7 +76,7 @@ namespace LayoutManager {
                 foreach (ModelComponent component in e.HitTestResult.Selection) {
                     draggedObject = Dispatch.Call.QueryDrag(component);
 
-                    if(draggedObject != null)
+                    if (draggedObject != null)
                         break;
                 }
 
@@ -270,7 +268,7 @@ namespace LayoutManager {
             foreach (ModelComponent component in hitTestResult.Selection) {
                 Dispatch.Call.AddContextMenuTopEntries(hitTestResult.FrameWindow.Id, component, new MenuOrMenuItem(contextMenu));
 
-                if(!components.Contains(component) && Dispatch.Call.IncludeInComponentContextMenu(component))
+                if (!components.Contains(component) && Dispatch.Call.IncludeInComponentContextMenu(component))
                     components.Add(component);
             }
 

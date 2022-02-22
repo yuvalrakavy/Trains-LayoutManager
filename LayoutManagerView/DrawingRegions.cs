@@ -1,9 +1,9 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.View {
     #region Drawing Region interface and helper classes
@@ -102,8 +102,7 @@ namespace LayoutManager.View {
     /// Base class for drawing region that draws a rectangle whose relative to a grid location is provided
     /// </summary>
     public abstract class LayoutDrawingRegionRectangle : LayoutDrawingRegion {
-        private float GetAlignedValue(float v, float d, LayoutDrawingAnchorPoint a) => a switch
-        {
+        private float GetAlignedValue(float v, float d, LayoutDrawingAnchorPoint a) => a switch {
             LayoutDrawingAnchorPoint.Center => v - (d / 2.0f),
             LayoutDrawingAnchorPoint.Left => v,
             LayoutDrawingAnchorPoint.Right => v - d,
@@ -123,8 +122,7 @@ namespace LayoutManager.View {
             PointF ptTopLeft = view.ModelLocationInModelCoordinates(component.Location);
             PointF origin = new(ptTopLeft.X + (view.GridSizeInModelCoordinates.Width / 2), ptTopLeft.Y + (view.GridSizeInModelCoordinates.Height / 2));
 
-            var rcRegion = positionProvider.Side switch
-            {
+            var rcRegion = positionProvider.Side switch {
                 LayoutDrawingSide.Top => new RectangleF(new PointF(GetAlignedValue(origin.X, rectSize.Width, positionProvider.AnchorPoint),
                                             origin.Y - rectSize.Height - positionProvider.Distance), rectSize),
 
@@ -437,7 +435,7 @@ namespace LayoutManager.View {
             if (!LayoutModel.ControlManager.ConnectionPoints.IsFullyConnected(component.Id)) {
                 var notConnectedImage = imageListComponents.Images[2];
 
-                if(notConnectedImage != null)
+                if (notConnectedImage != null)
                     g.DrawImage(notConnectedImage, new Rectangle(new Point(0, 0), notConnectedImage.Size));
             }
         }

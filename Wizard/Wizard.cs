@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace Gui.Wizard {
     /// <summary>
@@ -101,7 +101,7 @@ namespace Gui.Wizard {
             var tWizPage = (WizardPage?)Pages[index];
 
             //Really activate the page
-            if(tWizPage != null)
+            if (tWizPage != null)
                 ActivatePage(tWizPage);
         }
 

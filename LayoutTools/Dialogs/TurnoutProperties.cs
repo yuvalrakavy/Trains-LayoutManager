@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Xml;
-using System.Text.RegularExpressions;
-
-using LayoutManager.Model;
 using LayoutManager.Components;
+using LayoutManager.Model;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using MethodDispatcher;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -43,7 +41,7 @@ namespace LayoutManager.Tools.Dialogs {
 
                     if (moduleTypeNames.Count > 0) {
                         foreach (string moduleTypeName in moduleTypeNames) {
-                            ControlModuleType moduleType = LayoutControlManager.GetModuleType(moduleTypeName);
+                            ControlModuleType moduleType = Dispatch.Call.GetControlModuleType(moduleTypeName);
 
                             if (moduleType.BuiltIn)
                                 comboBoxBuiltinDecoders.Items.Add(new Item(moduleType));

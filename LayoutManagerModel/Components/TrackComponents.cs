@@ -1,10 +1,9 @@
+using LayoutManager.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Xml;
-using System.Diagnostics;
-
-using LayoutManager.Model;
 
 #nullable enable
 namespace LayoutManager.Components {
@@ -171,7 +170,7 @@ namespace LayoutManager.Components {
         public ILayoutPower? GetOptionalPower(LayoutComponentConnectionPoint cp) {
             var powerConnector = GetPowerConnector(cp);
 
-            if(powerConnector != null)
+            if (powerConnector != null)
                 return powerConnector.Inlet.ConnectedOutlet.OptionalPower;
             return null;
         }
@@ -184,8 +183,7 @@ namespace LayoutManager.Components {
         /// </summary>
         /// <param name="point">The connection point</param>
         /// <returns>The offset</returns>
-        public static Size GetConnectionOffset(LayoutComponentConnectionPoint point) => (int)point switch
-        {
+        public static Size GetConnectionOffset(LayoutComponentConnectionPoint point) => (int)point switch {
             LayoutComponentConnectionPoint.T => new Size(0, -1),
             LayoutComponentConnectionPoint.B => new Size(0, 1),
             LayoutComponentConnectionPoint.R => new Size(1, 0),
@@ -193,8 +191,7 @@ namespace LayoutManager.Components {
             _ => throw new ArgumentException("Invalid track connection point"),
         };
 
-        public static LayoutComponentConnectionPoint GetPointConnectingTo(LayoutComponentConnectionPoint cp) => (int)cp switch
-        {
+        public static LayoutComponentConnectionPoint GetPointConnectingTo(LayoutComponentConnectionPoint cp) => (int)cp switch {
             LayoutComponentConnectionPoint.T => LayoutComponentConnectionPoint.B,
             LayoutComponentConnectionPoint.B => LayoutComponentConnectionPoint.T,
             LayoutComponentConnectionPoint.R => LayoutComponentConnectionPoint.L,
@@ -237,8 +234,7 @@ namespace LayoutManager.Components {
 
         public static bool IsDiagonal(LayoutTrackComponent component) => IsDiagonal(component.ConnectionPoints);
 
-        public static LayoutComponentConnectionPoint OppositeConnectPoint(LayoutComponentConnectionPoint cp) => (int)cp switch
-        {
+        public static LayoutComponentConnectionPoint OppositeConnectPoint(LayoutComponentConnectionPoint cp) => (int)cp switch {
             LayoutComponentConnectionPoint.B => LayoutComponentConnectionPoint.T,
             LayoutComponentConnectionPoint.T => LayoutComponentConnectionPoint.B,
             LayoutComponentConnectionPoint.L => LayoutComponentConnectionPoint.R,
@@ -629,7 +625,7 @@ namespace LayoutManager.Components {
         /// </summary>
         public virtual int CurrentSwitchState => switchingStateSupport.CurrentSwitchState;
 
-        public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string?connectionPointName) {
+        public virtual void AddSwitchingCommands(IList<SwitchingCommand> switchingCommands, int switchingState, string? connectionPointName) {
             switchingStateSupport.AddSwitchingCommands(switchingCommands, switchingState, connectionPointName);
         }
 
@@ -1031,8 +1027,7 @@ namespace LayoutManager.Components {
 
         public override LayoutComponentConnectionPoint[] ConnectTo(LayoutComponentConnectionPoint from, LayoutComponentConnectionType type) {
             if (type == LayoutComponentConnectionType.Passage || type == LayoutComponentConnectionType.ReverseLoop) {
-                return (int)from switch
-                {
+                return (int)from switch {
                     LayoutComponentConnectionPoint.L => new LayoutComponentConnectionPoint[] { LayoutComponentConnectionPoint.R,
                             DiagonalConnectionPoints(LayoutComponentConnectionPoint.L)[diagonalIndex] },
 

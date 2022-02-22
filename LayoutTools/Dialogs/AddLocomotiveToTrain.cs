@@ -1,15 +1,13 @@
+using LayoutManager.CommonUI.Controls;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Collections;
 using System.Collections.Specialized;
-using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
-using MethodDispatcher;
-
-using LayoutManager.Model;
-using LayoutManager.CommonUI.Controls;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>

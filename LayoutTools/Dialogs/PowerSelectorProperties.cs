@@ -1,9 +1,7 @@
-﻿using System;
-using System.Windows.Forms;
-using System.Xml;
-
+﻿using LayoutManager.Components;
 using LayoutManager.Model;
-using LayoutManager.Components;
+using System;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class PowerSelectorProperties : Form, ILayoutComponentPropertiesDialog {

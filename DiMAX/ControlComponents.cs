@@ -1,6 +1,7 @@
 
 using LayoutManager;
 using LayoutManager.Model;
+using MethodDispatcher;
 
 #nullable enable
 namespace DiMAX {
@@ -10,57 +11,45 @@ namespace DiMAX {
         private ControlBusType? dimaxBus = null;
         private ControlBusType? locoBus = null;
 
-        [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='DiMAXDCC']")]
-        private void getDCCbusType(LayoutEvent e) {
-            if (dccBus == null) {
-                dccBus = new ControlBusType {
-                    BusFamilyName = "DCC",
-                    BusTypeName = "DiMAXDCC",
-                    Name = "Tracks (DCC)",
-                    Topology = ControlBusTopology.RandomAddressing,
-                    FirstAddress = 1,
-                    LastAddress = 2048,
-                    Usage = ControlConnectionPointUsage.Output
-                };
-            }
-
-            e.Info = dccBus;
+        [DispatchTarget]
+        private ControlBusType GetControlBusType_DiMAXDCC([DispatchFilter] string busTypeName = "DiMAXDCC") {
+            return dccBus ??= new ControlBusType {
+                BusFamilyName = "DCC",
+                BusTypeName = "DiMAXDCC",
+                Name = "Tracks (DCC)",
+                Topology = ControlBusTopology.RandomAddressing,
+                FirstAddress = 1,
+                LastAddress = 2048,
+                Usage = ControlConnectionPointUsage.Output
+            };
         }
 
-        [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='DiMAXBUS']")]
-        private void getDIMAXBUSbusType(LayoutEvent e) {
-            if (dimaxBus == null) {
-                dimaxBus = new ControlBusType {
-                    BusFamilyName = "DiMAXBus",
-                    BusTypeName = "DiMAXBUS",
-                    Name = "DiMAX Bus",
-                    Topology = ControlBusTopology.RandomAddressing,
-                    FirstAddress = 1,
-                    LastAddress = 2048,
-                    RecommendedStartAddress = 1,
-                    Usage = ControlConnectionPointUsage.Input
-                };
-            }
-
-            e.Info = dimaxBus;
+        [DispatchTarget]
+        private ControlBusType GetControlBusType_DiMAXBUS([DispatchFilter] string busTypeName = "DiMAXBUS") {
+            return dimaxBus ??= new ControlBusType {
+                BusFamilyName = "DiMAXBus",
+                BusTypeName = "DiMAXBUS",
+                Name = "DiMAX Bus",
+                Topology = ControlBusTopology.RandomAddressing,
+                FirstAddress = 1,
+                LastAddress = 2048,
+                RecommendedStartAddress = 1,
+                Usage = ControlConnectionPointUsage.Input
+            };
         }
 
-        [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='DiMAXLocoBus']")]
-        private void getDIMAXLocoBusType(LayoutEvent e) {
-            if (locoBus == null) {
-                locoBus = new ControlBusType {
-                    BusFamilyName = "LocoBus",
-                    BusTypeName = "DiMAXLocoBus",
-                    Name = "Function Decoders",
-                    Topology = ControlBusTopology.RandomAddressing,
-                    FirstAddress = 1,
-                    LastAddress = 10239,
-                    RecommendedStartAddress = 2000,
-                    Usage = ControlConnectionPointUsage.Output
-                };
-            }
-
-            e.Info = locoBus;
+        [DispatchTarget]
+        private ControlBusType GetControlBusType_DiMAXLocoBus([DispatchFilter] string busTypeName = "DiMAXLocoBus") {
+            return locoBus ??= new ControlBusType {
+                BusFamilyName = "LocoBus",
+                BusTypeName = "DiMAXLocoBus",
+                Name = "Function Decoders",
+                Topology = ControlBusTopology.RandomAddressing,
+                FirstAddress = 1,
+                LastAddress = 10239,
+                RecommendedStartAddress = 2000,
+                Usage = ControlConnectionPointUsage.Output
+            };
         }
 
         [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='DCC']")]

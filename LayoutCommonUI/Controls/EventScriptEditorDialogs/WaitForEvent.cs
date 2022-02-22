@@ -27,7 +27,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         public XmlElement Element { get; }
         public XmlElement? OptionalElement => Element;
 
-        
+
         private void ButtonOK_Click(object? sender, EventArgs e) {
             if (comboBoxEvent.Text.Trim()?.Length == 0) {
                 MessageBox.Show(this, "You must specify event name", "Missing Input", MessageBoxButtons.OK, MessageBoxIcon.Error);

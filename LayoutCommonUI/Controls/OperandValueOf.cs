@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Specialized;
-using System.Reflection;
 using System.ComponentModel;
+using System.Reflection;
 using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
@@ -121,7 +121,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
             base.Dispose(disposing);
         }
- 
+
         private void LinkMenuPropertyOrAttribute_ValueChanged(object? sender, EventArgs e) {
             propertyOrAttributeChanged = true;
 

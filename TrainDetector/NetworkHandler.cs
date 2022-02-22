@@ -1,14 +1,10 @@
-﻿using System;
+﻿using LayoutManager;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-
-using LayoutManager;
 
 #nullable enable
 namespace TrainDetector {
@@ -38,7 +34,7 @@ namespace TrainDetector {
         }
     }
 
-     public class NetworkHandler : IDisposable {
+    public class NetworkHandler : IDisposable {
         public UdpClient UdpClient { get; private set; }
         readonly Dictionary<int, TaskCompletionSource<UdpReceiveResult>> pendingRequests = new Dictionary<int, TaskCompletionSource<UdpReceiveResult>>();
         readonly TaskCompletionSource<bool> networkHandlerDoneSource;

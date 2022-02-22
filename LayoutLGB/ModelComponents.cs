@@ -1,16 +1,15 @@
+using LayoutManager;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Xml;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.Components;
+using System.Xml;
 
 #pragma warning disable 
 namespace LayoutLGB {
@@ -114,7 +113,7 @@ namespace LayoutLGB {
         }
 
         [DispatchTarget]
-        private void ConnectPowerRequest([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) {
+        private void ConnectPowerRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
             commandStationManager.AddCommand(new MTSresetStation(CommunicationStream));
             commandStationManager.AddCommand(new MTSpowerConnect(CommunicationStream, XbusID));
 

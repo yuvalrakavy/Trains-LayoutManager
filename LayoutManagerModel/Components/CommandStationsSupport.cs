@@ -1,16 +1,13 @@
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 using System.Drawing;
-using System.Xml;
 using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Win32.SafeHandles;
-
-using MethodDispatcher;
-using LayoutManager.Model;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 
 #nullable enable
 namespace LayoutManager {
@@ -24,7 +21,7 @@ namespace LayoutManager {
 
 #pragma warning disable CA1036
 namespace LayoutManager.Components {
-#region Base class for command station components
+    #region Base class for command station components
 
     public abstract class LayoutBusProviderWithStreamCommunicationSupport : LayoutBusProviderSupport {
         public const string A_InterfaceType = "InterfaceType";
@@ -117,14 +114,14 @@ namespace LayoutManager.Components {
             throw new ArgumentException("You must implement a CreateCommandStationEmulator method, or not use layout emulation");
         }
 
-#region Properties accessible from derived concrete command station component classes
+        #region Properties accessible from derived concrete command station component classes
 
 
         public ILayoutInterThreadEventInvoker InterThreadEventInvoker => EventManager.Instance.InterThreadEventInvoker;
 
         public bool OperationMode => operationMode;
 
-#endregion
+        #endregion
 
         public override void OnAddedToModel() {
             base.OnAddedToModel();
@@ -265,7 +262,7 @@ namespace LayoutManager.Components {
         private System.Threading.Timer? animatedTrainsTimer;
         private LayoutSelection? animatedTrainsSelection;
 
-#region Public component properties & methods
+        #region Public component properties & methods
 
         public int EmulationTickTime => (int)Element.AttributeValue(A_EmulationTickTime);
 
@@ -286,7 +283,7 @@ namespace LayoutManager.Components {
             }
         }
 
-#endregion
+        #endregion
 
         override protected void OpenCommunicationStream() {
             base.OpenCommunicationStream();
@@ -316,7 +313,7 @@ namespace LayoutManager.Components {
             base.CloseCommunicationStream();
         }
 
-#region Methods callable from derived concrete command station component classes
+        #region Methods callable from derived concrete command station component classes
 
         public override void OnAddedToModel() {
             base.OnAddedToModel();
@@ -341,7 +338,7 @@ namespace LayoutManager.Components {
                     throw new LayoutControlException("PowerOn while trackPowerOutlet is null");
 
                 if (this is IModelComponentCanProgramLocomotives) {
-                    if(programmingPowerOutlet != null)
+                    if (programmingPowerOutlet != null)
                         programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, A_EmulationTickTime);
                 }
             }
@@ -362,7 +359,7 @@ namespace LayoutManager.Components {
 
         protected void ProgrammingPowerOn() {
             if (OperationMode) {
-                if(programmingPowerOutlet != null)
+                if (programmingPowerOutlet != null)
                     programmingPowerOutlet.Power = new LayoutPower(this, LayoutPowerType.Programmer, this.SupportedDigitalPowerFormats, A_EmulationTickTime + "_programming");
             }
         }
@@ -373,7 +370,7 @@ namespace LayoutManager.Components {
             }
         }
 
-#region Animate Train (when using emulation)
+        #region Animate Train (when using emulation)
 
         private readonly TrackEdgeDictionary currentShownTrainPositions = new();
 
@@ -404,11 +401,11 @@ namespace LayoutManager.Components {
             InterThreadEventInvoker.Queue(() => ShowTrainPositions());
         }
 
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
-#region Overridable properties
+        #region Overridable properties
 
         /// <summary>
         /// Does this command station perform train analysis before entering operational mode. Layout analysis is
@@ -420,9 +417,9 @@ namespace LayoutManager.Components {
             get;
         }
 
-#endregion
+        #endregion
 
-#region Overridable methods
+        #region Overridable methods
 
         public virtual int GetLowestLocomotiveAddress(DigitalPowerFormats format) => 1;
 
@@ -435,9 +432,9 @@ namespace LayoutManager.Components {
                 throw new ArgumentException("Unsupported digital power format: " + format.ToString());
         }
 
-#endregion
+        #endregion
 
-#region Event handlers
+        #region Event handlers
 
         [DispatchTarget]
         protected virtual void QueryPerformTrainsAnalysis(List<IModelComponentIsCommandStation> needAnalysis) {
@@ -475,9 +472,9 @@ namespace LayoutManager.Components {
                 return false;
         }
 
-#endregion
+        #endregion
 
-#region IDisposable Members
+        #region IDisposable Members
 
         public void Dispose() {
             if (animatedTrainsTimer != null) {
@@ -492,9 +489,9 @@ namespace LayoutManager.Components {
                 programmingPowerOutlet = null;
         }
 
-#endregion
+        #endregion
 
-#region ILayoutLockResource Members
+        #region ILayoutLockResource Members
 
         /// <summary>
         /// Command station is locked when it is used for programming. This prevent a command station from being used
@@ -507,12 +504,12 @@ namespace LayoutManager.Components {
 
         public void FreeResource() { }
 
-#endregion
+        #endregion
     }
 
-#endregion
+    #endregion
 
-#region Classes used for design time layout activation (for example learn layout)
+    #region Classes used for design time layout activation (for example learn layout)
 
     /// <summary>
     /// Information about input received from the layout when the in design time layout activation.
@@ -619,7 +616,7 @@ namespace LayoutManager.Components {
                 IList<string> moduleTypeNames = Bus.BusType.GetConnectableControlModuleTypeNames(connectionDestination);
 
                 foreach (string moduleTypeName in moduleTypeNames)
-                    moduleTypes.Add(LayoutControlManager.GetModuleType(moduleTypeName));
+                    moduleTypes.Add(Dispatch.Call.GetControlModuleType(moduleTypeName));
             }
             else if (ConnectionPointRef.Module != null)
                 moduleTypes.Add(ConnectionPointRef.Module.ModuleType);
@@ -649,10 +646,10 @@ namespace LayoutManager.Components {
             }
         }
 
-#region IComparable<CommandStationInputEvent> Members
+        #region IComparable<CommandStationInputEvent> Members
 
         public int CompareTo(CommandStationInputEvent? other) {
-            if(other == null)
+            if (other == null)
                 throw new ArgumentNullException(nameof(other));
 
             if (CommandStation != other.CommandStation) {
@@ -690,12 +687,12 @@ namespace LayoutManager.Components {
 
         public bool Equals(CommandStationInputEvent other) => CompareTo(other) == 0;
 
-#endregion
+        #endregion
     }
 
-#endregion
+    #endregion
 
-#region Support for queuing of commands generated by command station components
+    #region Support for queuing of commands generated by command station components
 
     public interface IOutputCommand {
         void Do();
@@ -804,11 +801,11 @@ namespace LayoutManager.Components {
             }
         }
 
-#region ICommandStationIdlecommand Members
+        #region ICommandStationIdlecommand Members
 
         public bool RemoveFromQueue => passCount == -1;
 
-#endregion
+        #endregion
     }
 
     public interface IOutputIdlecommand : IOutputCommand {
@@ -839,7 +836,7 @@ namespace LayoutManager.Components {
                 queues[i] = new CommandManagerQueue(workToDo, queues);
         }
 
-#region Operations
+        #region Operations
 
         public void Start() {
             Debug.Assert(commandManagerThread == null, "Command Manager thread already running");
@@ -903,7 +900,7 @@ namespace LayoutManager.Components {
         /// <param name="reply"></param>
         public void SetReply(object? reply) {
             lock (_lockObject) {
-                if(reply != null)
+                if (reply != null)
                     pendingCommandWithReply?.OnReply(reply);
                 waitToGetReply.Set();       // Wait is done
             }
@@ -971,9 +968,9 @@ namespace LayoutManager.Components {
             Trace.WriteLine("Wait for idle done");
         }
 
-#endregion
+        #endregion
 
-#region Command Manager Thread and methods that run in thread context
+        #region Command Manager Thread and methods that run in thread context
 
         protected void CommandManagerThread() {
             long previousIdleCommandTime = 0;
@@ -1060,7 +1057,7 @@ namespace LayoutManager.Components {
             Trace.WriteLineIf(traceOutputManager.TraceInfo, "CommandManagerThread: Terminated");
         }
 
-#endregion
+        #endregion
 
         private class CommandManagerQueue : Queue<IOutputCommand> {
             private readonly ManualResetEvent workToDo;
@@ -1104,9 +1101,9 @@ namespace LayoutManager.Components {
         }
     }
 
-#endregion
+    #endregion
 
-#region Classes used turnout switching manager
+    #region Classes used turnout switching manager
 
     /// <summary>
     /// A structure holding a switching command for a multi-path component
@@ -1145,5 +1142,5 @@ namespace LayoutManager.Components {
         public Guid CommandStationId => ControlPointReference.Module?.Bus.BusProviderId ?? Guid.Empty;
     }
 
-#endregion
+    #endregion
 }

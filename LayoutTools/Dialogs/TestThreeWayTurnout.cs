@@ -1,10 +1,10 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class TestThreeWayTurnout : Form {
@@ -124,9 +124,14 @@ namespace LayoutManager.Tools.Dialogs {
         [DispatchTarget]
         private bool QueryTestLayoutObject() => true;
 
-        [LayoutEvent("component-connected-to-control-module")]
-        [LayoutEvent("component-disconnected-from-control-module")]
-        private void ComponentConnectedOrDisconnectedToControlModule(LayoutEvent e) {
+
+        [DispatchTarget]
+        private void OnComponentConnectedToControlModule(IModelComponentConnectToControl component, ControlConnectionPoint connetionPoint) {
+            UpdateButtons();
+        }
+
+        [DispatchTarget]
+        private void OnComponentDisconnectedFromControlModule(ModelComponent component, ControlConnectionPoint connectionPoint) {
             UpdateButtons();
         }
 

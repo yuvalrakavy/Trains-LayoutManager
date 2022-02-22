@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace LayoutManager.UIGadgets {
     /// <summary>

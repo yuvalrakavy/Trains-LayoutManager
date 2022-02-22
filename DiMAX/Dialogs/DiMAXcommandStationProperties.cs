@@ -1,9 +1,7 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-
 using LayoutManager;
 using LayoutManager.Model;
+using System;
+using System.Windows.Forms;
 
 namespace DiMAX.Dialogs {
     /// <summary>
@@ -80,11 +78,11 @@ namespace DiMAX.Dialogs {
 
             var d = new LayoutManager.CommonUI.Dialogs.SerialInterfaceParameters(modeString);
 
-            if(XmlInfo.DocumentElement[E_ModeString] == null) {
+            if (XmlInfo.DocumentElement[E_ModeString] == null) {
                 var modeStringElement = XmlInfo.XmlDocument.CreateElement(E_ModeString);
                 XmlInfo.DocumentElement.AppendChild(modeStringElement);
             }
-                
+
             if (d.ShowDialog(this) == DialogResult.OK)
                 XmlInfo.DocumentElement[E_ModeString]!.InnerText = d.ModeString;
         }

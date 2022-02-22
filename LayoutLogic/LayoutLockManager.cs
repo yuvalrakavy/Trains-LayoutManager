@@ -1,14 +1,14 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using LayoutManager.Model;
-using LayoutManager.Components;
-using System.Threading.Tasks;
+using System.Linq;
 using System.Threading;
-using MethodDispatcher;
+using System.Threading.Tasks;
 
 namespace LayoutManager.Logic {
     [LayoutModule("Layout Lock Manager")]
@@ -95,7 +95,7 @@ namespace LayoutManager.Logic {
                     );
                 }
 
-                if(RequestLayoutLock(lockRequest))
+                if (RequestLayoutLock(lockRequest))
                     tcs.TrySetResult(true);
             }
 
@@ -723,7 +723,7 @@ namespace LayoutManager.Logic {
                 UpdateBlockEdgeSignalState(blockEdge);
         }
 
-        [DispatchTarget(Order =900)]
+        [DispatchTarget(Order = 900)]
         private bool RebuildLayoutState_ClearSignals(LayoutPhase phase) {
             lockedResourceMap.Clear();
 

@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Drawing;
-using MethodDispatcher;
 using LayoutManager.Components;
 using LayoutManager.Model;
+using MethodDispatcher;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace LayoutManager.Logic {
     [LayoutModule("Layout Topology Services", UserControl = false)]

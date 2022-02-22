@@ -1,8 +1,6 @@
-﻿using System;
+﻿using MethodDispatcher;
+using System;
 using System.Windows.Forms;
-using MethodDispatcher;
-
-using LayoutManager;
 
 namespace DiMAX.Dialogs {
     public partial class TestLocoDrive : Form {

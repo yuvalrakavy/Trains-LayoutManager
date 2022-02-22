@@ -1,6 +1,6 @@
-using System.Xml;
-using MethodDispatcher;
 using LayoutManager.Model;
+using MethodDispatcher;
+using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>

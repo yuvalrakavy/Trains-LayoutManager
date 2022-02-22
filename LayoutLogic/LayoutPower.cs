@@ -1,13 +1,11 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
-using MethodDispatcher;
-
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
     [LayoutModule("Layout Power Manager", UserControl = false)]
@@ -320,8 +318,7 @@ namespace LayoutManager.Logic {
         }
 
         private LayoutTrackPowerConnectorComponent ExtractPowerConnector(object powerRegionObject) {
-            var powerConnector = powerRegionObject switch
-            {
+            var powerConnector = powerRegionObject switch {
                 TrainStateInfo train => train?.LocomotiveBlock?.BlockDefinintion.PowerConnector,
                 LayoutBlockDefinitionComponent blockDefinition => blockDefinition.PowerConnector,
                 LayoutTrackPowerConnectorComponent connector => connector,

@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Xml;
-using System.Windows.Forms;
 using LayoutManager.Model;
-using System;
 using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.ControlComponents {
     public static class ControlComponents {
@@ -14,70 +14,62 @@ namespace LayoutManager.ControlComponents {
 
     [LayoutModule("DCC Control Components")]
     internal class DCCconrolComponents : LayoutModuleBase {
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55025']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void Get55025(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            ControlModuleType moduleType = new(parentElement, "LGB55025", "LGB Switch Decoder") {
-                AddressAlignment = 4
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_LGB55025([DispatchFilter("RegEx", "(LGB55025|ALL)")] string moduleTypeName) {
+            ControlModuleType moduleType = new("LGB55025", "LGB Switch Decoder") {
+                AddressAlignment = 4,
+                ConnectionPointsPerAddress = 1,
+                NumberOfAddresses = 4,
+                LastAddress = 128
             };
-            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DCC"));
 
-            moduleType.ConnectionPointsPerAddress = 1;
-            moduleType.NumberOfAddresses = 4;
-            moduleType.LastAddress = 128;
+            moduleType.BusTypeNames.Add("DCC");
+
+            return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetMassoth8156001(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_Massoth8156001([DispatchFilter("RegEx", "(Massoth8156001|ALL)")] string moduleTypeName) {
+            ControlModuleType moduleType = new("Massoth8156001", "Massoth Switch Decoder") {
+                AddressAlignment = 1,
+                ConnectionPointsPerAddress = 1,
+                NumberOfAddresses = 4,
+                LastAddress = 2048,
+            };
 
-            ControlModuleType moduleType = new(parentElement, "Massoth8156001", "Massoth Switch Decoder");
-
-            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DCC"));
-
-            moduleType.AddressAlignment = 1;
-            moduleType.ConnectionPointsPerAddress = 1;
-            moduleType.NumberOfAddresses = 4;
-            moduleType.LastAddress = 2048;
-            moduleType.DecoderTypeName = "GenericDCC";
+            moduleType.BusTypeNames.Add("DCC");
+            return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001_AsFunctionDecoder']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetMassoth8156001_AsFunctionDecoder(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_Massoth8156001asFunctionDecoder([DispatchFilter("RegEx", "(Massoth8156001_AsFunctionDecoder|ALL)")] string moduleTypeName) {
+            ControlModuleType moduleType = new("Massoth8156001_AsFunctionDecoder", "Massoth Function Decoder") {
+                AddressAlignment = 1,
+                ConnectionPointsPerAddress = 8,
+                NumberOfAddresses = 1,
+                LastAddress = 10239,
+                ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.ConnectionPointIndex | ControlConnectionPointLabelFormatOptions.NoAttachedAddress,
+                ConnectionPointIndexBase = 1,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputRelay,
+            };
 
-            ControlModuleType moduleType = new(parentElement, "Massoth8156001_AsFunctionDecoder", "Massoth Function Decoder");
-
-            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "LocoBus"));
-
-            moduleType.AddressAlignment = 1;
-            moduleType.ConnectionPointsPerAddress = 8;
-            moduleType.NumberOfAddresses = 1;
-            moduleType.LastAddress = 10239;
-            moduleType.ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.ConnectionPointIndex | ControlConnectionPointLabelFormatOptions.NoAttachedAddress;
-            moduleType.ConnectionPointIndexBase = 1;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputRelay;
-            moduleType.DecoderTypeName = "GenericDCC";
+            moduleType.BusTypeNames.Add("DCC");
+            return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156501']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetMassoth8156501(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_Massoth8156501([DispatchFilter("RegEx", "(Massoth8156501|ALL)")] string moduleTypeName) {
+            ControlModuleType moduleType = new("Massoth8156501", "Massoth Single Switch Decoder") {
+                AddressAlignment = 1,
+                ConnectionPointsPerAddress = 1,
+                NumberOfAddresses = 1,
+                LastAddress = 2048,
+                DecoderTypeName = "GenericDCC",
+            };
 
-            ControlModuleType moduleType = new(parentElement, "Massoth8156501", "Massoth Single Switch Decoder");
-
-            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DCC"));
-
-            moduleType.AddressAlignment = 1;
-            moduleType.ConnectionPointsPerAddress = 1;
-            moduleType.NumberOfAddresses = 1;
-            moduleType.LastAddress = 2048;
-            moduleType.DecoderTypeName = "GenericDCC";
+            moduleType.BusTypeNames.Add("DCC");
+            return moduleType;
         }
 
         private class ProgramMassothSwitchDecoder : LayoutDccProgrammingAction<ControlModule> {
@@ -142,64 +134,48 @@ namespace LayoutManager.ControlComponents {
 
         //[LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(ControlModule), IfSender = "*[starts-with(@ModuleTypeName, 'Massoth8156')]")]
         [DispatchTarget]
-        private bool QueryAction_SetMassothSwitchDecoderAddress([DispatchFilter(Type = "XPath", Value = "*[starts-with(@ModuleTypeName, 'Massoth8156')]")] ControlModule target, [DispatchFilter] string action = "set-address") {
+        private bool QueryControlModuleAction_SetMassothSwitchDecoderAddress([DispatchFilter(Type = "RegEx", Value = "Massoth8156.*")] string moduleTypeName, [DispatchFilter] string action = "set-address") {
             return true;
         }
 
         //[LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[starts-with(@ModuleTypeName, 'Massoth8156')]")]
         [DispatchTarget]
-        private LayoutAction? GetAction_ProgramMassothSwitchDecoderAddress([DispatchFilter(Type="XPath",Value = "Action[@Type='set-address']")] XmlElement actionElement,
-            [DispatchFilter(Type="XPath",Value = "*[starts-with(@ModuleTypeName, 'Massoth8156')]")] ControlModule module) {
-
+        private LayoutAction? GetControlModuleAction_ProgramMassothSwitchDecoderAddress(XmlElement actionElement, ControlModule module,
+            [DispatchFilter(Type = "RegEx", Value = "Massoth8156.*")] string moduleTypeName, [DispatchFilter] string actionName = "set-address") {
             return new ProgramMassothSwitchDecoderAddress(actionElement, module);
 
         }
 
-        [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55025']")]
-        [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001']")]
-        [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156501']")]
-        private void CanSwitchDecoderBeConnected(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var module = LayoutModel.ControlManager.GetModule((Guid)e.GetOption("ModuleID"));
+        //[LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='LGB55025']")]
+        //[LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001']")]
+        //[LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156501']")]
+        [DispatchTarget]
+        private bool CanControlBeConnected_SwitchDecoder(ControlConnectionPointDestination connectionDestination, Guid moduleId, int index, [DispatchFilter("RegEx", "(LGB55025|Massoth8156001|Massoth8156501)")] string moduleTypeName) {
+            var module = LayoutModel.ControlManager.GetModule(moduleId);
 
-            if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith(ControlConnectionPointTypes.OutputSolenoid)) {
-                int index = (int)e.GetOption("Index");
-
-                e.Info = module.ConnectionPoints.GetConnectionPointType(index) == ControlConnectionPointTypes.OutputSolenoid;
-            }
-            else
-                e.Info = false;
+            return module != null && connectionDestination.ConnectionDescription.IsCompatibleWith(ControlConnectionPointTypes.OutputSolenoid) &&
+                module.ConnectionPoints.GetConnectionPointType(index) == ControlConnectionPointTypes.OutputSolenoid;
         }
 
-        [LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001_AsFunctionDecoder']")]
-        private void CanFunctionDecoderBeConnected(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var module = LayoutModel.ControlManager.GetModule((Guid)e.GetOption("ModuleID"));
-
-            e.Info = false;
+        //[LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001_AsFunctionDecoder']")]
+        [DispatchTarget]
+        private bool CanControlBeConnected_FunctionDecoder(ControlConnectionPointDestination connectionDestination, Guid moduleId, int index, [DispatchFilter] string moduleTypeName = "Massoth8156001_AsFunctionDecoder") {
+            var module = LayoutModel.ControlManager.GetModule(moduleId);
 
             if (module != null && connectionDestination.ConnectionDescription.IsCompatibleWith(ControlConnectionPointTypes.OutputSolenoid, ControlConnectionPointTypes.OutputOnOff)) {
-                int index = (int)e.GetOption("Index");
-
                 switch (module.ConnectionPoints.GetConnectionPointType(index)) {
                     case ControlConnectionPointTypes.OutputSolenoid:
                     case ControlConnectionPointTypes.OutputOnOff:
                     case ControlConnectionPointTypes.OutputRelay:
-                        e.Info = true;
-                        break;
+                        return true;
                 }
             }
+
+            return false;
         }
 
-        /// <summary>
-        /// Recommend on a module type to be used for connecting a given component
-        /// </summary>
-        /// <param name="e"></param>
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='DCC']")]
-        private void RecommendDCCcontrolModuleType(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_DCC(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "DCC") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", ControlConnectionPointTypes.OutputSolenoid)) {
                 moduleTypeNames.Add("Massoth8156001");          // 4 switch decoders
                 moduleTypeNames.Add("Massoth8156501");          // single switch decoder
@@ -207,11 +183,8 @@ namespace LayoutManager.ControlComponents {
             }
         }
 
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='LocoBus']")]
-        private void RecommendLocoBuscontrolModuleType(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_LocoBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "LocoBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", ControlConnectionPointTypes.OutputSolenoid)) {
                 moduleTypeNames.Add("Massoth8156001_AsFunctionDecoder");
             }

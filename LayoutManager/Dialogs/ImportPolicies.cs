@@ -1,9 +1,9 @@
+using LayoutManager.Model;
 using System;
 using System.Drawing;
-using System.Windows.Forms;
-using LayoutManager.Model;
-using System.Xml;
 using System.IO;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.Dialogs {
     public partial class ImportPolicies : Form {

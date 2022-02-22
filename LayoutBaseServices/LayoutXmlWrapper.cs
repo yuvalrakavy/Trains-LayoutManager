@@ -1,7 +1,7 @@
+using MethodDispatcher;
 using System;
 using System.Diagnostics;
 using System.Xml;
-using MethodDispatcher;
 
 #nullable enable
 namespace LayoutManager {
@@ -58,7 +58,7 @@ namespace LayoutManager {
 
             var element = ExtractXml(parameterValue);
 
-            if(element == null)
+            if (element == null)
                 return false;
 
             var instanceElement = ExtractXml(targetObject);

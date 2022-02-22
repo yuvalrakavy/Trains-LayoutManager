@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Xml;
 using LayoutManager.Model;
 using LayoutManager.Tools;
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -108,7 +107,7 @@ namespace LayoutManager.CommonUI.Controls {
                 var shouldReverse = (bool)applicableTripPlanElement.AttributeValue(A_ShouldReverse);
                 var tripPlan = originalTripPlan;
 
-                if(tripPlan != null)
+                if (tripPlan != null)
                     listViewTripPlans.Items.Add(new TripPlanItem(tripPlan, shouldReverse, tripPlanIconList));
             }
 

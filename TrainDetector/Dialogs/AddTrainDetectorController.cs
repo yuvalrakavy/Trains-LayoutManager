@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 #nullable enable
@@ -28,10 +21,10 @@ namespace TrainDetector.Dialogs {
             set => textBoxName.Text = value;
         }
 
-        private void buttonOK_Click(object? sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             var validationError = validateFunction != null ? validateFunction(ControllerName) : null;
 
-            if(validationError != null) {
+            if (validationError != null) {
                 MessageBox.Show(validationError, "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxName.Focus();
                 return;

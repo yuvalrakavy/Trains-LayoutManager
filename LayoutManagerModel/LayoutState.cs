@@ -1,13 +1,13 @@
+using LayoutManager.Components;
+using MethodDispatcher;
 using System;
-using System.Xml;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using MethodDispatcher;
-using LayoutManager.Components;
+using System.Xml;
 
 #nullable enable
 namespace LayoutManager.Model {
@@ -83,8 +83,7 @@ namespace LayoutManager.Model {
 
         public LayoutBlockDefinitionComponent BlockDefinition { get => Ensure.NotNull<LayoutBlockDefinitionComponent>(blockDefinition, "BlockDefinition"); set => blockDefinition = value; }
 
-        public override string ToString() => Status switch
-        {
+        public override string ToString() => Status switch {
             CanPlaceTrainStatus.CanPlaceTrain => "Can place train",
             CanPlaceTrainStatus.LocomotiveAddressAlreadyUsed => "Locomotive " + Loco1.DisplayName + " address is already used by another locomotive (" + Train.DisplayName + ")",
             CanPlaceTrainStatus.LocomotiveDuplicateAddress => "Train " + Train.DisplayName + " members: '" + Loco1.DisplayName + "' and '" + Loco2.DisplayName + "' have the same address",
@@ -1710,7 +1709,7 @@ namespace LayoutManager.Model {
                 XmlElement componentStateElement = GetComponentStateElement(componentId);
                 XmlElement? componentStateTopicElement = componentStateElement[topicName];
 
-                if(componentStateTopicElement != null)
+                if (componentStateTopicElement != null)
                     componentStateElement.RemoveChild(componentStateTopicElement);
 
                 if (componentStateElement.ChildNodes.Count == 0)
@@ -2177,7 +2176,7 @@ namespace LayoutManager.Model {
         /// </summary>
         public string Text => EventScriptElement == null
                     ? "(Policy not set)"
-                    :  Dispatch.Call.GetEventScriptDescription(EventScriptElement) ?? $"({EventScriptElement})";
+                    : Dispatch.Call.GetEventScriptDescription(EventScriptElement) ?? $"({EventScriptElement})";
 
         public bool Apply {
             get => (bool?)AttributeValue(A_Apply) ?? false;

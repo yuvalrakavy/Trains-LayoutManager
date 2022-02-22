@@ -1,9 +1,7 @@
+using LayoutManager.Model;
 using System;
 using System.Drawing;
-using System.ComponentModel;
 using System.Windows.Forms;
-
-using LayoutManager.Model;
 
 namespace LayoutManager.Dialogs {
     /// <summary>
@@ -71,7 +69,7 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        protected void buttonSet_click(object? sender, EventArgs e) {
+        protected void ButtonSet_click(object? sender, EventArgs e) {
             for (int iOrigin = 0; iOrigin < origins.Length; iOrigin++) {
                 for (int iKind = 0; iKind < kinds.Length; iKind++) {
                     ImageEntry entry = imageTable[iOrigin, iKind];
@@ -100,7 +98,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        protected void buttonClear_click(object? sender, EventArgs e) {
+        protected void ButtonClear_click(object? sender, EventArgs e) {
             for (int iOrigin = 0; iOrigin < origins.Length; iOrigin++) {
                 for (int iKind = 0; iKind < kinds.Length; iKind++) {
                     ImageEntry entry = imageTable[iOrigin, iKind];
@@ -114,7 +112,7 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        private void buttonOK_Click(object? sender, EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             for (int iOrigin = 0; iOrigin < origins.Length; iOrigin++) {
                 for (int iKind = 0; iKind < kinds.Length; iKind++) {
                     ImageEntry entry = imageTable[iOrigin, iKind];

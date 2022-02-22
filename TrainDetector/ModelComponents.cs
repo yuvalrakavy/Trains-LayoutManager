@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Diagnostics;
-using System.Xml;
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.Model;
+﻿using LayoutManager;
 using LayoutManager.Components;
 using LayoutManager.ControlComponents;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
+using System.Xml;
 
 #nullable enable
 namespace TrainDetector {
@@ -72,10 +68,10 @@ namespace TrainDetector {
         private async Task EnterOperationModeAsync(LayoutEvent e) {
             Debug.Assert(OptionalNetworkHandler == null);
             OptionalNetworkHandler = new NetworkHandler(rawPacket => rawPacket.GetPacketHeader());
-            
+
             NetworkHandler.Start();
             NetworkHandler.OnReceivingPacket += (sender, rawPacket) => {
-                switch(rawPacket.GetPacket()) {
+                switch (rawPacket.GetPacket()) {
                     case StateChangedNotificationPacket stateChangedPacket:
                         if (ipToStateMap.TryGetValue(rawPacket.RemoteEndPoint, out var controllerState))
                             controllerState.UpdateState(stateChangedPacket.Version, stateChangedPacket.SensorNumber, stateChangedPacket.IsCovered, stateChangedPacket.States);
@@ -98,8 +94,8 @@ namespace TrainDetector {
             var requests = new List<Task<UdpReceiveResult>>(capacity: ipToStateMap.Count);
 
             // Unsubscribe from all the controllers
-            foreach(var ipEndPoint in ipToStateMap.Keys) {
-                requests.Add(NetworkHandler.Request(requestNumber => NetworkHandler.SendPacketAsync(new UnsubscribeRequestPacket((UInt16)requestNumber), ipEndPoint)));    
+            foreach (var ipEndPoint in ipToStateMap.Keys) {
+                requests.Add(NetworkHandler.Request(requestNumber => NetworkHandler.SendPacketAsync(new UnsubscribeRequestPacket((UInt16)requestNumber), ipEndPoint)));
             }
             await Task.WhenAll(requests);
 
@@ -113,13 +109,13 @@ namespace TrainDetector {
         private async Task VerifyControllers() {
             ipToStateMap.Clear();
 
-            foreach(var module in TrainDetectorsBus.Modules) {
+            foreach (var module in TrainDetectorsBus.Modules) {
                 var trainConrollerModule = new TrainDetectorControllerModule(module);
                 var ipEndPoint = trainConrollerModule.ControllerIpAddress;
 
                 if (trainConrollerModule.Phase == LayoutPhase.Operational && ipEndPoint == null)
                     throw new LayoutControlException(trainConrollerModule, "This module is not assigned IP address");
-                else if(ipEndPoint != null) {
+                else if (ipEndPoint != null) {
                     try {
                         var rawPacket = await NetworkHandler.Request((requestNumber) => NetworkHandler.SendPacketAsync(new GetStateRequestPacket((UInt16)requestNumber), ipEndPoint));
 
@@ -134,7 +130,8 @@ namespace TrainDetector {
                         else
                             throw new LayoutControlException(trainConrollerModule, $"Received unexpected reply type");
 
-                    } catch(TimeoutException) {
+                    }
+                    catch (TimeoutException) {
                         throw new LayoutControlException(trainConrollerModule, $"No reply from train controller module ({ipEndPoint})");
                     }
                 }
@@ -173,8 +170,8 @@ namespace TrainDetector {
             int sensorIndex = 0;
 
 
-            foreach(var cp in module.ConnectionPoints) {
-                if(States[sensorIndex]) {
+            foreach (var cp in module.ConnectionPoints) {
+                if (States[sensorIndex]) {
                     if (cp.IsConnected)
                         trainDetectorsComponent.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(cp), States[sensorIndex] ? 1 : 0));
                 }
@@ -184,7 +181,7 @@ namespace TrainDetector {
 
         public void UpdateState(UInt32 newVersion, int sensorIndex, bool isCovered, List<bool> allStates) {
             // The simple case
-            if(newVersion == StateVersion+1) {
+            if (newVersion == StateVersion+1) {
                 if (Module.ConnectionPoints[sensorIndex].IsConnected)
                     TrainDetectorsComponent.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(Module.ConnectionPoints[sensorIndex]), isCovered ? 1 : 0));
             }
@@ -192,8 +189,8 @@ namespace TrainDetector {
                 Trace.WriteLine($"TrainDetectors: Unexpected version {newVersion} (expected {StateVersion + 1} for module {Module.Label}@{Module.ControllerIpAddress?.ToString() ?? "No address"}");
 
                 sensorIndex = 0;
-                foreach(var cp in Module.ConnectionPoints) {
-                    if(cp.IsConnected) {
+                foreach (var cp in Module.ConnectionPoints) {
+                    if (cp.IsConnected) {
                         TrainDetectorsComponent.InterThreadEventInvoker.Queue(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(cp), allStates[sensorIndex] ? 1 : 0));
                     }
 

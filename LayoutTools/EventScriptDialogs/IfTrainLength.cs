@@ -1,6 +1,6 @@
+using LayoutManager.Model;
 using System;
 using System.Windows.Forms;
-using LayoutManager.Model;
 
 namespace LayoutManager.Tools.EventScriptDialogs {
     public partial class IfTrainLength : Form {

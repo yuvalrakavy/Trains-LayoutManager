@@ -1,8 +1,5 @@
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Xml;
-
 using LayoutManager.Model;
+using System.Windows.Forms;
 
 namespace LayoutManager.Dialogs {
     /// <summary>
@@ -36,7 +33,7 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        private void buttonOK_Click(object? sender, System.EventArgs e) {
+        private void ButtonOK_Click(object? sender, System.EventArgs e) {
             var selectedElement = xmlQueryComboboxCopyFrom.SelectedElement;
 
             if (selectedElement == null) {

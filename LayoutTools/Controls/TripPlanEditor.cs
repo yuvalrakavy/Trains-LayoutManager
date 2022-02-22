@@ -1,16 +1,16 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using System.Linq;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
-using System.Collections.Generic;
 
 namespace LayoutManager.Tools.Controls {
     /// <summary>
@@ -271,7 +271,7 @@ namespace LayoutManager.Tools.Controls {
             foreach (var d in displayedBalloons) {
                 var blockDefinition = LayoutModel.Component<LayoutBlockDefinitionComponent>((Guid)d.Key, LayoutPhase.All);
 
-                if(blockDefinition != null)
+                if (blockDefinition != null)
                     LayoutBlockBalloon.Remove(blockDefinition, LayoutBlockBalloon.TerminationReason.Hidden);
             }
 
@@ -413,7 +413,7 @@ namespace LayoutManager.Tools.Controls {
         public void AddWayPoint(TripPlanWaypointInfo newWaypoint) {
             listViewWayPoints.Items.Add(new WayPointItem(newWaypoint));
 
-            if(tripPlanSelection != null)
+            if (tripPlanSelection != null)
                 tripPlanSelection.Add(newWaypoint.Destination.Selection);
 
             UpdateButtons(null, EventArgs.Empty);
@@ -809,7 +809,7 @@ namespace LayoutManager.Tools.Controls {
         private void OnAddComponentMenuItemClick(object? sender, EventArgs e) {
             var item = Ensure.NotNull<ModelComponentMenuItemBase<LayoutBlockDefinitionComponent>>(sender);
 
-            if(item.Component != null)
+            if (item.Component != null)
                 AddWayPoint(item.Component);
         }
 

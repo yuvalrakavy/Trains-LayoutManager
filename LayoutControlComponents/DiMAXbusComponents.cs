@@ -1,56 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml;
-using System.Windows.Forms;
-using System.Text.RegularExpressions;
-using System.Linq;
+﻿using LayoutManager.Model;
 using MethodDispatcher;
-using LayoutManager.Model;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace LayoutManager.ControlComponents {
     [LayoutModule("DiMAX Bus Control Components")]
     internal class DiMAXBusComponents : LayoutModuleBase {
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8170001']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetMassoth8170001(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
 
-            var moduleType = new ControlModuleType(parentElement, "Massoth8170001", "Massoth Trigger Feedback Interface") {
-                AddressAlignment = 4
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_Massoth8170001([DispatchFilter("RegEx", "(Massoth8170001|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("Massoth8170001", "Massoth Trigger Feedback Interface") {
+                AddressAlignment = 4,
+                ConnectionPointsPerAddress = 2,
+                NumberOfAddresses = 4,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger,
+                ConnectionPointIndexBase = 0,
+                ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.Alpha | ControlConnectionPointLabelFormatOptions.AlphaLowercase | ControlConnectionPointLabelFormatOptions.AttachAddress,
+                LastAddress = 2048,
             };
-            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DiMAXBus"));
-            moduleType.ConnectionPointsPerAddress = 2;
-            moduleType.NumberOfAddresses = 4;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryTrigger;
-            moduleType.ConnectionPointIndexBase = 0;
-            moduleType.ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.Alpha | ControlConnectionPointLabelFormatOptions.AlphaLowercase | ControlConnectionPointLabelFormatOptions.AttachAddress;
-            moduleType.LastAddress = 2048;
-            moduleType.DecoderTypeName = "GenericDCC";
+
+            moduleType.AddBusTypes("DiMAXBus");
+            return moduleType;
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8170001level']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void GetMassoth8170001level(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
-
-            var moduleType = new ControlModuleType(parentElement, "Massoth8170001level", "Massoth Level Feedback Interface") {
-                AddressAlignment = 4
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType_Massoth8170001level([DispatchFilter("RegEx", "(Massoth8170001level|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("Massoth8170001level", "Massoth Level Feedback Interface") {
+                AddressAlignment = 4,
+                ConnectionPointsPerAddress = 1,
+                NumberOfAddresses = 8,
+                DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryLevel,
+                ConnectionPointIndexBase = 0,
+                ConnectionPointLabelFormat = 0,
+                LastAddress = 2048,
+                DecoderTypeName = "GenericDCC",
             };
-            EventManager.Event(new LayoutEvent("add-bus-connectable-to-module", moduleType).SetOption("GenericBusType", "DiMAXBus"));
-            moduleType.ConnectionPointsPerAddress = 1;
-            moduleType.NumberOfAddresses = 8;
-            moduleType.DefaultControlConnectionPointType = ControlConnectionPointTypes.InputDryLevel;
-            moduleType.ConnectionPointIndexBase = 0;
-            moduleType.ConnectionPointLabelFormat = 0;
-            moduleType.LastAddress = 2048;
-            moduleType.DecoderTypeName = "GenericDCC";
+
+            moduleType.AddBusTypes("DiMAXBus");
+            return moduleType;
         }
 
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='DiMAXBus']")]
-        private void RecommendLGBcompatibleBusControlModuleType(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_DiMAXBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "DiMAXBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact"))
                 moduleTypeNames.Add("Massoth8170001");
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "Level"))
@@ -58,21 +52,21 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private bool QueryAction_SetMassothFeedbackDecoderAddress([DispatchFilter(Type="XPath", Value ="[start-with(@ModuleTypeName, 'Massoth817001']")] ControlModule target, [DispatchFilter] string actionName = "set-address") {
+        private bool QueryAction_SetMassothFeedbackDecoderAddress([DispatchFilter(Type = "XPath", Value = "[start-with(@ModuleTypeName, 'Massoth817001']")] ControlModule target, [DispatchFilter] string actionName = "set-address") {
             return true;
         }
 
         //[LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001']")]
         [DispatchTarget]
-        private LayoutAction? GetAction_ProgramMassothTriggerFeedbackDecoderAddress([DispatchFilter(Type = "XPath", Value = "Action[@Type='set-address']")] XmlElement actionElement,
-          [DispatchFilter(Type = "XPath", Value = "*[starts-with(@ModuleTypeName, 'Massoth8170001')]")] ControlModule module) {
+        private LayoutAction? GetControlModuleAction_ProgramMassothTriggerFeedbackDecoderAddress(XmlElement actionElement, ControlModule module,
+          [DispatchFilter] string moduleTypeName = "Massoth8170001", [DispatchFilter] string actionType = "set-address") {
             return new ProgramMassothTriggerFeedbackDecoderAddress(actionElement, module);
         }
 
         //[LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001level']")]
         [DispatchTarget]
-        private LayoutAction? GetAction_ProgramMassothLevelFeedbackDecoderAddress([DispatchFilter(Type = "XPath", Value = "Action[@Type='set-address']")] XmlElement actionElement,
-          [DispatchFilter(Type = "XPath", Value = "*[starts-with(@ModuleTypeName, 'Massoth8170001level')]")] ControlModule module) {
+        private LayoutAction? GetControlModuleAction_ProgramMassothLevelFeedbackDecoderAddress(XmlElement actionElement, ControlModule module,
+          [DispatchFilter] string moduleTypeName = "Massoth8170001level", [DispatchFilter] string actionType = "set-address") {
             return new ProgramMassothLevelFeedbackDecoderAddress(actionElement, module);
         }
 

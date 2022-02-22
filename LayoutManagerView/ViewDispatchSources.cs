@@ -1,10 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-
-using MethodDispatcher;
-using LayoutManager.Model;
+﻿using LayoutManager.Model;
 using LayoutManager.View;
-using LayoutManager;
+using MethodDispatcher;
+using System;
+using System.Windows.Forms;
 
 namespace LayoutManager {
     public static class ViewDispatchSources {

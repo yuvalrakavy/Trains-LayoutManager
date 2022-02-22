@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -41,14 +40,14 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        private void buttonOk_Click(object? sender, EventArgs e) {
+        private void ButtonOk_Click(object? sender, EventArgs e) {
             storeElement.SetAttribute("Name", textBoxName.Text);
             storeElement.SetAttribute("File", textBoxFile.Text);
 
             DialogResult = DialogResult.OK;
         }
 
-        private void buttonBrowse_Click(object? sender, EventArgs e) {
+        private void ButtonBrowse_Click(object? sender, EventArgs e) {
             FileDialog fileDialog = new OpenFileDialog {
                 FileName = textBoxFile.Text,
                 InitialDirectory = defaultDirectory,

@@ -1,6 +1,6 @@
-using System.Xml;
 using LayoutManager.Model;
 using MethodDispatcher;
+using System.Xml;
 
 namespace LayoutManager.CommonUI.Controls {
     public interface IPolicyListCustomizer {
@@ -205,7 +205,7 @@ namespace LayoutManager.CommonUI.Controls {
             UpdateList();
         }
 
-        private void UpdateList() { 
+        private void UpdateList() {
             foreach (PolicyItem policyItem in listViewPolicies.Items)
                 policyItem.Update();
 

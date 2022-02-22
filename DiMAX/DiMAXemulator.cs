@@ -1,15 +1,13 @@
-﻿using System;
+﻿using LayoutManager;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace DiMAX {
     public class DiMAXcommandStationEmulator : ILayoutCommandStationEmulator {

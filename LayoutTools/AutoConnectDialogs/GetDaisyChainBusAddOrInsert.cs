@@ -1,7 +1,6 @@
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Text.RegularExpressions;
 using LayoutManager.Components;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools.AutoConnectDialogs {
     /// <summary>
@@ -15,7 +14,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             //
             InitializeComponent();
 
-            if(moduleLocation != null)
+            if (moduleLocation != null)
                 labelTitle.Text = Regex.Replace(labelTitle.Text, "LOCATION", moduleLocation.Name);
 
             radioButtonInsert.Checked = true;

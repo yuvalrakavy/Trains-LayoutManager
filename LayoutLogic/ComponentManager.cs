@@ -1,11 +1,10 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using MethodDispatcher;
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager.Logic {
     /// <summary>
@@ -180,8 +179,8 @@ namespace LayoutManager.Logic {
             }
         }
 
-        [DispatchTarget(Order =2000)]
-        private void OnEnteredOperationMode(OperationModeParameters settings) {         
+        [DispatchTarget(Order = 2000)]
+        private void OnEnteredOperationMode(OperationModeParameters settings) {
             foreach (LayoutBlockEdgeBase blockEdge in LayoutModel.Components<LayoutBlockEdgeBase>(LayoutModel.ActivePhases)) {
                 LayoutSignalState signalState = blockEdge.SignalState;
 
@@ -276,7 +275,7 @@ namespace LayoutManager.Logic {
                 else {
                     var signalComponent = LayoutModel.Component<LayoutSignalComponent>(linkedSignalInfo.SignalId, LayoutPhase.All);
 
-                    if(signalComponent != null)
+                    if (signalComponent != null)
                         Dispatch.Notification.OnSignalComponentLinked(modifiedBlockEdge, signalComponent);
                 }
             }

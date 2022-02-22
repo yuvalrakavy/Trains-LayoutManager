@@ -1,9 +1,9 @@
-﻿using System;
+﻿using LayoutManager.Model;
 using System.Collections.Generic;
-using System.Xml;
-using System.Net;
-using LayoutManager.Model;
 using System.Diagnostics;
+using System.Net;
+using System.Xml;
+using MethodDispatcher;
 
 #nullable enable
 namespace LayoutManager.ControlComponents {
@@ -11,59 +11,50 @@ namespace LayoutManager.ControlComponents {
     internal class TrainDetectorBusComponents : LayoutModuleBase {
         private ControlBusType? trainDetectorBus = null;
 
-        [LayoutEvent("get-control-bus-type", IfEvent = "LayoutEvent[./Options/@BusTypeName='TrainDetectorsBus']")]
-        private void getTrainDetectorsBusBusType(LayoutEvent e) {
-            if (trainDetectorBus == null) {
-                trainDetectorBus = new ControlBusType {
-                    BusFamilyName = "TrainDetectorsBus",
-                    BusTypeName = "TrainDetectorsBus",
-                    Name = "TrainDetectors",
-                    Topology = ControlBusTopology.RandomAddressing,
-                    AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
-                    FirstAddress = 0,
-                    LastAddress = int.MaxValue,
-                    Usage = ControlConnectionPointUsage.Input,
-                    ClickToAddModuleEventName = "click-to-add-train-detector",
-                    CanChangeAddress = false,
-                    AllowEmptyLabel = false,
-                };
-            }
-
-            e.Info = trainDetectorBus;
+        [DispatchTarget]
+        private ControlBusType GetControlBusType_TrainDetectorsBus([DispatchFilter] string busTypeName = "TrainDetectorsBus") {
+            return trainDetectorBus ??= new ControlBusType {
+                BusFamilyName = "TrainDetectorsBus",
+                BusTypeName = "TrainDetectorsBus",
+                Name = "TrainDetectors",
+                Topology = ControlBusTopology.RandomAddressing,
+                AddressingMethod = ControlAddressingMethod.ModuleConnectionPointAddressing,
+                FirstAddress = 0,
+                LastAddress = int.MaxValue,
+                Usage = ControlConnectionPointUsage.Input,
+                ClickToAddModuleEventName = "click-to-add-train-detector",
+                CanChangeAddress = false,
+                AllowEmptyLabel = false,
+            };
         }
 
-        [LayoutEvent("recommend-control-module-types", IfEvent = "LayoutEvent[./Options/@BusFamily='TrainDetectorsBus']")]
-        private void recommendTrainDetectorsBusControlModuleType(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender, "connectionDestination");
-            var moduleTypeNames = Ensure.NotNull<IList<string>>(e.Info, "moduleTypeNames");
-
+        [DispatchTarget]
+        private void RecommendControlModuleTypes_TrainDetectorsBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "TrainDetectorsBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "Level"))
                 moduleTypeNames.Add("TrainDetectorController");
         }
 
-        [LayoutEvent("get-control-module-type", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='TrainDetectorController']")]
-        [LayoutEvent("enum-control-module-types")]
-        private void getTrainDetectorControllerModule(LayoutEvent e) {
-            var parentElement = Ensure.NotNull<XmlElement>(e.Sender, "parentElement");
-
-            var moduleType = new ControlModuleType(parentElement, "TrainDetectorController", "TrainDetector Controller") {
+        [DispatchTarget]
+        private ControlModuleType GetControlModuleType([DispatchFilter("RegEx", "(TrainDetectorController|ALL)")] string moduleTypeName) {
+            var moduleType = new ControlModuleType("TrainDetectorController", "TrainDetector Controller") {
                 DefaultControlConnectionPointType = ControlConnectionPointTypes.Level,
                 ConnectionPointIndexBase = 1,
                 ConnectionPointLabelFormat = ControlConnectionPointLabelFormatOptions.ConnectionPointIndex,
             };
 
             moduleType.BusTypeNames.Add("TrainDetectorsBus");
+            return moduleType;
         }
 
         [LayoutEvent("get-control-module-description", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='TrainDetectorController']")]
-        private void getTrainDetectorControllerDescipriotn(LayoutEvent e) {
+        private void GetTrainDetectorControllerDescipriotn(LayoutEvent e) {
             var module = Ensure.NotNull<ControlModule>(e.Sender);
             var trainDetectorController = new TrainDetectorControllerModule(module);
             var ipEndPoint = trainDetectorController.ControllerIpAddress;
 
             e.Info = ipEndPoint == null
                 ? $"{trainDetectorController.Label} (unassigned)"
-                : $"{trainDetectorController.Label}@{ipEndPoint.Address.ToString()}";
+                : $"{trainDetectorController.Label}@{ipEndPoint.Address}";
         }
     }
 
@@ -116,9 +107,7 @@ namespace LayoutManager.ControlComponents {
         public override void Do() {
             var trainDetectorController = new TrainDetectorControllerModule(moduleRef.Module);
 
-            var prevIpEndPoint = trainDetectorController.ControllerIpAddress;
-            trainDetectorController.ControllerIpAddress = ipEndPoint;
-            ipEndPoint = prevIpEndPoint;
+            (ipEndPoint, trainDetectorController.ControllerIpAddress) = (trainDetectorController.ControllerIpAddress, ipEndPoint);
             EventManager.Event(new LayoutEvent("control-module-modified", trainDetectorController).SetOption("ModuleTypeName", trainDetectorController.ModuleTypeName));
         }
 

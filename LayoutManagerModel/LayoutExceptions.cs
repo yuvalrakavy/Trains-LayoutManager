@@ -1,8 +1,7 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
 using System;
 using System.Xml;
-
-using LayoutManager.Model;
-using LayoutManager.Components;
 
 namespace LayoutManager {
     public class LayoutLocomotiveException : LayoutException {

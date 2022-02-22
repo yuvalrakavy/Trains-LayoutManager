@@ -1,7 +1,6 @@
 using System;
-using System.Xml;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Xml;
 
 #nullable enable
 namespace LayoutManager {
@@ -190,7 +189,7 @@ namespace LayoutManager {
     /// </summary>
     /// <typeparam name="T">The type of items in the collection</typeparam>
     /// <typeparam name="KeyT">The type of the key used to index the collection</typeparam>
-    public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> where T : class where KeyT: notnull {
+    public abstract class XmlIndexedCollection<T, KeyT> : XmlCollection<T>, ICollection<T> where T : class where KeyT : notnull {
         private Dictionary<KeyT, XmlElement>? _index;
         private List<KeyValuePair<KeyT, XmlElement>>? sorted = null;
 

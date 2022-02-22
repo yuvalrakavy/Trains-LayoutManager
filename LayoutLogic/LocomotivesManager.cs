@@ -1,16 +1,14 @@
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
-using System.Linq;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.Linq;
 using System.Threading;
-
-using MethodDispatcher;
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.Components;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace LayoutManager.Logic {
 
@@ -24,13 +22,13 @@ namespace LayoutManager.Logic {
 
         //[LayoutEvent("query-action", IfEvent = "LayoutEvent[Options/@Action='set-address']", SenderType = typeof(LocomotiveInfo))]
         [DispatchTarget]
-        private bool QueryAction_SetLocoAddress([DispatchFilter] LocomotiveInfo target, [DispatchFilter] string actionName = "set-address") {
+        private bool QueryAction_SetLocoAddress([DispatchFilter] LocomotiveInfo target, [DispatchFilter] string actionType = "set-address") {
             return (target.DecoderType is DccDecoderTypeInfo);
         }
 
         //[LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(LocomotiveInfo))]
         [DispatchTarget]
-        private LayoutAction? GetAction_SetAddress([DispatchFilter(Type = "XPath", Value = "Action[@Type='set-address']")] XmlElement actionElement, [DispatchFilter] LocomotiveInfo locomotive) {
+        private LayoutAction? GetAction_SetAddress([DispatchFilter] LocomotiveInfo locomotive, XmlElement actionElement, [DispatchFilter] string actionType = "set-address") {
             return locomotive.DecoderType is DccDecoderTypeInfo ? new LayoutDccChangeLocomotiveAddressAction(actionElement, locomotive) : null;
         }
 
@@ -67,8 +65,7 @@ namespace LayoutManager.Logic {
         private CanPlaceTrainResult IsLocomotiveAddressValid(XmlElement placeableElement, object powerObject, IsLocomotiveAddressValidSettings settings) {
             TrainStateInfo? train = null;
 
-            var power = powerObject switch
-            {
+            var power = powerObject switch {
                 ILayoutPower thePower => thePower,
                 LayoutBlock block => block.Power,
                 LayoutBlockDefinitionComponent blockDefinition => blockDefinition.Block.Power,
@@ -311,8 +308,7 @@ namespace LayoutManager.Logic {
                         addressMap.Add(locomotive.AddressProvider.Unit, entryAllocator(locomotive, train));
         }
 
-        private static IModelComponentIsCommandStation? ExtractCommandStation(object commandStationObject) => commandStationObject switch
-        {
+        private static IModelComponentIsCommandStation? ExtractCommandStation(object commandStationObject) => commandStationObject switch {
             LayoutBlockDefinitionComponent blockDefinition => blockDefinition.Power.PowerOriginComponent as IModelComponentIsCommandStation,
             IModelComponentIsCommandStation commandStation => commandStation,
             ILayoutPower power => power.PowerOriginComponent as IModelComponentIsCommandStation,
@@ -506,7 +502,7 @@ namespace LayoutManager.Logic {
                 throw;
             }
         }
-        
+
         /// <summary>
         /// Create train (runtime state) from locomotive or train element in the collection 
         /// </summary>
@@ -518,7 +514,7 @@ namespace LayoutManager.Logic {
             string? trainName = null;
             TrainLength trainLength = TrainLength.Standard;
 
-            if(options.Front == null) {
+            if (options.Front == null) {
                 if (collectionElement.Name == E_Train) {
                     options.Front = Dispatch.Call.GetLocomotiveFront(blockDefinition, collectionElement);
 
@@ -546,8 +542,7 @@ namespace LayoutManager.Logic {
             trainName = options.TrainName ?? trainName;
 
             if (trainName == null) {
-                trainName = collectionElement.Name switch
-                {
+                trainName = collectionElement.Name switch {
                     E_Locomotive => new LocomotiveInfo(collectionElement).Name,
                     E_Train => new TrainInCollectionInfo(collectionElement).Name,
                     _ => throw new LayoutException(EventManager.Instance, "No name was given to the new train"),
@@ -810,7 +805,7 @@ namespace LayoutManager.Logic {
             lockRequest.Blocks.Add(programmingLocation.PowerConnector.Blocks);
 
             if ((
-                from power in programmingLocation.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers 
+                from power in programmingLocation.PowerConnector.Inlet.ConnectedOutlet.ObtainablePowers
                 where power.Type == LayoutPowerType.Programmer
                 select power.PowerOriginComponent).FirstOrDefault() is not ILayoutLockResource commandStationResource
             )
@@ -1363,7 +1358,7 @@ namespace LayoutManager.Logic {
             return invalidStateElements.Count == 0;   // Fail if any invaid element was found
         }
 
-        [DispatchTarget(Order =2000)]
+        [DispatchTarget(Order = 2000)]
         private void OnEnteredOperationMode(OperationModeParameters settings) {
             foreach (XmlElement trainStateElement in LayoutModel.StateManager.Trains.Element) {
                 TrainStateInfo train = new(trainStateElement);
@@ -1386,7 +1381,7 @@ namespace LayoutManager.Logic {
 
                 if (component != null) {
                     foreach (XmlElement componentStateTopicElement in componentStateElement) {
-                        if(!Dispatch.Call.VerifyComponentStateTopic(componentStateTopicElement))
+                        if (!Dispatch.Call.VerifyComponentStateTopic(componentStateTopicElement))
                             topicRemoveList.Add(componentStateTopicElement);
                     }
 

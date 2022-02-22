@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-using System.Threading.Tasks;
+﻿using LayoutManager.Model;
 using MethodDispatcher;
-using LayoutManager.Model;
+using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LayoutManager.Tools.Dialogs {
     public partial class ControlModuleProgrammingProgressDialog : Form {
@@ -90,12 +90,12 @@ namespace LayoutManager.Tools.Dialogs {
 
         public ActionStatus Status {
             set => SubItems[1].Text =value switch {
-                    ActionStatus.Done => "Done",
-                    ActionStatus.Failed => "Failed",
-                    ActionStatus.InProgress => "In progress",
-                    ActionStatus.Pending => "Pending",
-                    _ => "**UNKNOWN**",
-                };
+                ActionStatus.Done => "Done",
+                ActionStatus.Failed => "Failed",
+                ActionStatus.InProgress => "In progress",
+                ActionStatus.Pending => "Pending",
+                _ => "**UNKNOWN**",
+            };
         }
     }
 }

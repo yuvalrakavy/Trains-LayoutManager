@@ -1,10 +1,9 @@
+using LayoutManager.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-
-using LayoutManager.Model;
 
 namespace LayoutManager.Components {
     /// <summary>
@@ -16,8 +15,7 @@ namespace LayoutManager.Components {
         protected LayoutComponentPainter() {
         }
 
-        protected static Point GetConnectionPointPosition(LayoutComponentConnectionPoint p, Size boundingBox) => (int)p switch
-        {
+        protected static Point GetConnectionPointPosition(LayoutComponentConnectionPoint p, Size boundingBox) => (int)p switch {
             LayoutComponentConnectionPoint.T => new Point(boundingBox.Width / 2, 0),
             LayoutComponentConnectionPoint.B => new Point(boundingBox.Width / 2, boundingBox.Height),
             LayoutComponentConnectionPoint.R => new Point(boundingBox.Width, boundingBox.Height / 2),

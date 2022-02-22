@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Xml;
-using LayoutManager;
 
 #nullable enable
 namespace LayoutManager {
@@ -41,8 +40,7 @@ namespace LayoutManager {
         }
 
         public object Value {
-            get => AttributeType switch
-            {
+            get => AttributeType switch {
                 AttributeType.String => (object)this.AttributeValue(A_Value),
                 AttributeType.Number => (object)((int?)this.AttributeValue(A_Value) ?? 0),
                 AttributeType.Boolean => (object)((bool?)this.AttributeValue(A_Value) ?? false),

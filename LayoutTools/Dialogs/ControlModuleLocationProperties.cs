@@ -1,12 +1,10 @@
+using LayoutManager.CommonUI;
+using LayoutManager.Components;
+using LayoutManager.Model;
 using System;
 using System.Drawing;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
-
-using LayoutManager.Model;
-using LayoutManager.Components;
-using LayoutManager.CommonUI;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -71,7 +69,7 @@ namespace LayoutManager.Tools.Dialogs {
                 buttonRemove.Enabled = true;
             }
         }
- 
+
         private void ButtonOK_Click(object? sender, System.EventArgs e) {
             if (nameDefinition.IsEmptyName) {
                 MessageBox.Show(this, "You have to provide a name for control module location",

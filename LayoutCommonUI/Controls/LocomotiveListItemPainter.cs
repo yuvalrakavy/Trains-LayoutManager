@@ -1,7 +1,6 @@
+using LayoutManager.Model;
 using System.Drawing.Drawing2D;
 using System.Xml;
-
-using LayoutManager.Model;
 
 namespace LayoutManager.CommonUI.Controls {
     public static class LocomotiveListItemPainter {

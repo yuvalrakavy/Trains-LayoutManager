@@ -1,15 +1,14 @@
+using LayoutManager;
+using LayoutManager.Components;
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Xml;
 using System.Threading;
 using System.Threading.Tasks;
-using MethodDispatcher;
-
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.Components;
+using System.Xml;
 
 namespace DiMAX {
     /// <summary>
@@ -143,14 +142,14 @@ namespace DiMAX {
         #region Request Event Handlers
 
         [DispatchTarget]
-        private XmlElement GetCommandStationCapabilities([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) {
+        private XmlElement GetCommandStationCapabilities([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
             return new CommandStationCapabilitiesInfo {
                 MinTimeBetweenSpeedSteps = (int?)Element.AttributeValue(A_MinTimeBetweenSpeedSteps) ?? 100
             }.Element;
         }
 
         [DispatchTarget]
-        private void DisconnectPowerRequest([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) {
+        private void DisconnectPowerRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) {
             OutputManager.AddCommand(new DiMAXpowerDisconnect(this));
             PowerOff();
         }
@@ -162,7 +161,7 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private CommandStationSetFunctionNumberSupportInfo GetCommandStationSetFunctionNumberSupport([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation) => new() {
+        private CommandStationSetFunctionNumberSupportInfo GetCommandStationSetFunctionNumberSupport([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation) => new() {
             SetFunctionNumberSupport = SetFunctionNumberSupport.FunctionNumberAndBooleanState
         };
 
@@ -179,7 +178,7 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private void ChangeSignalStateCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, LayoutSignalState state) {
+        private void ChangeSignalStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, ControlConnectionPointReference connectionPointRef, LayoutSignalState state) {
             int address = connectionPointRef.Module.Address + connectionPointRef.Index;
             int v;
 
@@ -193,20 +192,20 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private void LocomotiveMotionCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int speedInSteps) {
+        private void LocomotiveMotionCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int speedInSteps) {
             OutputManager.AddCommand(new DiMAXlocomotiveMotion(this, loco.AddressProvider.Unit, speedInSteps));
         }
 
         [DispatchTarget]
-        private void SetLocomotiveLightsCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, bool lights) {
+        private void SetLocomotiveLightsCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, bool lights) {
             OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 0, false, lights));
             if (loco.DecoderType is DccDecoderTypeInfo decoder && !decoder.ParallelFunctionSupport)
                 OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 9, false, false));
         }
 
-        [DispatchTarget(Name="TriggerLocomotiveFunctionStateCommand")]
+        [DispatchTarget(Name = "TriggerLocomotiveFunctionStateCommand")]
         [DispatchTarget]
-        void SetLocomotiveFunctionStateCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
+        void SetLocomotiveFunctionStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
             var function = locomotive.GetFunctionByName(functionName);
             var train = LayoutModel.StateManager.Trains[locomotive.Id];
 
@@ -221,7 +220,7 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        void TriggerLocomotiveFunctionNumberCommand([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int functionNumber, bool functionState) {
+        void TriggerLocomotiveFunctionNumberCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, int functionNumber, bool functionState) {
             var train = LayoutModel.StateManager.Trains[loco.Id];
 
             if (train != null) {
@@ -250,7 +249,7 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private void AddCommandStationLocoBusToAddressMap([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveAddressMap addressMap) {
+        private void AddCommandStationLocoBusToAddressMap([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveAddressMap addressMap) {
             foreach (ControlModule module in LocoBus.Modules) {
                 for (int i = 0; i < module.ModuleType.NumberOfAddresses; i++) {
                     int address = module.Address + i;
@@ -289,7 +288,7 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private async Task<LayoutActionResult> ProgramCvPomRequest([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo, int address) {
+        private async Task<LayoutActionResult> ProgramCvPomRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo, int address) {
             var command = new DiMAXprogramCVonTrack(this, address, cv.Number, cv.Value);
 
             return await (Task<LayoutActionResult>)OutputManager.AddCommand(command);
@@ -396,12 +395,12 @@ namespace DiMAX {
         private void OnTripAborted(TrainStateInfo train, TripPlanInfo trip) => OnTripDone(train, trip);
 
         [DispatchTarget]
-        private Task DiMAXtestLocoSelect([DispatchFilter(Type="MyId")] IModelComponentHasNameAndId commandStation, int address, bool select, bool active, bool unconditional) {
+        private Task DiMAXtestLocoSelect([DispatchFilter(Type = "MyId")] IModelComponentHasNameAndId commandStation, int address, bool select, bool active, bool unconditional) {
             return OutputManager.AddCommand(new DiMAXlocomotiveSelection(this, address, select, active, unconditional));
         }
 
         [DispatchTarget]
-        private Task DiMAXtestLocoSpeed([DispatchFilter(Type="IsMyId")] IModelComponentHasNameAndId commandStation, int address, int speed) {
+        private Task DiMAXtestLocoSpeed([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, int address, int speed) {
             return OutputManager.AddCommand(new DiMAXlocomotiveMotion(this, address, speed));
         }
 
@@ -664,8 +663,7 @@ namespace DiMAX {
             UpdateMode = (s & 0x08) != 0;
             SoftwareReset = (s & 0x04) != 0;
 
-            Condition = (s & 0x03) switch
-            {
+            Condition = (s & 0x03) switch {
                 0 => DiMAXcondition.Normal,
                 1 => DiMAXcondition.EmergencryStop,
                 2 => DiMAXcondition.Reset,
@@ -675,8 +673,7 @@ namespace DiMAX {
         }
 
         internal void ExtendedStatusUpdate(DiMAXcommandStation commandStation, DiMAXpacket statusPacket) {
-            CommandStationType = (statusPacket.Parameters[2] & 0x3f) switch
-            {
+            CommandStationType = (statusPacket.Parameters[2] & 0x3f) switch {
                 0x01 => "DiMAX 1200Z",
                 0x02 => "DiMAX 800Z",
                 _ => "Unknown type",
@@ -1019,8 +1016,7 @@ namespace DiMAX {
         }
 
         protected static LayoutActionResult GetProgrammingResult(DiMAXpacket replyPacket) {
-            return ((replyPacket.Parameters[0] & 0x1c) >> 2) switch
-            {
+            return ((replyPacket.Parameters[0] & 0x1c) >> 2) switch {
                 0 => LayoutActionResult.NoResponse,
                 1 => LayoutActionResult.Overload,
                 4 => LayoutActionResult.Ok,
@@ -1107,8 +1103,7 @@ namespace DiMAX {
         }
 
         private static byte GetSpeedStepsMask(int speedSteps) {
-            return speedSteps switch
-            {
+            return speedSteps switch {
                 14 => 0x0,
                 28 => 0x1,
                 128 => 0x2,

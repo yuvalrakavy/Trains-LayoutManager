@@ -1,11 +1,10 @@
+using LayoutManager.Model;
+using MethodDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
-using MethodDispatcher;
-
-using LayoutManager.Model;
 
 #nullable enable
 namespace LayoutManager.Components {
@@ -871,8 +870,7 @@ namespace LayoutManager.Components {
 
         public IList<ModelComponentControlConnectionDescription> ControlConnectionDescriptions {
             get {
-                string friendlyName = Info.SignalType switch
-                {
+                string friendlyName = Info.SignalType switch {
                     LayoutSignalType.Distance => "distance signal control",
                     LayoutSignalType.Lights => "signal control",
                     LayoutSignalType.Semaphore => "semaphore",
@@ -997,7 +995,7 @@ namespace LayoutManager.Components {
             }
         }
 
-        public ControlModuleType DefaultModuleType => LayoutControlManager.GetModuleType(DefaultModuleTypeName);
+        public ControlModuleType DefaultModuleType => Dispatch.Call.GetControlModuleType(DefaultModuleTypeName);
 
         /// <summary>
         /// Start allocating address from this number when adding components at this location

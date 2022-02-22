@@ -1,15 +1,13 @@
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-
 using LayoutManager;
+using System;
+using System.Windows.Forms;
 
 #nullable enable
 namespace LayoutEventDebugger {
     /// <summary>
     /// Summary description for EventDebuggerDialog.
     /// </summary>
-    public partial  class EventDebuggerDialog : Form {
+    public partial class EventDebuggerDialog : Form {
         private readonly EventDebugger ed;
 
         public EventDebuggerDialog(EventDebugger ed) {
