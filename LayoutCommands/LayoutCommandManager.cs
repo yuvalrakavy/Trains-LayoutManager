@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MethodDispatcher;
 
 namespace LayoutManager {
     /// <summary>
@@ -52,9 +53,9 @@ namespace LayoutManager {
                 changeLevel = value;
 
                 if (changeLevel == 0 && previousValue != 0)
-                    EventManager.Event(new LayoutEvent("model-not-modified", this));
+                    Dispatch.Notification.OnModelNotModified();
                 else if (changeLevel != 0 && previousValue == 0)
-                    EventManager.Event(new LayoutEvent("model-modified", this));
+                    Dispatch.Notification.OnModelModified();
             }
         }
 
@@ -84,7 +85,7 @@ namespace LayoutManager {
         /// Undo the "last" command
         /// </summary>
         public void Undo() {
-            int i = getUndoIndex();
+            int i = GetUndoIndex();
 
             if (i < 0)
                 throw new LayoutCommandException("Undo command stack empty");
@@ -98,7 +99,7 @@ namespace LayoutManager {
         /// Redo the last undone command
         /// </summary>
         public void Redo() {
-            int i = getRedoIndex();
+            int i = GetRedoIndex();
 
             if (i >= commands.Count)
                 throw new LayoutCommandException("No command to redo");
@@ -111,19 +112,19 @@ namespace LayoutManager {
         /// <summary>
         /// Return true if there is a command that can be undone
         /// </summary>
-        public bool CanUndo => !(getUndoIndex() < 0);
+        public bool CanUndo => !(GetUndoIndex() < 0);
 
         /// <summary>
         /// Return true if there is a command that can be redone
         /// </summary>
-        public bool CanRedo => getRedoIndex() < commands.Count;
+        public bool CanRedo => GetRedoIndex() < commands.Count;
 
         /// <summary>
         /// Return the command name that can be undone
         /// </summary>
         public string UndoCommandName {
             get {
-                int i = getUndoIndex();
+                int i = GetUndoIndex();
 
                 if (i < 0)
                     throw new LayoutCommandException("No command to undo");
@@ -137,7 +138,7 @@ namespace LayoutManager {
         /// </summary>
         public string RedoCommandName {
             get {
-                int i = getRedoIndex();
+                int i = GetRedoIndex();
 
                 if (i >= commands.Count)
                     throw new LayoutCommandException("No command to redo");
@@ -162,7 +163,7 @@ namespace LayoutManager {
         /// </summary>
         /// <returns>The index of the command to be undone. -1 is returned if
         /// there is no such command</returns>
-        private int getUndoIndex() {
+        private int GetUndoIndex() {
             int i;
 
             for (i = iCommand - 1; i >= 0 && commands[i].IsCheckpoint; i--)
@@ -176,7 +177,7 @@ namespace LayoutManager {
         /// </summary>
         /// <returns>The index, or commands.Count if there is no command that can
         /// be redone</returns>
-        private int getRedoIndex() {
+        private int GetRedoIndex() {
             int i;
 
             for (i = iCommand; i < commands.Count && commands[i].IsCheckpoint; i++)

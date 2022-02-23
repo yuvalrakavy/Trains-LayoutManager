@@ -112,15 +112,23 @@ namespace LayoutManager.Dialogs {
             UpdateButtons();
         }
 
-        [LayoutEvent("control-module-address-changed")]
-        [LayoutEvent("control-module-location-changed")]
-        [LayoutEvent("control-bus-reconnected")]
-        [LayoutEvent("control-module-label-changed")]
-        [LayoutEvent("control-user-action-required-changed")]
-        [LayoutEvent("control-address-programming-required-changed")]
-        private void DoUpdateItems(LayoutEvent e) {
-            UpdateItems();
-        }
+        [DispatchTarget]
+        private void OnControlModuleProgrammingRequiredChanged(ControlModule module) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnUserActionRequiredChanged(IControlSupportUserAction subject) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnControlModuleLabelChanged(ControlModule module, string? label) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnControlBusConnected(ControlBus bus) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnControlModuleLocationChanged(ControlModule module, Guid? locationId) => UpdateItems();
+
+        [DispatchTarget]
+        private void OnControlModuleAddressChanged(ControlModule module, int address) => UpdateItems();
 
         [DispatchTarget]
         private void OnControlBusRemoved(IModelComponentIsBusProvider busProvider) => UpdateItems();

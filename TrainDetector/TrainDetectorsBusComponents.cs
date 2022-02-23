@@ -108,7 +108,7 @@ namespace LayoutManager.ControlComponents {
             var trainDetectorController = new TrainDetectorControllerModule(moduleRef.Module);
 
             (ipEndPoint, trainDetectorController.ControllerIpAddress) = (trainDetectorController.ControllerIpAddress, ipEndPoint);
-            EventManager.Event(new LayoutEvent("control-module-modified", trainDetectorController).SetOption("ModuleTypeName", trainDetectorController.ModuleTypeName));
+            Dispatch.Notification.OnControlModuleModified(trainDetectorController);
         }
 
         public override void Undo() {

@@ -502,15 +502,13 @@ namespace LayoutManager {
         }
 
         [DispatchTarget]
-        private void CloseAllFrameWindows() {
-            Close();
-        }
+        private void CloseAllFrameWindows() => Close();
 
-        [LayoutEvent("model-modified")]
-        [LayoutEvent("model-not-modified")]
-        private void ModelModificationStateChanged(LayoutEvent e) {
-            UpdateFormTitle();
-        }
+        [DispatchTarget]
+        private void OnModelNotModified() => UpdateFormTitle();
+
+        [DispatchTarget]
+        private void OnModelModified() => UpdateFormTitle();
 
         internal void OnViewChanged() {
             if (ActiveView != null)

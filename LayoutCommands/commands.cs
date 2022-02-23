@@ -370,12 +370,8 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            int previousAddress = moduleRef.Module.Address;
-
-            moduleRef.Module.Address = address;
-            address = previousAddress;
-
-            EventManager.Event(new LayoutEvent("control-module-address-changed", moduleRef.Module));
+            (address, moduleRef.Module.Address) = (moduleRef.Module.Address, address);
+            Dispatch.Notification.OnControlModuleAddressChanged(moduleRef.Module, moduleRef.Module.Address);
         }
 
         public override void Undo() {
@@ -395,11 +391,8 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            var previousLocationID = moduleRef.Module.LocationId;
-
-            moduleRef.Module.LocationId = locationID;
-            locationID = previousLocationID;
-            EventManager.Event(new LayoutEvent("control-module-location-changed", moduleRef.Module));
+            (locationID, moduleRef.Module.LocationId) = (moduleRef.Module.LocationId, locationID);
+            Dispatch.Notification.OnControlModuleLocationChanged(moduleRef.Module, moduleRef.Module.LocationId);
         }
 
         public override void Undo() {
@@ -420,12 +413,10 @@ namespace LayoutManager {
 
         public override void Do() {
             var module = this.controlModuleRef.Module;
-            int previousConnectionPointsCount = module.NumberOfConnectionPoints;
+            (this.connectionPointsCount, module.NumberOfConnectionPoints) = (module.NumberOfConnectionPoints, this.connectionPointsCount);
 
-            module.NumberOfConnectionPoints = this.connectionPointsCount;
-            this.connectionPointsCount = previousConnectionPointsCount;
-            EventManager.Event(new LayoutEvent("control-module-connection-point-count-changed", controlModuleRef.Module));
-            EventManager.Event(new LayoutEvent("control-module-modified", controlModuleRef.Module));
+            Dispatch.Notification.OnControlModuleConnectionPointCountChanged(module, module.NumberOfConnectionPoints);
+            Dispatch.Notification.OnControlModuleModified(controlModuleRef.Module);
         }
 
         public override void Undo() {
@@ -534,14 +525,16 @@ namespace LayoutManager {
 
         public override void Do() {
             var current = bus.BusProvider;
-            var otherBus = Ensure.NotNull<ControlBus>(bus.ControlManager.Buses.GetBus(otherBusProvider, bus.BusTypeName));
+            var otherBus = bus.ControlManager.Buses.GetBus(otherBusProvider, bus.BusTypeName);
 
-            bus.BusProvider = otherBusProvider;
-            otherBus.BusProvider = current;
+            if (otherBus != null) {
+                bus.BusProvider = otherBusProvider;
+                otherBus.BusProvider = current;
 
-            this.otherBusProvider = current;
+                this.otherBusProvider = current;
 
-            EventManager.Event(new LayoutEvent("control-bus-reconnected", bus));
+                Dispatch.Notification.OnControlBusConnected(bus);
+            }
         }
 
         public override void Undo() {
@@ -577,7 +570,7 @@ namespace LayoutManager {
                 this.address = address + delta;
                 this.delta = -delta;
 
-                EventManager.Event(new LayoutEvent("control-module-address-changed", thisModule).SetOption("ModuleTypeName", thisModule.ModuleTypeName));
+                Dispatch.Notification.OnControlModuleAddressChanged(thisModule, this.address);
             }
         }
 
@@ -598,13 +591,9 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            var module = Ensure.NotNull<ControlModule>(moduleRef.Module);
-            var previousLabel = module.Label;
-
-            module.Label = label;
-            EventManager.Event(new LayoutEvent("control-module-label-changed", module, label).SetOption("ModuleTypeName", module.ModuleTypeName));
-
-            label = previousLabel;
+            var module = moduleRef.Module;
+            (label, module.Label)=(module.Label, label);
+            Dispatch.Notification.OnControlModuleLabelChanged(module, module.Label);
         }
 
         public override void Undo() {
@@ -650,7 +639,7 @@ namespace LayoutManager {
             subject.UserActionRequired = this.userActionRequired;
             this.userActionRequired = previousUserActionRequired;
 
-            EventManager.Event(new LayoutEvent("control-user-action-required-changed", subject));
+            Dispatch.Notification.OnUserActionRequiredChanged(subject);
         }
 
         public override void Undo() {
@@ -670,11 +659,8 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            bool previousValue = controlModule.AddressProgrammingRequired;
-
-            controlModule.AddressProgrammingRequired = this.addressProgrammingRequired;
-            this.addressProgrammingRequired = previousValue;
-            EventManager.Event(new LayoutEvent("control-address-programming-required-changed", this.controlModule).SetOption("ModuleTypeName", controlModule.ModuleTypeName));
+            (this.addressProgrammingRequired, controlModule.AddressProgrammingRequired) = (controlModule.AddressProgrammingRequired, this.addressProgrammingRequired);
+            Dispatch.Notification.OnControlModuleProgrammingRequiredChanged(this.controlModule);
         }
 
         public override void Undo() {
@@ -694,10 +680,7 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            LayoutPhase previousPhase = LayoutModel.Instance.DefaultPhase;
-
-            LayoutModel.Instance.DefaultPhase = phase;
-            phase = previousPhase;
+            (phase, LayoutModel.Instance.DefaultPhase) = (LayoutModel.Instance.DefaultPhase, phase);
         }
 
         public override void Undo() {
@@ -722,10 +705,7 @@ namespace LayoutManager {
         }
 
         public override void Do() {
-            LayoutPhase previousPhase = spot.Phase;
-            spot.Phase = phase;
-            phase = previousPhase;
-
+            (phase, spot.Phase) = (spot.Phase, phase);
             foreach (var component in spot.Components)
                 component.Redraw();
         }

@@ -1459,5 +1459,76 @@ namespace LayoutManager {
             ds_OnLocomotiveTypeUpdated.CallVoid(locoType);
         }
 
+        static DispatchSource? ds_OnControlModuleAddressChanged = null;
+        [DispatchSource]
+        public static void OnControlModuleAddressChanged(this Dispatcher d, ControlModule module, int address) {
+            ds_OnControlModuleAddressChanged ??= d[nameof(OnControlModuleAddressChanged)];
+            ds_OnControlModuleAddressChanged.CallVoid(module, address);
+        }
+
+        static DispatchSource? ds_OnControlModuleLocationChanged = null;
+        [DispatchSource]
+        public static void OnControlModuleLocationChanged(this Dispatcher d, ControlModule module, Guid? locationId) {
+            ds_OnControlModuleLocationChanged ??= d[nameof(OnControlModuleLocationChanged)];
+            ds_OnControlModuleLocationChanged.CallVoid(module, locationId);
+        }
+
+        static DispatchSource? ds_OnControlModuleConnectionPointCountChanged = null;
+        [DispatchSource]
+        public static void OnControlModuleConnectionPointCountChanged(this Dispatcher d, ControlModule module, int connectionPointsCount) {
+            ds_OnControlModuleConnectionPointCountChanged ??= d[nameof(OnControlModuleConnectionPointCountChanged)];
+            ds_OnControlModuleConnectionPointCountChanged.CallVoid(module, connectionPointsCount);
+        }
+
+        static DispatchSource? ds_OnControlModuleModified = null;
+        [DispatchSource]
+        public static void OnControlModuleModified(this Dispatcher d, ControlModule module) {
+            ds_OnControlModuleModified ??= d[nameof(OnControlModuleModified)];
+            ds_OnControlModuleModified.CallVoid(module);
+        }
+
+        static DispatchSource? ds_OnControlBusConnected = null;
+        [DispatchSource]
+        public static void OnControlBusConnected(this Dispatcher d, ControlBus bus) {
+            ds_OnControlBusConnected ??= d[nameof(OnControlBusConnected)];
+            ds_OnControlBusConnected.CallVoid(bus);
+        }
+
+        static DispatchSource? ds_OnControlModuleLabelChanged = null;
+        [DispatchSource]
+        public static void OnControlModuleLabelChanged(this Dispatcher d, ControlModule module, string? label) {
+            ds_OnControlModuleLabelChanged ??= d[nameof(OnControlModuleLabelChanged)];
+            ds_OnControlModuleLabelChanged.CallVoid(module, label);
+        }
+
+        static DispatchSource? ds_OnUserActionRequiredChanged = null;
+        [DispatchSource]
+        public static void OnUserActionRequiredChanged(this Dispatcher d, IControlSupportUserAction subject) {
+            ds_OnUserActionRequiredChanged ??= d[nameof(OnUserActionRequiredChanged)];
+            ds_OnUserActionRequiredChanged.CallVoid(subject);
+        }
+
+        static DispatchSource? ds_OnControlModuleProgrammingRequiredChanged = null;
+        [DispatchSource]
+        public static void OnControlModuleProgrammingRequiredChanged(this Dispatcher d, ControlModule module) {
+            ds_OnControlModuleProgrammingRequiredChanged ??= d[nameof(OnControlModuleProgrammingRequiredChanged)];
+            ds_OnControlModuleProgrammingRequiredChanged.CallVoid(module);
+        }
+
+        static DispatchSource? ds_OnModelNotModified = null;
+        [DispatchSource]
+        public static void OnModelNotModified(this Dispatcher d) {
+            ds_OnModelNotModified ??= d[nameof(OnModelNotModified)];
+            ds_OnModelNotModified.CallVoid();
+        }
+
+        static DispatchSource? ds_OnModelModified = null;
+        [DispatchSource]
+        public static void OnModelModified(this Dispatcher d) {
+            ds_OnModelModified ??= d[nameof(OnModelModified)];
+            ds_OnModelModified.CallVoid();
+        }
+
+
     }
 }

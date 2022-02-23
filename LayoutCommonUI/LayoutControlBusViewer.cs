@@ -445,16 +445,30 @@ namespace LayoutManager.CommonUI {
         private void OnComponentConfigurationChanged(ModelComponent component) => Recalc();
 
         [LayoutEvent("enter-design-mode")]
-        [LayoutEvent("control-module-address-changed")]
-        [LayoutEvent("control-module-location-changed")]
-        [LayoutEvent("control-bus-reconnected")]
-        [LayoutEvent("control-module-label-changed")]
-        [LayoutEvent("control-user-action-required-changed")]
-        [LayoutEvent("control-address-programming-required-changed")]
-        [LayoutEvent("control-module-modified")]
         private void ChangeMode(LayoutEvent e) {
             Recalc();
         }
+
+        [DispatchTarget]
+        private void OnControlModuleProgrammingRequiredChanged(ControlModule module) => Recalc();
+
+        [DispatchTarget]
+        private void OnUserActionRequiredChanged(IControlSupportUserAction subject) => Recalc();
+
+        [DispatchTarget]
+        private void OnControlModuleLabelChanged(ControlModule module, string? label) => Recalc();
+
+        [DispatchTarget]
+        private void OnControlBusConnected(ControlBus bus) => Recalc();
+
+        [DispatchFilter]
+        private void OnControlModuleModified(ControlModule module) => Recalc();
+
+        [DispatchTarget]
+        private void OnControlModuleLocationChanged(ControlModule module, Guid? locationId) => Recalc();
+
+        [DispatchTarget]
+        private void OnControlModuleAddressChanged(ControlModule module, int address) => Recalc();
 
         [DispatchTarget]
         private void OnControlBusRemoved(IModelComponentIsBusProvider busProvider) => Recalc();
