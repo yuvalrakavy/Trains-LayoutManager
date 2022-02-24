@@ -1,8 +1,9 @@
+using System.Drawing;
+using System.Xml;
+using MethodDispatcher;
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
-using System.Drawing;
-using System.Xml;
 
 namespace NCDRelayController {
     /// <summary>
@@ -27,19 +28,14 @@ namespace NCDRelayController {
 
         #region Component menu Item
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        private void AddRelayControllerItem(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = (ModelComponent?)e.Info;
-
-            if (old == null)
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems_Control(ModelComponent? existingTrack, XmlElement categoryElement, [DispatchFilter] string categoryName = "Control") {
+            if (existingTrack == null)
                 categoryElement.InnerXml += "<Item Name='NCDRelayController' Tooltip='NCD Relay Controller' />";
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='NCDRelayController']")]
-        private void PaintCentralStationItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_NCDRelayController(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "NCDRelayController") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -50,10 +46,8 @@ namespace NCDRelayController {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='NCDRelayController']")]
-        private void CreateCentralStationComponent(LayoutEvent e) {
-            e.Info = new NCDRelayController();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_NCDRelayControllerl(XmlElement itemElement, [DispatchFilter] string name = "NCDRelayController") => new NCDRelayController();
 
         #endregion
 

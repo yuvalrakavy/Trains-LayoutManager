@@ -127,8 +127,7 @@ namespace LayoutManager {
 
                     if (childNodes != null) {
                         foreach (XmlElement categoryElement in childNodes) {
-                            EventManager.Event(new LayoutEvent("get-component-menu-category-items", categoryElement,
-                                oldTrack, null));
+                            Dispatch.Call.GetComponentMenuCategoryItems(oldTrack, categoryElement, categoryElement.GetAttribute("Name"));
 
                             // If this category contains at least one item, create the category and add the items
                             if (categoryElement.ChildNodes.Count > 0)
@@ -288,13 +287,11 @@ namespace LayoutManager {
         }
 
         protected override void Paint(Graphics g) {
-            EventManager.Event(new LayoutEvent("paint-image-menu-item", itemElement, g));
+            Dispatch.Call.PaintImageMenuItem(g, itemElement, itemElement.GetAttribute("Name"));
         }
 
         public ModelComponent? CreateComponent(ModelComponent? old) {
-            var newComponent = (ModelComponent?)EventManager.Event(new LayoutEvent("create-model-component",
-                itemElement, old, null));
-
+            var newComponent = Dispatch.Call.CreateModelComponent(itemElement, itemElement.GetAttribute("Name"));
             return newComponent != old ? newComponent : null;
         }
     }

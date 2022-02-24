@@ -1,8 +1,9 @@
+using System.Drawing;
+using System.Xml;
+using MethodDispatcher;
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
-using System.Drawing;
-using System.Xml;
 
 namespace DiMAX {
     /// <summary>
@@ -27,19 +28,14 @@ namespace DiMAX {
 
         #region Component menu Item
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        private void AddCentralStationItem(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = (ModelComponent?)e.Info;
-
-            if (old == null)
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems(ModelComponent? track, XmlElement categoryElement, [DispatchFilter] string categoryName = "Control") {
+            if (track == null)
                 categoryElement.InnerXml += "<Item Name='DiMAX' Tooltip='Massoth DiMAX Command Station' />";
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='DiMAX']")]
-        private void PaintCentralStationItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_DiMAX(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "DiMAX") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -50,10 +46,8 @@ namespace DiMAX {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='DiMAX']")]
-        private void CreateCentralStationComponent(LayoutEvent e) {
-            e.Info = new DiMAXcommandStation();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_DiMax(XmlElement _, [DispatchFilter] string name = "DiMax") => new DiMAXcommandStation();
 
         #endregion
 

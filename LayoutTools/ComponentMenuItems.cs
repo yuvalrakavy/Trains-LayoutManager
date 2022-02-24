@@ -1,8 +1,9 @@
-using LayoutManager.Components;
-using LayoutManager.Model;
 using System.ComponentModel;
 using System.Drawing;
 using System.Xml;
+using MethodDispatcher;
+using LayoutManager.Components;
+using LayoutManager.Model;
 
 namespace LayoutManager.Tools {
     /// <summary>
@@ -136,10 +137,8 @@ namespace LayoutManager.Tools {
                 GetTooltip(cp1, cp2) + "' cp1='" + cp1 + "' cp2='" + cp2 + "' />");
         }
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Tracks']")]
-        private void AddTrackCategoryItems(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems_Tracks(ModelComponent? track, XmlElement categoryElement, [DispatchFilter] string categoryName = "Tracks") {
             AddTrackItem(categoryElement, LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.R);
             AddTrackItem(categoryElement, LayoutComponentConnectionPoint.T, LayoutComponentConnectionPoint.B);
             AddTrackItem(categoryElement, LayoutComponentConnectionPoint.L, LayoutComponentConnectionPoint.T);
@@ -148,11 +147,8 @@ namespace LayoutManager.Tools {
             AddTrackItem(categoryElement, LayoutComponentConnectionPoint.R, LayoutComponentConnectionPoint.B);
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-component']")]
-        private void PaintTrackItem(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_TrackComponent(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "track-component") {
             LayoutComponentConnectionPoint cp1 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("cp1"));
             LayoutComponentConnectionPoint cp2 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("cp2"));
 
@@ -164,14 +160,12 @@ namespace LayoutManager.Tools {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-component']")]
-        private void CreateTrackComponent(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender);
-
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_TrackComponent(XmlElement itemElement, [DispatchFilter] string name = "track-component") {
             LayoutComponentConnectionPoint cp1 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("cp1"));
             LayoutComponentConnectionPoint cp2 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("cp2"));
 
-            e.Info = new LayoutStraightTrackComponent(cp1, cp2);
+            return new LayoutStraightTrackComponent(cp1, cp2);
         }
 
         #endregion
@@ -214,11 +208,9 @@ namespace LayoutManager.Tools {
             return diagCp[0] == cp2 ? diagCp[1] : diagCp[0];
         }
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='ComposedTracks']")]
-        private void AddComposedTrackCategoryItems(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-
-            if (e.Info is LayoutStraightTrackComponent track && track.TrackAnnotation == null) {
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems_ComposeTracks(ModelComponent? existingTrack, XmlElement categoryElement, [DispatchFilter] string categoryName = "ComposedTracks") {
+            if (existingTrack is LayoutStraightTrackComponent track && track.TrackAnnotation == null) {
                 if (track.IsDiagonal()) {
                     AddTurnoutItem(categoryElement, track, track.ConnectionPoints[0], LayoutTrackComponent.OppositeConnectPoint(track.ConnectionPoints[0]));
                     AddTurnoutItem(categoryElement, track, track.ConnectionPoints[1], LayoutTrackComponent.OppositeConnectPoint(track.ConnectionPoints[1]));
@@ -250,11 +242,8 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='turnout-component']")]
-        private void PaintTurnoutTrackItem(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_TurnoutComponent(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "turnout-component") {
             LayoutComponentConnectionPoint trackCp1 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute(A_TrackCp1));
             LayoutComponentConnectionPoint trackCp2 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute(A_TrackCp2));
             LayoutComponentConnectionPoint tipCp = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("TipCp"));
@@ -274,10 +263,8 @@ namespace LayoutManager.Tools {
             newTrackPainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='turnout-component']")]
-        private void CreateTurnoutComponent(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender);
-
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_TurnoutComponent(XmlElement itemElement, [DispatchFilter] string name = "turnout-component") {
             LayoutComponentConnectionPoint trackCp1 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute(A_TrackCp1));
             LayoutComponentConnectionPoint trackCp2 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute(A_TrackCp2));
             LayoutComponentConnectionPoint tipCp = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("TipCp"));
@@ -294,16 +281,13 @@ namespace LayoutManager.Tools {
                 branchCp = (tipCp == trackCp1) ? trackCp2 : trackCp1;
             }
 
-            e.Info = new LayoutTurnoutTrackComponent(tipCp, straightCp, branchCp);
+            return new LayoutTurnoutTrackComponent(tipCp, straightCp, branchCp);
         }
 
         //----
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='three-way-turnout-component']")]
-        private void PaintThreeWayTurnoutTrackItem(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_ThreeWayTurnoutComponent(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "three-way-turnout-component") {
             LayoutComponentConnectionPoint trackCp1 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute(A_TrackCp1));
             LayoutComponentConnectionPoint trackCp2 = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute(A_TrackCp2));
             LayoutComponentConnectionPoint tipCp = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("TipCp"));
@@ -330,21 +314,17 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='three-way-turnout-component']")]
-        private void CreateThreeWayTurnoutComponent(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender);
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_ThreeWayTurnoutComponent(XmlElement itemElement, [DispatchFilter] string name = "three-way-turnout-component") {
             LayoutComponentConnectionPoint tipCp = LayoutComponentConnectionPoint.Parse(itemElement.GetAttribute("TipCp"));
 
-            e.Info = new LayoutThreeWayTurnoutComponent(tipCp);
+            return new LayoutThreeWayTurnoutComponent(tipCp);
         }
 
         // ----
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='double-slip-component']")]
-        private void PaintDoubleSlipTrackItem(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_DoubleSlipComponent(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "double-slip-component") {
             var trackCp1 = itemElement.AttributeValue(A_TrackCp1).ToComponentConnectionPoint();
             var diagonalIndex = (int)itemElement.AttributeValue(A_DiagonalIndex);
 
@@ -362,21 +342,17 @@ namespace LayoutManager.Tools {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='double-slip-component']")]
-        private void CreateDoubleSlipComponent(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender, "itemElement");
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_DoubleSlipComponent(XmlElement itemElement, [DispatchFilter] string name = "double-slip-component") {
             var diagonalIndex = (int)itemElement.AttributeValue(A_DiagonalIndex);
 
-            e.Info = new LayoutDoubleSlipTrackComponent(diagonalIndex);
+            return new LayoutDoubleSlipTrackComponent(diagonalIndex);
         }
 
         //----
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='double-track-component']")]
-        private void PaintDoubleTrackItem(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender, "itemElement");
-            var g = Ensure.NotNull<Graphics>(e.Info, "g");
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_DoubleTrackComponent(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "double-track-component") {
             var trackCp1 = itemElement.AttributeValue(A_TrackCp1).ToComponentConnectionPoint();
             var trackCp2 = itemElement.AttributeValue(A_TrackCp2).ToComponentConnectionPoint();
             var newCp1 = itemElement.AttributeValue(A_NewCp1).ToComponentConnectionPoint();
@@ -396,14 +372,12 @@ namespace LayoutManager.Tools {
             newTrackPainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='double-track-component']")]
-        private void CreateDoubleTrackComponent(LayoutEvent e) {
-            var itemElement = Ensure.NotNull<XmlElement>(e.Sender);
-
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_DoubleTrackComponent(XmlElement itemElement, [DispatchFilter] string name = "double-track-component") {
             var trackCp1 = itemElement.AttributeValue(A_TrackCp1).ToComponentConnectionPoint();
             var trackCp2 = itemElement.AttributeValue(A_TrackCp2).ToComponentConnectionPoint();
 
-            e.Info = new LayoutDoubleTrackComponent(trackCp1, trackCp2);
+            return new LayoutDoubleTrackComponent(trackCp1, trackCp2);
         }
 
         //----
@@ -411,10 +385,8 @@ namespace LayoutManager.Tools {
         private bool CanComposeTrackLink(LayoutStraightTrackComponent existingTrack) => !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) &&
                 existingTrack.Spot[ModelComponentKind.TrackLink] == null;
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-link']")]
-        private void PaintTrackLinkItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_TrackLink(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "track-link") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -431,37 +403,34 @@ namespace LayoutManager.Tools {
             linkPainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-link']")]
-        private void CreateTrackLinkComponent(LayoutEvent e) {
-            e.Info = new LayoutTrackLinkComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_TrackLink(XmlElement itemElement, [DispatchFilter] string name = "track-link") => new LayoutTrackLinkComponent();
 
         #endregion
 
         #region Block category items
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Block']")]
-        private void AddBlockCategoryItems(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = (LayoutTrackComponent?)e.Info;
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems_Block(ModelComponent? track, XmlElement categoryElement, [DispatchFilter] string categoryName = "Block") {
+            if (track is LayoutTrackComponent existingTrack) {
+                if (CanComposeBlockEdge(existingTrack))
+                    AddChild(categoryElement, "<Item Name='track-contact' Tooltip='Track contact (block edge)' />");
 
-            if (CanComposeBlockEdge(old))
-                AddChild(categoryElement, "<Item Name='track-contact' Tooltip='Track contact (block edge)' />");
+                if (CanComposeBlockEdge(existingTrack))
+                    AddChild(categoryElement, "<Item Name='proximity-sensor' Tooltip='Proximity sensor (block edge)' />");
 
-            if (CanComposeBlockEdge(old))
-                AddChild(categoryElement, "<Item Name='proximity-sensor' Tooltip='Proximity sensor (block edge)' />");
+                if (CanComposeBlockEdge(existingTrack))
+                    AddChild(categoryElement, "<Item Name='block-edge' Tooltip='Block Edge' />");
 
-            if (CanComposeBlockEdge(old))
-                AddChild(categoryElement, "<Item Name='block-edge' Tooltip='Block Edge' />");
+                if (CanComposeBlockInfo(existingTrack))
+                    AddChild(categoryElement, "<Item Name='block-info' Tooltip='Block Information' />");
 
-            if (CanComposeBlockInfo(old))
-                AddChild(categoryElement, "<Item Name='block-info' Tooltip='Block Information' />");
+                if (CanComposeSignal(existingTrack))
+                    AddChild(categoryElement, "<Item Name='signal' Tooltip='Track Signal' />");
 
-            if (CanComposeSignal(old))
-                AddChild(categoryElement, "<Item Name='signal' Tooltip='Track Signal' />");
-
-            if (CanComposeGate(old))
-                AddChild(categoryElement, "<Item Name='gate' Tooltip='Gate' />");
+                if (CanComposeGate(existingTrack))
+                    AddChild(categoryElement, "<Item Name='gate' Tooltip='Gate' />");
+            }
         }
 
         //----
@@ -481,10 +450,8 @@ namespace LayoutManager.Tools {
 
         //----
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-contact']")]
-        private void PaintTrackContactItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_TrackContact(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "track-contact") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -504,16 +471,12 @@ namespace LayoutManager.Tools {
             contactPainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-contact']")]
-        private void CreateTrackContactComponent(LayoutEvent e) {
-            e.Info = new LayoutTrackContactComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_TrackContact(XmlElement itemElement, [DispatchFilter] string name = "track-contact") => new LayoutTrackContactComponent();
 
         //----
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='proximity-sensor']")]
-        private void PaintProximitySensorItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_ProximitySensor(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "proximity-sensor") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -533,17 +496,13 @@ namespace LayoutManager.Tools {
             sensorPainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='proximity-sensor']")]
-        private void CreateProximitySensorComponent(LayoutEvent e) {
-            e.Info = new LayoutProximitySensorComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_ProximitySensor(XmlElement itemElement, [DispatchFilter] string name = "proximity-sensor") => new LayoutProximitySensorComponent();
 
         //----
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='block-edge']")]
-        private void PaintBlockEdgeItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_BlockEdge(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "block-edge") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -563,10 +522,8 @@ namespace LayoutManager.Tools {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='block-edge']")]
-        private void CreateBlockEdgeComponent(LayoutEvent e) {
-            e.Info = new LayoutBlockEdgeComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_BlockEdge(XmlElement itemElement, [DispatchFilter] string name = "block-edge") => new LayoutBlockEdgeComponent();
 
         //----
 
@@ -585,10 +542,8 @@ namespace LayoutManager.Tools {
             return false;
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='block-info']")]
-        private void PaintBlockInfoItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_BlockInfo(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "block-info") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -608,10 +563,8 @@ namespace LayoutManager.Tools {
             blockInfoPainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='block-info']")]
-        private void CreateBlockInfoComponent(LayoutEvent e) {
-            e.Info = new LayoutBlockDefinitionComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_BlockInfo(XmlElement itemElement, [DispatchFilter] string name = "block-info") => new LayoutBlockDefinitionComponent();
 
         //----
 
@@ -626,10 +579,8 @@ namespace LayoutManager.Tools {
             return false;
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='signal']")]
-        private void PaintSignalItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_Signal(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "signal") {
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
             g.TranslateTransform(4, 4);
@@ -638,10 +589,8 @@ namespace LayoutManager.Tools {
             g.DrawRectangle(Pens.Black, 0, 0, 32, 32);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='signal']")]
-        private void CreateSignalComponent(LayoutEvent e) {
-            e.Info = new LayoutSignalComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_Signal(XmlElement itemElement, [DispatchFilter] string name = "signal") => new LayoutSignalComponent();
 
         //----
 
@@ -654,10 +603,8 @@ namespace LayoutManager.Tools {
             return false;
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='gate']")]
-        private void PaintGateItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_Gate(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "gate") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -674,36 +621,31 @@ namespace LayoutManager.Tools {
             gatePainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='gate']")]
-        private void CreateGateComponent(LayoutEvent e) {
-            e.Info = new LayoutGateComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_Gate(XmlElement itemElement, [DispatchFilter] string name = "gate") => new LayoutGateComponent();
 
         #endregion
 
         #region Annotation section components
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Annotation']")]
-        private void AddAnnotationCategoryItems(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = (LayoutTrackComponent?)(e.Info);
-
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems_Annotation(ModelComponent? existingTrack, XmlElement categoryElement, [DispatchFilter] string categoryName = "Annotation") {
             AddChild(categoryElement, "<Item Name='text' Tooltip='Text label' />");
             AddChild(categoryElement, "<Item Name='image' Tooltip='Image (picture)' />");
 
-            if (CanComposeBridge(old))
-                AddChild(categoryElement, "<Item Name='bridge' Tooltip='Bridge' />");
+            if (existingTrack is LayoutTrackComponent track) {
+                if (CanComposeBridge(track))
+                    AddChild(categoryElement, "<Item Name='bridge' Tooltip='Bridge' />");
 
-            if (CanComposeTunnel(old))
-                AddChild(categoryElement, "<Item Name='tunnel' Tooltip='Tunnel' />");
+                if (CanComposeTunnel(track))
+                    AddChild(categoryElement, "<Item Name='tunnel' Tooltip='Tunnel' />");
+            }
         }
 
         //----
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='text']")]
-        private void PaintTextItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_Text(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "text") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -713,17 +655,13 @@ namespace LayoutManager.Tools {
             g.DrawString("Aa", f, Brushes.BlueViolet, new Point(1, 4));
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='text']")]
-        private void CreateTextComponent(LayoutEvent e) {
-            e.Info = new LayoutTextComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_Text(XmlElement itemElement, [DispatchFilter] string name = "text") => new LayoutTextComponent();
 
         //----
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='image']")]
-        private void DrawImageItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_Image(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "image") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -731,19 +669,15 @@ namespace LayoutManager.Tools {
             g.DrawImage(imageListComponents.Images[0], 1, 1);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='image']")]
-        private void CreateImageComponent(LayoutEvent e) {
-            e.Info = new LayoutImageComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_Image(XmlElement itemElement, [DispatchFilter] string name = "image") => new LayoutImageComponent();
 
         //----
 
         private bool CanComposeBridge(LayoutTrackComponent? old) => old != null && old is LayoutStraightTrackComponent;
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='bridge']")]
-        private void PaintBridgeItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_Bridge(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "bridge") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -762,19 +696,15 @@ namespace LayoutManager.Tools {
             bridgePainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='bridge']")]
-        private void CreateBridgeComponent(LayoutEvent e) {
-            e.Info = new LayoutBridgeComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_Bridge(XmlElement itemElement, [DispatchFilter] string name = "bridge") => new LayoutBridgeComponent();
 
         //----
 
         private bool CanComposeTunnel(LayoutTrackComponent? old) => old != null && old is LayoutStraightTrackComponent;
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='tunnel']")]
-        private void PaintTunnelItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_Tunnel(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "tunnel") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -793,36 +723,34 @@ namespace LayoutManager.Tools {
             tunnelPainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='tunnel']")]
-        private void CreateTunnelComponent(LayoutEvent e) {
-            e.Info = new LayoutTunnelComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_Tunnle(XmlElement itemElement, [DispatchFilter] string name = "tunnel") => new LayoutTunnelComponent();
 
         #endregion
 
         #region Power Control section components
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']", Order = 100)]
-        private void AddControlCategoryItems(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = (LayoutTrackComponent?)e.Info;
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems_Control(ModelComponent? existingTrack, XmlElement categoryElement, [DispatchFilter] string categoryName = "Control") {
 
-            if (CanComposeTrackPower(old))
-                AddChild(categoryElement, "<Item Name='track-power' Tooltip='Track power connector' />");
+            if (existingTrack is LayoutTrackComponent track) {
+                if (CanComposeTrackPower(track))
+                    AddChild(categoryElement, "<Item Name='track-power' Tooltip='Track power connector' />");
 
-            if (CanComposeTrackIsolation(old))
-                AddChild(categoryElement, "<Item Name='track-isolation' Tooltip='Track power isolation' />");
+                if (CanComposeTrackIsolation(track))
+                    AddChild(categoryElement, "<Item Name='track-isolation' Tooltip='Track power isolation' />");
 
-            if (CanComposeTrackReverseLoopModule(old))
-                AddChild(categoryElement, "<Item Name='track-reverse-loop-module' Tooltip='Track reverse loop module' />");
+                if (CanComposeTrackReverseLoopModule(track))
+                    AddChild(categoryElement, "<Item Name='track-reverse-loop-module' Tooltip='Track reverse loop module' />");
 
-            if (CanComposeControlModuleLocation(old))
-                AddChild(categoryElement, "<Item Name='control-module-location' Tooltip='Location of control modules (turnout and feedback decoders etc.)' />");
+                if (CanComposeControlModuleLocation(track))
+                    AddChild(categoryElement, "<Item Name='control-module-location' Tooltip='Location of control modules (turnout and feedback decoders etc.)' />");
 
-            if (old == null) {
-                AddChild(categoryElement, "<Item Name='power-selector' Tooltip='Power selector (select between one of two power sources) or Power switch (power On/Off)' />");
+                if (track == null) {
+                    AddChild(categoryElement, "<Item Name='power-selector' Tooltip='Power selector (select between one of two power sources) or Power switch (power On/Off)' />");
 
-                //TODO: Add Power Supply, Power Switch components
+                    //TODO: Add Power Supply, Power Switch components
+                }
             }
         }
 
@@ -831,10 +759,8 @@ namespace LayoutManager.Tools {
         private bool CanComposeTrackPower(LayoutTrackComponent? existingTrack) => existingTrack != null &&
                 !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null;
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-power']")]
-        private void PaintTrackPowerItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_TrackPower(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "track-power") {
             DrawFrame(g);
 
             LayoutStraightTrackPainter trackPainter = new(new Size(32, 32),
@@ -849,20 +775,16 @@ namespace LayoutManager.Tools {
             trackPowerPainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-power']")]
-        private void CreateTrackPowerComponent(LayoutEvent e) {
-            e.Info = new LayoutTrackPowerConnectorComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_TrackPower(XmlElement itemElement, [DispatchFilter] string name = "track-power") => new LayoutTrackPowerConnectorComponent();
 
         //----
 
         private bool CanComposeTrackIsolation(LayoutTrackComponent? existingTrack) => existingTrack != null &&
                 !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null && !LayoutTrackReverseLoopModule.Is(existingTrack.Spot);
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-isolation']")]
-        private void PaintTrackIsolationItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_TrackIsolation(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "track-isolation") {
             DrawFrame(g);
 
             LayoutStraightTrackPainter trackPainter = new(new Size(32, 32),
@@ -878,20 +800,16 @@ namespace LayoutManager.Tools {
             trackIsolationPainter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-isolation']")]
-        private void CreateTrackIsolationComponent(LayoutEvent e) {
-            e.Info = new LayoutTrackIsolationComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_TrackIsolation(XmlElement itemElement, [DispatchFilter] string name = "track-isolation") => new LayoutTrackIsolationComponent();
 
         //----
 
         private bool CanComposeTrackReverseLoopModule(LayoutTrackComponent? existingTrack) => existingTrack != null &&
                 !LayoutTrackComponent.IsDiagonal(existingTrack.ConnectionPoints[0], existingTrack.ConnectionPoints[1]) && existingTrack.BlockDefinitionComponent == null && !LayoutTrackIsolationComponent.Is(existingTrack.Spot);
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='track-reverse-loop-module']")]
-        private void PaintTrackReverseLoopModuleItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_TrackReverseLoopModule(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "track-reverse-loop-module") {
             DrawFrame(g);
 
             LayoutStraightTrackPainter trackPainter = new(new Size(32, 32),
@@ -907,19 +825,15 @@ namespace LayoutManager.Tools {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='track-reverse-loop-module']")]
-        private void CreateTrackReverseLoopModuleComponent(LayoutEvent e) {
-            e.Info = new LayoutTrackReverseLoopModule();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_TrackReverseLoopModule(XmlElement itemElement, [DispatchFilter] string name = "track-reverse-loop-module") => new LayoutTrackReverseLoopModule();
 
         //----
 
         private bool CanComposeControlModuleLocation(LayoutTrackComponent? exitingTrack) => exitingTrack == null;
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='control-module-location']")]
-        private void PaintControlModuleLocation(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_ControlModuleLocation(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "control-module-location") {
             DrawFrame(g);
 
             ControlModuleLocationPainter painter = new();
@@ -927,17 +841,13 @@ namespace LayoutManager.Tools {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='control-module-location']")]
-        private void CreateLayoutControlModuleLocationComponent(LayoutEvent e) {
-            e.Info = new LayoutControlModuleLocationComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_ControlModuleLocation(XmlElement itemElement, [DispatchFilter] string name = "control-module-location") => new LayoutControlModuleLocationComponent();
 
         //----
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='power-selector']")]
-        private void PaintPowerSelector(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_PowerSelector(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "power-selector") {
             DrawFrame(g);
 
             PowerSelectorPainter painter = new();
@@ -945,10 +855,8 @@ namespace LayoutManager.Tools {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='power-selector']")]
-        private void CreatePowerSelector(LayoutEvent e) {
-            e.Info = new LayoutPowerSelectorComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_PowerSelector(XmlElement itemElement, [DispatchFilter] string name = "power-selector") => new LayoutPowerSelectorComponent();
 
         #endregion
 

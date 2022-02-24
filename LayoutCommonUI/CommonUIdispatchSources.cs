@@ -1,5 +1,7 @@
 ﻿
+using System.Xml;
 using LayoutManager.CommonUI;
+using LayoutManager.CommonUI.Controls;
 using LayoutManager.Model;
 using MethodDispatcher;
 
@@ -111,6 +113,21 @@ namespace LayoutManager {
             ds_IncludeInComponentContextMenu ??= d[nameof(IncludeInComponentContextMenu)];
             return ds_IncludeInComponentContextMenu.CallBoolFunctions(invokeUntil: true, invokeAll: false, component);
         }
+
+        static DispatchSource? ds_GetEventScriptEditorTreeNode = null;
+        [DispatchSource]
+        public static LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode(this Dispatcher d, XmlElement element) {
+            ds_GetEventScriptEditorTreeNode ??= d[nameof(GetEventScriptEditorTreeNode)];
+            return ds_GetEventScriptEditorTreeNode.Call<LayoutEventScriptEditorTreeNode>(element);
+        }
+
+        static DispatchSource? ds_EditEventScriptElement = null;
+        [DispatchSource]
+        public static void EditEventScriptElement(this Dispatcher d, XmlElement element, IEventScriptEditorSite site) {
+            ds_EditEventScriptElement ??= d[nameof(EditEventScriptElement)];
+            ds_EditEventScriptElement.CallVoid(element, site);
+        }
+
     }
 }
 

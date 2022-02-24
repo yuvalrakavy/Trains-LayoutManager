@@ -1529,6 +1529,25 @@ namespace LayoutManager {
             ds_OnModelModified.CallVoid();
         }
 
+        static DispatchSource? ds_CreateModelComponent = null;
+        [DispatchSource]
+        public static ModelComponent CreateModelComponent(this Dispatcher d, XmlElement itemElement, string itemName) {
+            ds_CreateModelComponent ??= d[nameof(CreateModelComponent)];
+            return ds_CreateModelComponent.Call<ModelComponent>(itemElement, itemName);
+        }
 
+        static DispatchSource? ds_PaintImageMenuItem = null;
+        [DispatchSource]
+        public static void PaintImageMenuItem(this Dispatcher d, Graphics g, XmlElement itemElement, string itemName) {
+            ds_PaintImageMenuItem ??= d[nameof(PaintImageMenuItem)];
+            ds_PaintImageMenuItem.CallVoid(g, itemElement, itemName);
+        }
+
+        static DispatchSource? ds_GetComponentMenuCategoryItems = null;
+        [DispatchSource]
+        public static void GetComponentMenuCategoryItems(this Dispatcher d, ModelComponent? track, XmlElement categoryElement, string categoryName) {
+            ds_GetComponentMenuCategoryItems ??= d[nameof(GetComponentMenuCategoryItems)];
+            ds_GetComponentMenuCategoryItems.CallVoid(track, categoryElement, categoryName);
+        }
     }
 }

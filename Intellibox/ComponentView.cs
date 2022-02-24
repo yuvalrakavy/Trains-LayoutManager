@@ -43,19 +43,14 @@ namespace Intellibox {
 
         #region Component menu Item
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        private void AddCentralStationItem(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = (ModelComponent?)e.Info;
-
-            if (old == null)
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems(ModelComponent? track, XmlElement categoryElement, [DispatchFilter] string categoryName = "Control") {
+            if (track == null)
                 categoryElement.InnerXml += "<Item Name='Intellibox' Tooltip='Intellibox Command Station' />";
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='Intellibox']")]
-        private void PaintCentralStationItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_Intellibox(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "Intellibox") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -66,10 +61,8 @@ namespace Intellibox {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='Intellibox']")]
-        private void CreateCentralStationComponent(LayoutEvent e) {
-            e.Info = new IntelliboxComponent();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_Intellibox(XmlElement _, [DispatchFilter] string name = "Intellibox") => new IntelliboxComponent();
 
         #endregion
 

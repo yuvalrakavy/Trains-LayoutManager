@@ -1,9 +1,10 @@
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.View;
 using System.ComponentModel;
 using System.Drawing;
 using System.Xml;
+using MethodDispatcher;
+using LayoutManager;
+using LayoutManager.Model;
+using LayoutManager.View;
 
 namespace LayoutLGB {
     /// <summary>
@@ -40,19 +41,14 @@ namespace LayoutLGB {
 
         #region Component menu Item
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        private void AddCentralStationItem(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = (ModelComponent?)e.Info;
-
-            if (old == null)
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems(ModelComponent? track, XmlElement categoryElement, [DispatchFilter] string categoryName = "Control") {
+            if (track == null)
                 categoryElement.InnerXml += "<Item Name='CentralStation' Tooltip='LGB MTS Central Station' />";
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='CentralStation']")]
-        private void PaintCentralStationItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_CentralStation(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "CentralStation") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -63,10 +59,8 @@ namespace LayoutLGB {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='CentralStation']")]
-        private void CreateCentralStationComponent(LayoutEvent e) {
-            e.Info = new MTScentralStation();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_CentralStation(XmlElement _, [DispatchFilter] string name = "CentralStation") => new MTScentralStation();
 
         #endregion
 

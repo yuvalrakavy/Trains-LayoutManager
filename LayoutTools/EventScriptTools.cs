@@ -482,23 +482,14 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "RunPolicy")]
-        private void GetRunPolicyTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-
-            e.Info = new LayoutEventScriptEditorTreeNodeRunPolicy(element);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_RunPolicy([DispatchFilter("XPath", "RunPolicy")] XmlElement element) => new LayoutEventScriptEditorTreeNodeRunPolicy(element);
 
         [DispatchTarget]
-        private string GetEventScriptDescription_RunPolicy([DispatchFilter(Type = "XPath", Value = "RunPolicy")] XmlElement element) {
+        private string GetEventScriptDescription_RunPolicy([DispatchFilter("XPath", "RunPolicy")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeRunPolicy.GetDescription(element));
 
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeRunPolicy.GetDescription(element));
-        }
-
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "RunPolicy")]
-        private void EditRunPolicyTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
+        [DispatchTarget]
+        private void EditEventScriptElement_RunPolicy([DispatchFilter("XPath", "RunPolicy")] XmlElement element, IEventScriptEditorSite site) {
             var d = new EventScriptDialogs.RunPolicy(element);
 
             if (d.ShowDialog() == DialogResult.OK)
@@ -661,18 +652,11 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "ForEachTrain")]
-        private void GetForEachTrainTreeNode(LayoutEvent e) {
-            var repeatElement = Ensure.NotNull<XmlElement>(e.Sender, "repeatElement");
-
-            e.Info = new LayoutEventScriptEditorTreeNodeForEachTrain(repeatElement);
-        }
+       [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ForEachTrain([DispatchFilter("XPath", "ForEachTrain")] XmlElement element) => new LayoutEventScriptEditorTreeNodeForEachTrain(element);
 
         [DispatchTarget]
-        private string GetEventScriptDescription_ForEachTrain([DispatchFilter(Type = "XPath", Value = "ForEachTrain")] XmlElement element) {
-
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeForEachTrain.GetDescription(element));
-        }
+        private string GetEventScriptDescription_ForEachTrain([DispatchFilter("XPath", "ForEachTrain")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeForEachTrain.GetDescription(element));
 
 
         private class LayoutEventScriptEditorTreeNodeForEachTrain : CommonUI.Controls.LayoutEventScriptEditorTreeNodeMayBeOptional {
@@ -758,17 +742,14 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "IfTrainArrivesFrom")]
-        private void GetIfTrainArrivesFromTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_IfTrainArrivesFrom([DispatchFilter("XPath", "IfTrainArrivesFrom")] XmlElement element) => new LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom(element);
 
-            e.Info = new LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom(element);
-        }
+        [DispatchTarget]
+        private string GetEventScriptDescription_IfTrainArrivesFrom([DispatchFilter("XPath", "IfTrainArrivesFrom")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom.GetDescription(element));
 
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "IfTrainArrivesFrom")]
-        private void EditIfTrainsArriveFromTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
+        [DispatchTarget]
+        private void EditEventScriptElement_IfTrainArrivesFrom([DispatchFilter("XPath", "IfTrainArrivesFrom")] XmlElement element, IEventScriptEditorSite site) {
             var d = new LayoutManager.Tools.EventScriptDialogs.TrainArrivesFrom(site.BlockDefinition, element);
 
             if (d.ShowDialog() == DialogResult.OK) {
@@ -779,11 +760,6 @@ namespace LayoutManager.Tools {
                 site.EditingCancelled();
         }
 
-        [DispatchTarget]
-        private string GetEventScriptDescription_IfTrainArrivesFrom([DispatchFilter(Type = "XPath", Value = "IfTrainArrivesFrom")] XmlElement element) {
-
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom.GetDescription(element));
-        }
 
         public class LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom : LayoutEventScriptEditorTreeNodeCondition {
             public LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom(XmlElement conditionElement)
@@ -861,18 +837,14 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "IfTrainLength")]
-        private void GetIfTrainLengthTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_IfTrainLength([DispatchFilter("XPath", "IfTrainLength")] XmlElement element) => new LayoutEventScriptEditorTreeNodeIfTrainLength(element);
 
-            e.Info = new LayoutEventScriptEditorTreeNodeIfTrainLength(element);
-        }
+        [DispatchTarget]
+        private string GetEventScriptDescription_IfTrainLength([DispatchFilter("XPath", "IfTrainLength")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeIfTrainLength.GetDescription(element));
 
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "IfTrainLength")]
-        private void EditIfTrainLengthFromTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
-
+        [DispatchTarget]
+        private void EditEventScriptElement_IfTrainLength([DispatchFilter("XPath", "IfTrainLength")] XmlElement element, IEventScriptEditorSite site) {
             var trainSymbol = (string?)element.AttributeValue(A_TrainSymbol) ?? "Train";
             var length = element.AttributeValue(A_Length).Enum<TrainLength>() ?? TrainLength.VeryLong;
             var comparison = element.AttributeValue(A_Comparison).Enum<TrainLengthComparison>() ?? TrainLengthComparison.NotLonger;
@@ -887,12 +859,6 @@ namespace LayoutManager.Tools {
             }
             else
                 site.EditingCancelled();
-        }
-
-        [DispatchTarget]
-        private string GetEventScriptDescription_IfTrainLength([DispatchFilter(Type = "XPath", Value = "IfTrainLength")] XmlElement element) {
-
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeIfTrainLength.GetDescription(element));
         }
 
         public class LayoutEventScriptEditorTreeNodeIfTrainLength : LayoutEventScriptEditorTreeNodeCondition {
@@ -957,17 +923,14 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "TriggerTrainFunction")]
-        private void GetTriggerTrainFunctionTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_TriggerTrainFunction([DispatchFilter("XPath", "TriggerTrainFunction")] XmlElement element) => new LayoutEventScriptEditorTreeNodeTriggerTrainFunction(element);
 
-            e.Info = new LayoutEventScriptEditorTreeNodeTriggerTrainFunction(element);
-        }
+        [DispatchTarget]
+        private string GetEventScriptDescription_TriggerTrainFunction([DispatchFilter("XPath", "TriggerTrainFunction")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeTriggerTrainFunction.GetDescription(element));
 
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "TriggerTrainFunction")]
-        private void EditTriggerTrainFunctionTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
+        [DispatchTarget]
+        private void EditEventScriptElement_TriggerTrainFunction([DispatchFilter("XPath", "TriggerTrainFunction")] XmlElement element, IEventScriptEditorSite site) {
             var d = new EventScriptDialogs.TrainFunctionAction(element);
 
             if (d.ShowDialog() == DialogResult.OK)
@@ -976,11 +939,6 @@ namespace LayoutManager.Tools {
                 site.EditingCancelled();
         }
 
-        [DispatchTarget]
-        private string GetEventScriptDescription_TriggerTrainFunction([DispatchFilter(Type = "XPath", Value = "TriggerTrainFunction")] XmlElement element) {
-
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeTriggerTrainFunction.GetDescription(element));
-        }
 
         private class LayoutEventScriptEditorTreeNodeTriggerTrainFunction : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
             public LayoutEventScriptEditorTreeNodeTriggerTrainFunction(XmlElement conditionElement) : base(conditionElement) {
@@ -1047,29 +1005,20 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "SetTrainFunction")]
-        private void GetSetTrainFunctionTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_SetTrainFunction([DispatchFilter("XPath", "SetTrainFunction")] XmlElement element) => new LayoutEventScriptEditorTreeNodeSetTrainFunction(element);
 
-            e.Info = new LayoutEventScriptEditorTreeNodeSetTrainFunction(element);
-        }
+        [DispatchTarget]
+        private string GetEventScriptDescription_SetTrainFunction([DispatchFilter(Type = "XPath", Value = "SetTrainFunction")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeSetTrainFunction.GetDescription(element));
 
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "SetTrainFunction")]
-        private void EditSetTrainFunctionTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
+        [DispatchTarget]
+        private void EditEventScriptElement_SetTrainFunction([DispatchFilter("XPath", "SetTrainFunction")] XmlElement element, IEventScriptEditorSite site) {
             var d = new EventScriptDialogs.TrainFunctionAction(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
             else
                 site.EditingCancelled();
-        }
-
-        [DispatchTarget]
-        private string GetEventScriptDescription_SetTrainFunction([DispatchFilter(Type = "XPath", Value = "SetTrainFunction")] XmlElement element) {
-
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeSetTrainFunction.GetDescription(element));
         }
 
         private class LayoutEventScriptEditorTreeNodeSetTrainFunction : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
@@ -1162,29 +1111,20 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "ChangeTrainTargetSpeed")]
-        private void GetChangeTrainTargetSpeedTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ChangeTrainTargetSpeed([DispatchFilter("XPath", "ChangeTrainTargetSpeed")] XmlElement element) => new LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed(element);
 
-            e.Info = new LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed(element);
-        }
+        [DispatchTarget]
+        private string GetEventScriptDescription_ChangeTrainTargetSpeed([DispatchFilter(Type = "XPath", Value = "ChangeTrainTargetSpeed")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed.GetDescription(element));
 
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "ChangeTrainTargetSpeed")]
-        private void EditChangeTrainTargetSpeedTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
+        [DispatchTarget]
+        private void EditEventScriptElement_ChangeTrainTargetSpeed([DispatchFilter("XPath", "ChangeTrainTargetSpeed")] XmlElement element, IEventScriptEditorSite site) {
             var d = new EventScriptDialogs.TrainLightsAction(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
             else
                 site.EditingCancelled();
-        }
-
-        [DispatchTarget]
-        private string GetEventScriptDescription_ChangeTrainTargetSpeed([DispatchFilter(Type = "XPath", Value = "ChangeTrainTargetSpeed")] XmlElement element) {
-
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed.GetDescription(element));
         }
 
         private class LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
@@ -1260,28 +1200,20 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "ControlTrainLights")]
-        private void GetChangeControlTrainLightsTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ControlTrainLights([DispatchFilter("XPath", "ControlTrainLights")] XmlElement element) => new LayoutEventScriptEditorTreeNodeControlTrainLights(element);
 
-            e.Info = new LayoutEventScriptEditorTreeNodeControlTrainLights(element);
-        }
+        [DispatchTarget]
+        private string GetEventScriptDescription_ControlTrainLights([DispatchFilter(Type = "XPath", Value = "ForEachTrain")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeForEachTrain.GetDescription(element));
 
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "ControlTrainLights")]
-        private void EditControlTrainLightsTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
+        [DispatchTarget]
+        private void EditEventScriptElement_ControlTrainLights([DispatchFilter("XPath", "ControlTrainLights")] XmlElement element, IEventScriptEditorSite site) {
             var d = new EventScriptDialogs.TrainLightsAction(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
             else
                 site.EditingCancelled();
-        }
-
-        [DispatchTarget]
-        private string GetEventScriptDescription_ControlTrainLights([DispatchFilter(Type = "XPath", Value = "ForEachTrain")] XmlElement element) {
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeForEachTrain.GetDescription(element));
         }
 
         private class LayoutEventScriptEditorTreeNodeControlTrainLights : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
@@ -1365,17 +1297,15 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "ExecuteTripPlan")]
-        private void GetExecuteTripPlanTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ExecuteTripPlanNode([DispatchFilter("XPath", "ExecuteTripPlan")] XmlElement element) => new LayoutEventScriptEditorTreeNodeExecuteTripPlan(element);
 
-            e.Info = new LayoutEventScriptEditorTreeNodeExecuteTripPlan(element);
-        }
+        [DispatchTarget]
+        private string GetEventScriptDescription_ExecuteTripPlanNode([DispatchFilter(Type = "XPath", Value = "ExecuteTripPlan")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeExecuteTripPlan.GetDescription(element));
 
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "ExecuteTripPlan")]
-        private void EditExecuteTripPlanTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
+
+        [DispatchTarget]
+        private void EditEventScriptElement_ExecuteTripPlanNode([DispatchFilter("XPath", "ExecuteTripPlan")] XmlElement element, IEventScriptEditorSite site) {
             EventScriptDialogs.ExecuteTripPlan d = new(element);
 
             new SemiModalDialog(site.Form, d, new SemiModalDialogClosedHandler(OnCloseExecuteTripPlan), site).ShowDialog();
@@ -1388,11 +1318,6 @@ namespace LayoutManager.Tools {
                 site.EditingDone();
             else
                 site.EditingCancelled();
-        }
-
-        [DispatchTarget]
-        private string GetEventScriptDescription_ExecuteTripPlanNode([DispatchFilter(Type = "XPath", Value = "ExecuteTripPlan")] XmlElement element) {
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeExecuteTripPlan.GetDescription(element));
         }
 
         private class LayoutEventScriptEditorTreeNodeExecuteTripPlan : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {
@@ -1569,28 +1494,20 @@ namespace LayoutManager.Tools {
 
         #region Editing
 
-        [LayoutEvent("get-event-script-editor-tree-node", IfSender = "ExecuteRandomTripPlan")]
-        private void GetExecuteRandomTripPlanTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
+        [DispatchTarget]
+        private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ExecuteRandomTripPlan([DispatchFilter("XPath", "ExecuteRandomTripPlan")] XmlElement element) => new LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan(element);
 
-            e.Info = new LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan(element);
-        }
+        [DispatchTarget]
+        private string GetEventScriptDescription_ExecuteRandomTripPlan([DispatchFilter(Type = "XPath", Value = "ExecuteRandomTripPlan")] XmlElement element) => EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan.GetDescription(element));
 
-        [LayoutEvent("event-script-editor-edit-element", IfSender = "ExecuteRandomTripPlan")]
-        private void EditExecuteRandomTripPlanTreeNode(LayoutEvent e) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-            var site = Ensure.NotNull<IEventScriptEditorSite>(e.Info, "site");
+        [DispatchTarget]
+        private void EditEventScriptElement_ExecuteRandomTripPlan([DispatchFilter("XPath", "ExecuteRandomTripPlan")] XmlElement element, IEventScriptEditorSite site) {
             var d = new EventScriptDialogs.ExecuteRandomTripPlan(element);
 
             if (d.ShowDialog() == DialogResult.OK)
                 site.EditingDone();
             else
                 site.EditingCancelled();
-        }
-
-        [DispatchTarget]
-        private string GetEventScriptDescription_ExecuteRandomTripPlan([DispatchFilter(Type = "XPath", Value = "ExecuteRandomTripPlan")] XmlElement element) {
-            return EventScriptUImanager.GetEventOrEventContainerDescription(element, LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan.GetDescription(element));
         }
 
         private class LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan : CommonUI.Controls.LayoutEventScriptEditorTreeNodeAction {

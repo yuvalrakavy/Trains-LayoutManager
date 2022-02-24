@@ -1,9 +1,10 @@
-using LayoutManager;
-using LayoutManager.Model;
-using LayoutManager.View;
 using System.ComponentModel;
 using System.Drawing;
 using System.Xml;
+using MethodDispatcher;
+using LayoutManager;
+using LayoutManager.Model;
+using LayoutManager.View;
 
 namespace MarklinDigital {
     /// <summary>
@@ -40,19 +41,14 @@ namespace MarklinDigital {
 
         #region Component menu Item
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        private void AddCentralStationItem(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = (ModelComponent?)e.Info;
-
-            if (old == null)
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems_Control(ModelComponent? existingTrack, XmlElement categoryElement, [DispatchFilter] string categoryName = "Control") {
+            if (existingTrack == null)
                 categoryElement.InnerXml += "<Item Name='MarklinDigital' Tooltip='Marklin Digital (6051) Interface' />";
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='MarklinDigital']")]
-        private void PaintCentralStationItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_MarklinDigital(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "MarklinDigital") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -63,10 +59,8 @@ namespace MarklinDigital {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='MarklinDigital']")]
-        private void CreateCentralStationComponent(LayoutEvent e) {
-            e.Info = new MarklinDigitalCentralStation();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_MarklinDigital(XmlElement itemElement, [DispatchFilter] string name = "MarklinDigital") => new MarklinDigitalCentralStation();
 
         #endregion
 

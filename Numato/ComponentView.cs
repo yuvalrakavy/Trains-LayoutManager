@@ -1,8 +1,9 @@
+using System.Drawing;
+using System.Xml;
+using MethodDispatcher;
 using LayoutManager;
 using LayoutManager.Model;
 using LayoutManager.View;
-using System.Drawing;
-using System.Xml;
 
 namespace NumatoController {
     /// <summary>
@@ -27,19 +28,14 @@ namespace NumatoController {
 
         #region Component menu Item
 
-        [LayoutEvent("get-component-menu-category-items", IfSender = "Category[@Name='Control']")]
-        private void AddRelayControllerItem(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var old = (ModelComponent?)e.Info;
-
-            if (old == null)
+        [DispatchTarget]
+        private void GetComponentMenuCategoryItems_Control(ModelComponent? existingTrack, XmlElement categoryElement, [DispatchFilter] string categoryName = "Control") {
+            if (existingTrack == null)
                 categoryElement.InnerXml += "<Item Name='NumatoRelayController' Tooltip='Numato Labs Relay Controller' />";
         }
 
-        [LayoutEvent("paint-image-menu-item", IfSender = "Item[@Name='NumatoRelayController']")]
-        private void PaintCentralStationItem(LayoutEvent e) {
-            var g = Ensure.NotNull<Graphics>(e.Info);
-
+        [DispatchTarget]
+        private void PaintImageMenuItem_NumatoRelayController(Graphics g, XmlElement itemElement, [DispatchFilter] string name = "NumatoRelayController") {
             g.DrawRectangle(Pens.Black, 4, 4, 32, 32);
             g.FillRectangle(Brushes.White, 5, 5, 31, 31);
 
@@ -50,10 +46,8 @@ namespace NumatoController {
             painter.Paint(g);
         }
 
-        [LayoutEvent("create-model-component", IfSender = "Item[@Name='NumatoRelayController']")]
-        private void CreateNumatoControllerComponent(LayoutEvent e) {
-            e.Info = new NumatoController();
-        }
+        [DispatchTarget]
+        private ModelComponent CreateModelComponent_NumatoRelayController(XmlElement itemElement, [DispatchFilter] string name = "NumatoRelayController") => new NumatoController();
 
         #endregion
 
