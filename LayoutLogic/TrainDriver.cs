@@ -6,19 +6,22 @@ using System.Xml;
 namespace LayoutManager.Logic {
 
     static class DriverFilters {
-        static private bool DriverTypeFilter(string? filterValue, object? targetObject, object? parameterValue) {
-
-            if (parameterValue is TrainStateInfo train) {
-                return filterValue switch {
-                    "ManualOnScreen" or "ManualController" or "Automatic" => train.Driver.Type == filterValue,
-                    _ => throw new DispatchFilterException($"Invalid IsTrainDriver Value {filterValue ?? "(missing)"} - Can be ManualOnScreen, ManualController or Automatic")
-                };
+        static private bool DriverTypeFilter(object? filterValue, object? targetObject, object? parameterValue) {
+            if (filterValue is string driverTypeValue) {
+                if (parameterValue is TrainStateInfo train) {
+                    return filterValue switch {
+                        "ManualOnScreen" or "ManualController" or "Automatic" => train.Driver.Type == driverTypeValue,
+                        _ => throw new DispatchFilterException($"Invalid IsTrainDriver Value {filterValue ?? "(missing)"} - Can be ManualOnScreen, ManualController or Automatic")
+                    };
+                }
+                else
+                    throw new DispatchFilterException($"IsTrainDriver dispatch filter can be only applied on type {nameof(TrainStateInfo)}");
             }
             else
-                throw new DispatchFilterException($"IsTrainDriver dispatch filter can be only applied on type {nameof(TrainStateInfo)}");
+                throw new DispatchFilterException("DriverType value must be string");
         }
 
-        static bool IsAutomaticTrainDriver(string? filterValue, object? targetObject, object? parameterValue) {
+        static bool IsAutomaticTrainDriver(object? filterValue, object? targetObject, object? parameterValue) {
             if (filterValue != null)
                 throw new DispatcherFilterHasValueException();
             if (parameterValue is TrainStateInfo train)

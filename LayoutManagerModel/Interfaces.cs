@@ -249,7 +249,7 @@ namespace LayoutManager {
     }
 
     static class DispatcherFilter {
-        static private bool MyNameFilter(string? filterValue, object? targetObject, object? parameterValue) {
+        static private bool MyNameFilter(object? filterValue, object? targetObject, object? parameterValue) {
             if (filterValue != null)
                 throw new DispatchFilterException("Unexpected Value in DispatchFilter attribute");
 

@@ -3,11 +3,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace MethodDispatcher {
-    using CustomDispatchMethodFilter = Func<string?, object?, bool>;
+    using CustomDispatchMethodFilter = Func<object?, object?, bool>;
     /// Define custom filter (see AddCustomFilter)
     ///   a custom filter parameters are (filter-value, target object, parameter value)
     ///   
-    using CustomDispatchParameterFilter = Func<string?, object?, object?, bool>;
+    using CustomDispatchParameterFilter = Func<object?, object?, object?, bool>;
 
     /// <summary>
     /// Dispatcher - a way to call functions without knowing where they reside...
@@ -334,13 +334,13 @@ namespace MethodDispatcher {
             return result;
         }
 
-        static private bool EqParameterFilter(string? filterValue, object? targetObject, object? parameterValue) {
+        static private bool EqParameterFilter(object? filterValue, object? targetObject, object? parameterValue) {
             if (filterValue == null)
                 throw new DispatchFilterException("Missing value for == filter");
             return parameterValue != null && filterValue.Equals(parameterValue);
         }
 
-        static private bool NeParameterFilter(string? filterValue, object? targetObject, object? parameterValue) {
+        static private bool NeParameterFilter(object? filterValue, object? targetObject, object? parameterValue) {
             if (filterValue == null)
                 throw new DispatchFilterException("Missing value for != filter");
             return parameterValue != null && !filterValue.Equals(parameterValue);
@@ -410,13 +410,13 @@ namespace MethodDispatcher {
             Type = type;
         }
 
-        public DispatchFilterAttribute(string type, string value) {
+        public DispatchFilterAttribute(string type, object? value) {
             Type = type;
             Value = value;
         }
 
         public string? Type { get; set; }
-        public string? Value { get; set; }
+        public object? Value { get; set; }
     }
 
     #endregion

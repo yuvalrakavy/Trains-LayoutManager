@@ -52,19 +52,23 @@ namespace LayoutManager {
             return result.ToString();
         }
 
-        static private bool XPathFilter(string? filterValue, object? targetObject, object? parameterValue) {
+        static private bool XPathFilter(object? filterValue, object? targetObject, object? parameterValue) {
             if (filterValue == null)
                 throw new DispatchFilterException("Missing Value");
 
-            var element = ExtractXml(parameterValue);
+            if (filterValue is string xPathValue) {
+                var element = ExtractXml(xPathValue);
 
-            if (element == null)
-                return false;
+                if (element == null)
+                    return false;
 
-            var instanceElement = ExtractXml(targetObject);
-            var xPath = instanceElement != null ? ExpandXPath(filterValue, instanceElement) : filterValue;
+                var instanceElement = ExtractXml(targetObject);
+                var xPath = instanceElement != null ? ExpandXPath(xPathValue, instanceElement) : xPathValue;
 
-            return element.CreateNavigator()?.Matches(xPath) ?? false;
+                return element.CreateNavigator()?.Matches(xPath) ?? false;
+            }
+            else
+                throw new DispatchFilterException("XPath Value must be string");
         }
 
         [DispatchTarget]
