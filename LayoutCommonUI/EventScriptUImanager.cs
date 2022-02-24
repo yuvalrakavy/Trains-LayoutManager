@@ -10,101 +10,91 @@ namespace LayoutManager.CommonUI {
 
         #region Methods to return add menus for various section (events, condition and actions)
 
-        [LayoutEvent("get-event-script-editor-event-container-menu")]
-        private void EventContainerAddMenu(LayoutEvent e) {
-            var eventContainerNode = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "eventContainerNode");
-            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
-
+        //[LayoutEvent("get-event-script-editor-event-container-menu")]
+        [DispatchTarget]
+        private void GetEventScriptEditorEventContainerMenu(LayoutEventScriptEditorTreeNode eventContainerNode, bool hasMenuDefinition, MenuOrMenuItem menu) {
             if (eventContainerNode.Element["Events"] == null)
-                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Events", "Events"));
+                menu.Items.Add(new  EventScriptEditorAddMenuItem(eventContainerNode, "Events", "Events"));
             if (eventContainerNode.SupportConditions && eventContainerNode.Element["Condition"] == null)
-                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Condition", "Condition"));
+                menu.Items.Add(new EventScriptEditorAddMenuItem(eventContainerNode, "Condition", "Condition"));
             if (eventContainerNode.SupportActions && eventContainerNode.Element["Actions"] == null)
-                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Actions", "Actions"));
+                menu.Items.Add(new EventScriptEditorAddMenuItem(eventContainerNode, "Actions", "Actions"));
         }
 
-        [LayoutEvent("get-event-script-editor-insert-event-container-menu")]
-        private void GetEventScriptEditorInsertEventConatinerMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
-
-            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "Any", "Any"));
-            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "All", "All"));
-            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "Sequence", "Sequence"));
-            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "Repeat", "Repeat"));
-            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(e, "Task", "Task"));
+        //[LayoutEvent("get-event-script-editor-insert-event-container-menu")]
+        [DispatchTarget]
+        private void GetEventScriptEditorInsertEventConatinerMenu(LayoutEventScriptEditorTreeNode node, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(node, "Any", "Any"));
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(node, "All", "All"));
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(node, "Sequence", "Sequence"));
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(node, "Repeat", "Repeat"));
+            menu.Items.Add(new EventScriptEditorInsertEventContainerMenuItem(node, "Task", "Task"));
         }
 
-        [LayoutEvent("get-event-script-editor-event-menu")]
-        private void EventAddMenu(LayoutEvent e) {
-            var eventNode = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "eventNode");
-            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
-
+        //[LayoutEvent("get-event-script-editor-event-menu")]
+        [DispatchTarget]
+        private void GetEventScriptEditorEventMenu(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
             if (eventNode.SupportConditions && eventNode.Element["Condition"] == null)
-                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Condition", "Condition"));
+                menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Condition", "Condition"));
             if (eventNode.SupportActions && eventNode.Element["Actions"] == null)
-                menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Actions", "Actions"));
+                menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Actions", "Actions"));
         }
 
-        [LayoutEvent("get-event-script-editor-events-section-menu", Order = 0)]
-        private void AddEventsSectionAddMenuWithEventContainers(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Any", "Any"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "All", "All"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Sequence", "Sequence"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Repeat", "Repeat"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Random Choice", "RandomChoice"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Task", "Task"));
+        //[LayoutEvent("get-event-script-editor-events-section-menu", Order = 0)]
+        [DispatchTarget(Order = 0)]
+        private void GetEventScriptEditorEventSectionMenu_Common(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Any", "Any"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "All", "All"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Sequence", "Sequence"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Repeat", "Repeat"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Random Choice", "RandomChoice"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Task", "Task"));
         }
 
-        [LayoutEvent("get-event-script-editor-events-section-menu", Order = 100)]
-        private void AddEventsSectionAddMenuWithEvents(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-
+        //[LayoutEvent("get-event-script-editor-events-section-menu", Order = 100)]
+        [DispatchTarget(Order = 100)]
+        private void GetEventScriptEditorEventSectionMenu_WithEvents(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
             if (menu.Items.Count > 0)
                 menu.Items.Add(new ToolStripSeparator());
 
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Do now", "DoNow"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Wait", "Wait"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Wait for Event", "WaitForEvent"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Do now", "DoNow"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Wait", "Wait"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Wait for Event", "WaitForEvent"));
         }
 
-        [LayoutEvent("get-event-script-editor-random-choice-menu")]
-        private void AddRandomChoiceMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
-
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, A_Choice, A_Choice));
+        //[LayoutEvent("get-event-script-editor-random-choice-menu")]
+        [DispatchTarget]
+        private void GetEventScriptEditorRandomChoiceMenu(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Choice", "Choice"));
         }
 
-        [LayoutEvent("get-event-script-editor-condition-section-menu")]
-        private void AddConditionSectionAddMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
-
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "And", "And"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Or", "Or"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Not", "Not"));
-            menu.Items.Add("-");
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (String)", "IfString"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (Number)", "IfNumber"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (Boolean)", "IfBoolean"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (Defined)", "IfDefined"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "If (Time)", "IfTime"));
+        //[LayoutEvent("get-event-script-editor-condition-section-menu")]
+        [DispatchTarget]
+        private void GetEventScriptEditorConditionSectionMenu(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "And", "And"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Or", "Or"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Not", "Not"));
+            menu.Items.Add(new ToolStripSeparator());
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "If (String)", "IfString"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "If (Number)", "IfNumber"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "If (Boolean)", "IfBoolean"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "If (Defined)", "IfDefined"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "If (Time)", "IfTime"));
         }
 
-        [LayoutEvent("get-event-script-editor-insert-condition-container-menu")]
-        private void GetEventScriptEditorInsertConditionContainerMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
-
-            menu.Items.Add(new EventScriptEditorInsertConditionContainerMenuItem(e, "And", "And"));
-            menu.Items.Add(new EventScriptEditorInsertConditionContainerMenuItem(e, "Or", "Or"));
-            menu.Items.Add(new EventScriptEditorInsertConditionContainerMenuItem(e, "Not", "Not"));
+        //[LayoutEvent("get-event-script-editor-insert-condition-container-menu")]
+        [DispatchTarget]
+        private void GetEventScriptEditorInsertConditionContainerMenu(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new EventScriptEditorInsertConditionContainerMenuItem(eventNode, "And", "And"));
+            menu.Items.Add(new EventScriptEditorInsertConditionContainerMenuItem(eventNode, "Or", "Or"));
+            menu.Items.Add(new EventScriptEditorInsertConditionContainerMenuItem(eventNode, "Not", "Not"));
         }
-        [LayoutEvent("get-event-script-editor-actions-section-menu")]
-        private void GetActionsSectionAddMenu(LayoutEvent e) {
-            var menu = Ensure.NotNull<ToolStripDropDownMenu>(e.Info, "menu");
 
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Show message", "ShowMessage"));
-            menu.Items.Add(new EventScriptEditorAddMenuItem(e, "Set Attribute", "SetAttribute"));
+        //[LayoutEvent("get-event-script-editor-actions-section-menu")]
+        [DispatchTarget]
+        private void GetEventScriptEditoActionsSectionMenu(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Show message", "ShowMessage"));
+            menu.Items.Add(new EventScriptEditorAddMenuItem(eventNode, "Set Attribute", "SetAttribute"));
         }
 
         #endregion
@@ -302,9 +292,9 @@ namespace LayoutManager.CommonUI {
                 AddChildEventScriptTreeNodes();
             }
 
-            public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
+            public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorEventSectionMenu;
 
-            public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
+            public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> InsertNodeMenuFunction => Dispatch.Call.GetEventScriptEditorInsertEventConatinerMenu;
 
             protected override int IconIndex => IconEvent;
 
@@ -355,7 +345,7 @@ namespace LayoutManager.CommonUI {
                 AddChildEventScriptTreeNodes();
             }
 
-            public override string AddNodeEventName => "get-event-script-editor-random-choice-menu";
+            public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorEventContainerMenu;
 
             protected override string Description => "Random-Choice";
 
@@ -387,7 +377,7 @@ namespace LayoutManager.CommonUI {
                 AddChildEventScriptTreeNodes();
             }
 
-            public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
+            public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorEventSectionMenu;
 
             protected override string Description => "Choice (" + Element.GetAttribute(EventScriptUImanager.A_Weight) + ")";
 
@@ -430,9 +420,9 @@ namespace LayoutManager.CommonUI {
                 AddChildEventScriptTreeNodes();
             }
 
-            public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
+            public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorEventSectionMenu;
 
-            public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
+            public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> InsertNodeMenuFunction => Dispatch.Call.GetEventScriptEditorInsertEventConatinerMenu;
 
             protected override int IconIndex => IconEvent;
 

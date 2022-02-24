@@ -364,50 +364,45 @@ namespace LayoutManager.Tools {
 
         #region Update menus
 
-        [LayoutEvent("get-event-script-editor-events-section-menu", Order = 200)]
-        private void AddEventsSectionAddMenuWithEvents(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Do (script)", "RunPolicy"));
+        //[LayoutEvent("get-event-script-editor-events-section-menu", Order = 200)]
+        [DispatchTarget(Order = 200)]
+        private void GetEventScriptEditorEventSectionMenu(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Do (script)", "RunPolicy"));
         }
 
-        [LayoutEvent("get-event-script-editor-actions-section-menu", Order = 100)]
-        private void GetActionsSectionAddMenu(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Trigger train function", "TriggerTrainFunction"));
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Set train function", "SetTrainFunction"));
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Change train target speed", "ChangeTrainTargetSpeed"));
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Control train lights", "ControlTrainLights"));
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Execute Trip-plan", "ExecuteTripPlan"));
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Execute random Trip-plan", "ExecuteRandomTripPlan"));
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Generate event", "GenerateEvent"));
+        //[LayoutEvent("get-event-script-editor-actions-section-menu", Order = 100)]
+        [DispatchTarget(Order = 100)]
+        private void GetEventScriptEditoActionsSectionMenu(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Trigger train function", "TriggerTrainFunction"));
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Set train function", "SetTrainFunction"));
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Change train target speed", "ChangeTrainTargetSpeed"));
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Control train lights", "ControlTrainLights"));
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Execute Trip-plan", "ExecuteTripPlan"));
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Execute random Trip-plan", "ExecuteRandomTripPlan"));
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Generate event", "GenerateEvent"));
         }
 
-        [LayoutEvent("get-event-script-editor-insert-event-container-menu", Order = 100)]
-        private void GetEventScriptEditorInsertEventConatinerMenu(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorInsertEventContainerMenuItem(e, "For each train", "ForEachTrain"));
+        //[LayoutEvent("get-event-script-editor-insert-event-container-menu", Order = 100)]
+        [DispatchTarget(Order = 100)]
+        private void GetEventScriptEditorInsertEventConatinerMenu(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorInsertEventContainerMenuItem(eventNode, "For each train", "ForEachTrain"));
         }
 
-        [LayoutEvent("get-event-script-editor-events-section-menu", Order = 100)]
-        private void AddEventsSectionAddMenuWithEventContainers(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "For each train", "ForEachTrain"));
+        //[LayoutEvent("get-event-script-editor-events-section-menu", Order = 100)]
+        [DispatchTarget(Order = 100)]
+        private void GetEventScriptEditorEventSectionMenu_ForEachTrain(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "For each train", "ForEachTrain"));
         }
 
-        [LayoutEvent("get-event-script-editor-condition-section-menu", Order = 200)]
-        private void AddConditionSectionAddMenu(LayoutEvent e) {
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info, "menu");
-
+        //[LayoutEvent("get-event-script-editor-condition-section-menu", Order = 200)]
+        [DispatchTarget(Order = 200)]
+        private void GetEventScriptEditorConditionSectionMenu(LayoutEventScriptEditorTreeNode eventNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
             menu.Items.Add(new ToolStripSeparator());
 
-            if (e.HasOption("BlockDefinitionID"))
-                menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Train arrives from", "IfTrainArrivesFrom"));
+            if (hasBlockDefinition)
+                menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Train arrives from", "IfTrainArrivesFrom"));
 
-            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(e, "Train length", "IfTrainLength"));
+            menu.Items.Add(new CommonUI.Controls.EventScriptEditorAddMenuItem(eventNode, "Train length", "IfTrainLength"));
         }
 
         #endregion
@@ -664,9 +659,9 @@ namespace LayoutManager.Tools {
                 AddChildEventScriptTreeNodes();
             }
 
-            public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
+            public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorEventSectionMenu;
 
-            public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
+            public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> InsertNodeMenuFunction => Dispatch.Call.GetEventScriptEditorInsertEventConatinerMenu;
 
             protected override int IconIndex => IconEvent;
 

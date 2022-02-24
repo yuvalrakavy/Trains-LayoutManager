@@ -128,6 +128,62 @@ namespace LayoutManager {
             ds_EditEventScriptElement.CallVoid(element, site);
         }
 
+        static DispatchSource? ds_GetEventScriptEditorEventContainerMenu = null;
+        [DispatchSource]
+        public static void GetEventScriptEditorEventContainerMenu(this Dispatcher d, LayoutEventScriptEditorTreeNode parentNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            ds_GetEventScriptEditorEventContainerMenu ??= d[nameof(GetEventScriptEditorEventContainerMenu)];
+            ds_GetEventScriptEditorEventContainerMenu.CallVoid(parentNode, hasBlockDefinition, menu);
+        }
+
+        static DispatchSource? ds_GetEventScriptEditorInsertEventConatinerMenu = null;
+        [DispatchSource]
+        public static void GetEventScriptEditorInsertEventConatinerMenu(this Dispatcher d, LayoutEventScriptEditorTreeNode parentNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            ds_GetEventScriptEditorInsertEventConatinerMenu ??= d[nameof(GetEventScriptEditorInsertEventConatinerMenu)];
+            ds_GetEventScriptEditorInsertEventConatinerMenu.CallVoid(parentNode, hasBlockDefinition, menu);
+        }
+
+        static DispatchSource? ds_GetEventScriptEditorEventMenu = null;
+        [DispatchSource]
+        public static void GetEventScriptEditorEventMenu(this Dispatcher d, LayoutEventScriptEditorTreeNode parentNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            ds_GetEventScriptEditorEventMenu ??= d[nameof(GetEventScriptEditorEventMenu)];
+            ds_GetEventScriptEditorEventMenu.CallVoid(parentNode, hasBlockDefinition, menu);
+        }
+
+        static DispatchSource? ds_GetEventScriptEditorEventSectionMenu = null;
+        [DispatchSource]
+        public static void GetEventScriptEditorEventSectionMenu(this Dispatcher d, LayoutEventScriptEditorTreeNode parentNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            ds_GetEventScriptEditorEventSectionMenu ??= d[nameof(GetEventScriptEditorEventSectionMenu)];
+            ds_GetEventScriptEditorEventSectionMenu.CallVoid(parentNode, hasBlockDefinition, menu);
+        }
+
+        static DispatchSource? ds_GetEventScriptEditorRandomChoiceMenu = null;
+        [DispatchSource]
+        public static void GetEventScriptEditorRandomChoiceMenu(this Dispatcher d, LayoutEventScriptEditorTreeNode parentNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            ds_GetEventScriptEditorRandomChoiceMenu ??= d[nameof(GetEventScriptEditorRandomChoiceMenu)];
+            ds_GetEventScriptEditorRandomChoiceMenu.CallVoid(parentNode, hasBlockDefinition, menu);
+        }
+
+        static DispatchSource? ds_GetEventScriptEditorConditionSectionMenu = null;
+        [DispatchSource]
+        public static void GetEventScriptEditorConditionSectionMenu(this Dispatcher d, LayoutEventScriptEditorTreeNode parentNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            ds_GetEventScriptEditorConditionSectionMenu ??= d[nameof(GetEventScriptEditorConditionSectionMenu)];
+            ds_GetEventScriptEditorConditionSectionMenu.CallVoid(parentNode, hasBlockDefinition, menu);
+        }
+
+        static DispatchSource? ds_GetEventScriptEditorInsertConditionContainerMenu = null;
+        [DispatchSource]
+        public static void GetEventScriptEditorInsertConditionContainerMenu(this Dispatcher d, LayoutEventScriptEditorTreeNode parentNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            ds_GetEventScriptEditorInsertConditionContainerMenu ??= d[nameof(GetEventScriptEditorInsertConditionContainerMenu)];
+            ds_GetEventScriptEditorInsertConditionContainerMenu.CallVoid(parentNode, hasBlockDefinition, menu);
+        }
+
+        static DispatchSource? ds_GetEventScriptEditoActionsSectionMenu = null;
+        [DispatchSource]
+        public static void GetEventScriptEditoActionsSectionMenu(this Dispatcher d, LayoutEventScriptEditorTreeNode parentNode, bool hasBlockDefinition, MenuOrMenuItem menu) {
+            ds_GetEventScriptEditoActionsSectionMenu ??= d[nameof(GetEventScriptEditoActionsSectionMenu)];
+            ds_GetEventScriptEditoActionsSectionMenu.CallVoid(parentNode, hasBlockDefinition, menu);
+        }
+
     }
 }
 

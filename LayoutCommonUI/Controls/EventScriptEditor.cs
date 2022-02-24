@@ -91,7 +91,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         protected bool ValidateScript(LayoutEventScriptEditorTreeNode node, bool globalPolicy) {
-            if (node.AddNodeEventName != null) {
+            if (node.AddNodeMenuFunction != null) {
                 if (node.Nodes.Count < node.MinSubNodes) {
                     treeViewConditions.SelectedNode = node;
                     MessageBox.Show(this, "This node requires mandatory sub-nodes", "Missing sub-nodes", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -100,7 +100,7 @@ namespace LayoutManager.CommonUI.Controls {
 
                 if (globalPolicy && !node.SupportedInGlobalPolicy) {
                     treeViewConditions.SelectedNode = node;
-                    MessageBox.Show(this, "This operation references to layout specific datat. Therefore it is not valid in a policy which is available to all layouts", "Illegal in all-layouts policy", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, "This operation references to layout specific data. Therefore it is not valid in a policy which is available to all layouts", "Illegal in all-layouts policy", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -133,9 +133,9 @@ namespace LayoutManager.CommonUI.Controls {
                 buttonDeleteCondition.Enabled = false;
             }
             else {
-                buttonAddCondition.Enabled = (selected.AddNodeEventName != null) &&
+                buttonAddCondition.Enabled = (selected.AddNodeMenuFunction != null) &&
                     (selected.MaxSubNodes < 0 || selected.Nodes.Count < selected.MaxSubNodes);
-                buttonInsert.Enabled = selected.InsertNodeEventName != null;
+                buttonInsert.Enabled = selected.InsertNodeMenuFunction != null;
                 buttonEditCondition.Enabled = selected.NodeToEdit != null;
 
                 if (selected.Parent != null)
@@ -192,32 +192,25 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void ButtonAddEventScript_Click(object? sender, EventArgs e) {
-            LayoutEventScriptEditorTreeNode selected = (LayoutEventScriptEditorTreeNode)treeViewConditions.SelectedNode;
+            var selected = (LayoutEventScriptEditorTreeNode)treeViewConditions.SelectedNode;
 
-            if (selected != null && selected.AddNodeEventName != null) {
+            if (selected.AddNodeMenuFunction != null) {
                 var contextMenu = new ContextMenuStrip();
-                LayoutEvent addNodeEvent = new(selected.AddNodeEventName, selected, new MenuOrMenuItem(contextMenu));
 
-                if (BlockDefinition != null)
-                    addNodeEvent.SetOption("BlockDefinitionID", BlockDefinition.Id);
+                selected.AddNodeMenuFunction(selected, BlockDefinition != null, new MenuOrMenuItem(contextMenu));
 
-                EventManager.Event(addNodeEvent);
                 PreProcessMenu(contextMenu.Items);
                 contextMenu.Show(this, new Point(buttonAddCondition.Left, buttonAddCondition.Bottom));
             }
         }
 
         private void ButtonInsert_Click(object? sender, EventArgs e) {
-            LayoutEventScriptEditorTreeNode selected = (LayoutEventScriptEditorTreeNode)treeViewConditions.SelectedNode;
+            var selected = (LayoutEventScriptEditorTreeNode)treeViewConditions.SelectedNode;
 
-            if (selected != null && selected.InsertNodeEventName != null) {
+            if (selected.InsertNodeMenuFunction != null) {
                 var menu = new ContextMenuStrip();
-                LayoutEvent insertNodeEvent = new(selected.InsertNodeEventName, selected, menu);
 
-                if (BlockDefinition != null)
-                    insertNodeEvent.SetOption("BlockDefinitionID", BlockDefinition.Id);
-
-                EventManager.Event(insertNodeEvent);
+                selected.InsertNodeMenuFunction(selected, BlockDefinition != null, new MenuOrMenuItem(menu));
                 PreProcessMenu(menu.Items);
                 menu.Show(this, new Point(buttonInsert.Left, buttonInsert.Bottom));
             }
@@ -301,19 +294,19 @@ namespace LayoutManager.CommonUI.Controls {
         }
     }
 
-    #region Menu Items
+#region Menu Items
 
-    #region Add item
+#region Add item
 
     public class EventScriptEditorAddMenuItem : LayoutMenuItem, IEventScriptEditorMenuEntry {
         private readonly string eventScriptElementName;
         private readonly LayoutEventScriptEditorTreeNode parentNode;
         private IEventScriptEditor? _eventScriptEditor = null;
 
-        public EventScriptEditorAddMenuItem(LayoutEvent e, string title, string eventScriptElementName) {
+        public EventScriptEditorAddMenuItem(LayoutEventScriptEditorTreeNode parentNode, string title, string eventScriptElementName) {
             Text = title;
             this.eventScriptElementName = eventScriptElementName;
-            this.parentNode = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "parent");
+            this.parentNode = parentNode;
         }
 
         public void SetEventScriptEditor(IEventScriptEditor eventScriptEditor) {
@@ -377,17 +370,17 @@ namespace LayoutManager.CommonUI.Controls {
         }
     }
 
-    #endregion
+#endregion
 
-    #region Insert Event Container
+#region Insert Event Container
 
     public class EventScriptEditorInsertEventContainerMenuItem : LayoutMenuItem, IEventScriptEditorMenuEntry {
         private readonly string eventScriptElementName;
         private readonly LayoutEventScriptEditorTreeNode node;
         private IEventScriptEditor? eventScriptEditor = null;
 
-        public EventScriptEditorInsertEventContainerMenuItem(LayoutEvent e, string title, string eventScriptElementName) {
-            node = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "node");
+        public EventScriptEditorInsertEventContainerMenuItem(LayoutEventScriptEditorTreeNode node, string title, string eventScriptElementName) {
+            this.node = node;
             Text = title;
 
             this.eventScriptElementName = eventScriptElementName;
@@ -481,17 +474,17 @@ namespace LayoutManager.CommonUI.Controls {
         }
     }
 
-    #endregion
+#endregion
 
-    #region Insert condition container
+#region Insert condition container
 
     public class EventScriptEditorInsertConditionContainerMenuItem : LayoutMenuItem, IEventScriptEditorMenuEntry {
         private readonly string eventScriptElementName;
         private readonly LayoutEventScriptEditorTreeNode node;
         private IEventScriptEditor? eventScriptEditor = null;
 
-        public EventScriptEditorInsertConditionContainerMenuItem(LayoutEvent e, string title, string eventScriptElementName) {
-            node = Ensure.NotNull<LayoutEventScriptEditorTreeNode>(e.Sender, "node");
+        public EventScriptEditorInsertConditionContainerMenuItem(LayoutEventScriptEditorTreeNode node, string title, string eventScriptElementName) {
+            this.node = node;
             Text = title;
 
             this.eventScriptElementName = eventScriptElementName;
@@ -570,11 +563,11 @@ namespace LayoutManager.CommonUI.Controls {
         }
     }
 
-    #endregion
+#endregion
 
-    #endregion
+#endregion
 
-    #region Base classes for tree node
+#region Base classes for tree node
 
     public abstract class LayoutEventScriptEditorTreeNode : TreeNode, IObjectHasXml {
         public const int IconEventSection = 0;
@@ -653,16 +646,23 @@ namespace LayoutManager.CommonUI.Controls {
         /// </summary>
         public virtual ContextMenuStrip? OptionsMenu => null;
 
+        static protected ContextMenuStrip GetEventContainerMenu(LayoutEventScriptEditorTreeNode parentNode) {
+            var menu = new ContextMenuStrip();
+
+            Dispatch.Call.GetEventScriptEditorEventContainerMenu(parentNode, false, new MenuOrMenuItem(menu));
+            return menu;
+        }
+
         /// <summary>
         /// The event name that is used for building the Add button menu. The default implementation returns
         /// null, so the add button is disabled
         /// </summary>
-        public virtual string? AddNodeEventName => null;
+        public virtual Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem>? AddNodeMenuFunction => null;
 
         /// <summary>
         /// The event name that is used for building the insert button menu.
         /// </summary>
-        public virtual string? InsertNodeEventName => null;
+        public virtual Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem>? InsertNodeMenuFunction => null;
 
         /// <summary>
         /// The node to be edited when edit command is given. The default is to edit the current node
@@ -719,7 +719,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        #region menu item classes
+#region menu item classes
 
         private class MandatoryMenuItem : LayoutMenuItem {
             private const string A_Optional = "Optional";
@@ -759,7 +759,7 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        #endregion
+#endregion
     }
 
     public abstract class LayoutEventScriptEditorTreeNodeEventContainer : LayoutEventScriptEditorTreeNodeMayBeOptional {
@@ -774,9 +774,9 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        public override string AddNodeEventName => "get-event-script-editor-event-container-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorEventContainerMenu;
 
-        public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> InsertNodeMenuFunction => Dispatch.Call.GetEventScriptEditorInsertEventConatinerMenu;
 
         public override LayoutEventScriptEditorTreeNode? NodeToEdit => null;		// Composite rules can not be edited
 
@@ -799,9 +799,10 @@ namespace LayoutManager.CommonUI.Controls {
         protected LayoutEventScriptEditorTreeNodeEvent(XmlElement eventElement) : base(eventElement) {
         }
 
-        public override string AddNodeEventName => "get-event-script-editor-event-menu";
+        //public override string AddNodeMenuFunction => "get-event-script-editor-event-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorEventMenu;
 
-        public override string InsertNodeEventName => "get-event-script-editor-insert-event-container-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> InsertNodeMenuFunction => Dispatch.Call.GetEventScriptEditorInsertConditionContainerMenu;
 
         protected override int IconIndex => !((bool?)Element.AttributeValue(A_LimitToScope) ?? false) ? IconEventNotLimitedToScope : IconEvent;
 
@@ -812,9 +813,9 @@ namespace LayoutManager.CommonUI.Controls {
         protected LayoutEventScriptEditorTreeNodeConditionContainer(XmlElement conditionElement) : base(conditionElement) {
         }
 
-        public override string AddNodeEventName => "get-event-script-editor-condition-section-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorConditionSectionMenu;
 
-        public override string InsertNodeEventName => "get-event-script-editor-insert-condition-container-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> InsertNodeMenuFunction => Dispatch.Call.GetEventScriptEditorInsertConditionContainerMenu;
 
         public override LayoutEventScriptEditorTreeNode? NodeToEdit => null;     // Condition container cannot be edited
 
@@ -827,7 +828,7 @@ namespace LayoutManager.CommonUI.Controls {
         protected LayoutEventScriptEditorTreeNodeCondition(XmlElement conditionElement) : base(conditionElement) {
         }
 
-        public override string InsertNodeEventName => "get-event-script-editor-insert-condition-container-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> InsertNodeMenuFunction => Dispatch.Call.GetEventScriptEditorInsertConditionContainerMenu;
 
         protected override int IconIndex => IconCondition;
 
@@ -841,15 +842,15 @@ namespace LayoutManager.CommonUI.Controls {
         protected override int IconIndex => IconAction;
     }
 
-    #endregion
+#endregion
 
-    #region Classes for Events, Condition and Actions clauses for event container and events
+#region Classes for Events, Condition and Actions clauses for event container and events
 
     public class LayoutEventScriptEditorTreeNodeEventsSection : LayoutEventScriptEditorTreeNodeEventSection {
         public LayoutEventScriptEditorTreeNodeEventsSection(XmlElement eventsElement) : base(eventsElement) {
         }
 
-        public override string AddNodeEventName => "get-event-script-editor-events-section-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorEventSectionMenu;
 
         protected override int IconIndex => IconEventSection;
 
@@ -861,7 +862,7 @@ namespace LayoutManager.CommonUI.Controls {
             Text = "Condition";
         }
 
-        public override string AddNodeEventName => "get-event-script-editor-condition-section-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditorConditionSectionMenu;
 
         protected override int IconIndex => IconConditionSection;
 
@@ -875,12 +876,12 @@ namespace LayoutManager.CommonUI.Controls {
             Text = "Actions";
         }
 
-        public override string AddNodeEventName => "get-event-script-editor-actions-section-menu";
+        public override Action<LayoutEventScriptEditorTreeNode, bool, MenuOrMenuItem> AddNodeMenuFunction => Dispatch.Call.GetEventScriptEditoActionsSectionMenu;
 
         protected override int IconIndex => 2;
 
         protected override string Description => "Actions";
     }
 
-    #endregion
+#endregion
 }
