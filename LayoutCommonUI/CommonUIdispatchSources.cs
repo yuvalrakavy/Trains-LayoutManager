@@ -184,6 +184,20 @@ namespace LayoutManager {
             ds_GetEventScriptEditoActionsSectionMenu.CallVoid(parentNode, hasBlockDefinition, menu);
         }
 
+        static DispatchSource? ds_AddContextSymbolsAndTypes = null;
+        [DispatchSource]
+        public static void AddContextSymbolsAndTypes(this Dispatcher d, Dictionary<string, Type> nameToTypeMap) {
+            ds_AddContextSymbolsAndTypes ??= d[nameof(AddContextSymbolsAndTypes)];
+            ds_AddContextSymbolsAndTypes.CallVoid(nameToTypeMap);
+        }
+
+        static DispatchSource? ds_GetObjectAttributes = null;
+        [DispatchSource]
+        public static void GetObjectAttributes(this Dispatcher d, List<AttributesInfo> attributeList, Type attribueType) {
+            ds_GetObjectAttributes ??= d[nameof(GetObjectAttributes)];
+            ds_GetObjectAttributes.CallVoid(attribueType, attributeList);
+        }
+
     }
 }
 

@@ -843,7 +843,7 @@ namespace LayoutManager.CommonUI {
             }
 
             private static string? GetNodesDescription(XmlElement element, string nodeName, string title) {
-                var nodes = (IIfTimeNode[]?)EventManager.Event(new LayoutEvent("parse-if-time-element", element, nodeName));
+                var nodes = Dispatch.Call.ParseIfTimeElement(element, nodeName);
                 string? d = null;
 
                 if (nodes != null && nodes.Length > 0) {

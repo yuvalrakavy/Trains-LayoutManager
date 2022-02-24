@@ -22,10 +22,8 @@ namespace LayoutManager.Tools {
 
         #region Symbol name to object type map
 
-        [LayoutEvent("add-context-symbols-and-types")]
-        private void AddContextSymbolsAndTypes(LayoutEvent e) {
-            var symbolToTypeMap = Ensure.NotNull<IDictionary>(e.Info, "symbolToTypeMap");
-
+        [DispatchTarget]
+        private void AddContextSymbolsAndTypes(Dictionary<string, Type> symbolToTypeMap) {
             symbolToTypeMap.Add("Train", typeof(TrainStateInfo));
             symbolToTypeMap.Add("TrainLocations", typeof(TrainLocationInfo));
             symbolToTypeMap.Add("TrainLocomotiveLocation", typeof(TrainLocationInfo));
@@ -113,11 +111,9 @@ namespace LayoutManager.Tools {
 
         #region Event script error handler
 
-        [LayoutEvent("event-script-error")]
-        private void EventScriptError(LayoutEvent e) {
-            var errorInfo = Ensure.NotNull<LayoutEventScriptErrorInfo>(e.Info, "errorInfo");
-
-            // TODO: Invoke event script debugger pointing exactly on the errornous node.. for now just complain
+        [DispatchTarget]
+        private void EventScriptError(LayoutEventScript script, LayoutEventScriptErrorInfo errorInfo) {
+            // TODO: Invoke event script debugger pointing exactly on the erroneous node.. for now just complain
 
             Error($"Error in execution of event script '{errorInfo.Script.Name}' - {errorInfo?.Exception?.Message ?? "Unexpected error"}");
         }
@@ -292,11 +288,7 @@ namespace LayoutManager.Tools {
 
         #region Get object attributes
 
-        [LayoutEvent("get-object-attributes", SenderType = typeof(LocomotiveInfo))]
-        [LayoutEvent("get-object-attributes", SenderType = typeof(LocomotiveTypeInfo))]
-        private void GetLocomotiveAttributes(LayoutEvent e) {
-            var attributesList = Ensure.NotNull<List<AttributesInfo>>(e.Info, "attributesList");
-
+        private void GetLocomotiveAttributes(List<AttributesInfo> attributesList) {
             foreach (var locoElement in LayoutModel.LocomotiveCollection.CollectionElement.GetElementsByTagName("Locomotive")) {
                 AttributesOwner attributesOwner = new((XmlElement)locoElement);
 
@@ -314,37 +306,36 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("get-object-attributes", SenderType = typeof(TripPlanInfo))]
-        private void GetTripPlanAttributes(LayoutEvent e) {
-            var attributesList = Ensure.NotNull<List<AttributesInfo>>(e.Info, "attributesList");
+        [DispatchTarget]
+        private void GetObjectAttributes_Locomotive(List<AttributesInfo> attributesList, [DispatchFilter("==", typeof(LocomotiveInfo))] Type atributeType) => GetLocomotiveAttributes(attributesList);
 
+        [DispatchTarget]
+        private void GetObjectAttributes_LocomotiveType(List<AttributesInfo> attributesList, [DispatchFilter("==", typeof(LocomotiveTypeInfo))] Type atributeType) => GetLocomotiveAttributes(attributesList);
+
+
+        [DispatchTarget]
+        private void GetObjectAttributes_TripPlan(List<AttributesInfo> attributesList, [DispatchFilter("==", typeof(TripPlanInfo))] Type atributeType) {
             foreach (TripPlanInfo tripPlan in LayoutModel.StateManager.TripPlansCatalog.TripPlans)
                 if (tripPlan.HasAttributes)
                     attributesList.Add(tripPlan.Attributes);
         }
 
-        [LayoutEvent("get-object-attributes", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void GetBlockInfoAttributes(LayoutEvent e) {
-            var attributesList = Ensure.NotNull<List<AttributesInfo>>(e.Info, "attributesList");
-
+        [DispatchTarget]
+        private void GetObjectAttributes_BlockDefinition(List<AttributesInfo> attributesList, [DispatchFilter("==", typeof(LayoutBlockDefinitionComponent))] Type atributeType) {
             foreach (LayoutBlockDefinitionComponent blockInfo in LayoutModel.Components<LayoutBlockDefinitionComponent>(LayoutModel.ActivePhases))
                 if (blockInfo.HasAttributes)
                     attributesList.Add(blockInfo.Attributes);
         }
 
-        [LayoutEvent("get-object-attributes", SenderType = typeof(LayoutTrackContactComponent))]
-        private void GetTrackContactsAttributes(LayoutEvent e) {
-            var attributesList = Ensure.NotNull<List<AttributesInfo>>(e.Info, "attributesList");
-
+        [DispatchTarget]
+        private void GetObjectAttributes_TrackContact(List<AttributesInfo> attributesList, [DispatchFilter("==", typeof(LayoutTrackContactComponent))] Type atributeType) {
             foreach (LayoutTrackContactComponent trackContact in LayoutModel.Components<LayoutTrackContactComponent>(LayoutModel.ActivePhases))
                 if (trackContact.HasAttributes)
                     attributesList.Add(trackContact.Attributes);
         }
 
-        [LayoutEvent("get-object-attributes", SenderType = typeof(TrainCommonInfo))]
-        private void GetTrainsAttributes(LayoutEvent e) {
-            var attributesList = Ensure.NotNull<List<AttributesInfo>>(e.Info, "attributesList");
-
+        [DispatchTarget]
+        private void GetObjectAttributes_Train(List<AttributesInfo> attributesList, [DispatchFilter("==", typeof(TrainCommonInfo))] Type atributeType) {
             foreach (XmlElement trainElement in LayoutModel.StateManager.Trains.Element) {
                 AttributesOwner attributesOwner = new(trainElement);
 
@@ -360,9 +351,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Update menus
+#region Update menus
 
         //[LayoutEvent("get-event-script-editor-events-section-menu", Order = 200)]
         [DispatchTarget(Order = 200)]
@@ -413,17 +404,15 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "RunPolicy")]
-        private void ParseRunPolicy(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeEventRunPolicy(e);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_RunPolicy([DispatchFilter("XPath", "RunPolicy")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeEventRunPolicy(parseEventInfo);
 
         private class LayoutEventScriptNodeEventRunPolicy : LayoutEventScriptNodeEvent {
             private const string A_PolicyId = "PolicyID";
             private readonly LayoutPolicyInfo? policy;
             private LayoutEventScript? eventScript;
 
-            public LayoutEventScriptNodeEventRunPolicy(LayoutEvent e) : base(e) {
+            public LayoutEventScriptNodeEventRunPolicy(LayoutParseEventScript parseEventScript) : base(parseEventScript) {
                 LayoutPoliciesCollection policies = new(LayoutModel.Instance.GlobalPoliciesElement, LayoutModel.StateManager.LayoutPoliciesElement, null);
 
                 policy = policies[(Guid)Element.AttributeValue(A_PolicyId)];
@@ -433,7 +422,7 @@ namespace LayoutManager.Tools {
             }
 
             public override void Reset() {
-                // Note that the reset operation may set Occured to true, if the condition is prechecked and is true
+                // Note that the reset operation may set Occurred to true, if the condition is prechecked and is true
                 base.Reset();
 
                 if (eventScript != null) {
@@ -473,9 +462,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
         [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_RunPolicy([DispatchFilter("XPath", "RunPolicy")] XmlElement element) => new LayoutEventScriptEditorTreeNodeRunPolicy(element);
@@ -530,10 +519,8 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "ForEachTrain")]
-        private void ParseForEachTrain(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeEventContainerForEachTrain(e);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_ForEachTrain([DispatchFilter("XPath", "ForEachTrain")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeEventContainerForEachTrain(parseEventInfo);
 
         private class LayoutEventScriptNodeEventContainerForEachTrain : LayoutEventScriptNodeEventBase {
             private Guid[]? trainIDs = null;
@@ -541,7 +528,7 @@ namespace LayoutManager.Tools {
             private readonly LayoutEventScriptNodeEventBase? repeatedEvent;
             private readonly LayoutScriptContext parentContext;
 
-            public LayoutEventScriptNodeEventContainerForEachTrain(LayoutEvent e) : base(e) {
+            public LayoutEventScriptNodeEventContainerForEachTrain(LayoutParseEventScript parseEventScript) : base(parseEventScript) {
                 if (Element.ChildNodes.Count < 1)
                     throw ParseErrorException("Missing element to repeat");
                 else if (Element.ChildNodes.Count > 1)
@@ -643,9 +630,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
        [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ForEachTrain([DispatchFilter("XPath", "ForEachTrain")] XmlElement element) => new LayoutEventScriptEditorTreeNodeForEachTrain(element);
@@ -689,14 +676,11 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "IfTrainArrivesFrom")]
-        private void ParseIfTrainArrivesFrom(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeConditionIfTrainsArrive(e);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_IfTrainArrivesFrom([DispatchFilter("XPath", "IfTrainArrivesFrom")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeConditionIfTrainsArrive(parseEventInfo);
 
         public class LayoutEventScriptNodeConditionIfTrainsArrive : LayoutEventScriptNodeCondition {
-            public LayoutEventScriptNodeConditionIfTrainsArrive(LayoutEvent e)
-                : base(e) {
+            public LayoutEventScriptNodeConditionIfTrainsArrive(LayoutParseEventScript parseEventScript) : base(parseEventScript) {
             }
 
             public override bool IsTrue {
@@ -733,9 +717,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
         [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_IfTrainArrivesFrom([DispatchFilter("XPath", "IfTrainArrivesFrom")] XmlElement element) => new LayoutEventScriptEditorTreeNodeIfTrainArrivesFrom(element);
@@ -786,14 +770,11 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "IfTrainLength")]
-        private void ParseIfTrainLength(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeConditionIfTrainsLength(e);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_IfTrainLength([DispatchFilter("XPath", "IfTrainLength")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeConditionIfTrainsLength(parseEventInfo);
 
         public class LayoutEventScriptNodeConditionIfTrainsLength : LayoutEventScriptNodeCondition {
-            public LayoutEventScriptNodeConditionIfTrainsLength(LayoutEvent e)
-                : base(e) {
+            public LayoutEventScriptNodeConditionIfTrainsLength(LayoutParseEventScript parseEventScript) : base(parseEventScript) {
             }
 
             public override bool IsTrue {
@@ -828,9 +809,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
         [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_IfTrainLength([DispatchFilter("XPath", "IfTrainLength")] XmlElement element) => new LayoutEventScriptEditorTreeNodeIfTrainLength(element);
@@ -892,13 +873,11 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "TriggerTrainFunction")]
-        private void ParseTriggerTrainFunction(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeActionTriggerTrainFunction(e);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_TriggerTrainFunction([DispatchFilter("XPath", "TriggerTrainFunction")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeActionTriggerTrainFunction(parseEventInfo);
 
         private class LayoutEventScriptNodeActionTriggerTrainFunction : LayoutEventScriptNodeAction {
-            public LayoutEventScriptNodeActionTriggerTrainFunction(LayoutEvent e) : base(e) {
+            public LayoutEventScriptNodeActionTriggerTrainFunction(LayoutParseEventScript parseEventScript) : base(parseEventScript) {
             }
 
             public override void Execute() {
@@ -914,9 +893,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
         [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_TriggerTrainFunction([DispatchFilter("XPath", "TriggerTrainFunction")] XmlElement element) => new LayoutEventScriptEditorTreeNodeTriggerTrainFunction(element);
@@ -958,13 +937,11 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "SetTrainFunction")]
-        private void ParseSetTrainFunction(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeActionSetTrainFunction(e);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_SetTrainFunction([DispatchFilter("XPath", "SetTrainFunction")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeActionSetTrainFunction(parseEventInfo);
 
         private class LayoutEventScriptNodeActionSetTrainFunction : LayoutEventScriptNodeAction {
-            public LayoutEventScriptNodeActionSetTrainFunction(LayoutEvent e) : base(e) {
+            public LayoutEventScriptNodeActionSetTrainFunction(LayoutParseEventScript parseEventScript) : base(parseEventScript) {
             }
 
             public override void Execute() {
@@ -996,9 +973,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
         [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_SetTrainFunction([DispatchFilter("XPath", "SetTrainFunction")] XmlElement element) => new LayoutEventScriptEditorTreeNodeSetTrainFunction(element);
@@ -1047,13 +1024,11 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "ChangeTrainTargetSpeed")]
-        private void ParseChangeTrainTargetSpeed(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeActionChangeTrainTargetSpeed(e);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_ChangeTrainTargetSpeed([DispatchFilter("XPath", "ChangeTrainTargetSpeed")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeActionChangeTrainTargetSpeed(parseEventInfo);
 
         private class LayoutEventScriptNodeActionChangeTrainTargetSpeed : LayoutEventScriptNodeAction {
-            public LayoutEventScriptNodeActionChangeTrainTargetSpeed(LayoutEvent e) : base(e) {
+            public LayoutEventScriptNodeActionChangeTrainTargetSpeed(LayoutParseEventScript parseEventScript) : base(parseEventScript) {
             }
 
             public override void Execute() {
@@ -1102,9 +1077,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
         [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ChangeTrainTargetSpeed([DispatchFilter("XPath", "ChangeTrainTargetSpeed")] XmlElement element) => new LayoutEventScriptEditorTreeNodeChangeTrainTargetSpeed(element);
@@ -1153,13 +1128,11 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "ControlTrainLights")]
-        private void ParseControlTrainLights(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeActionControlTrainLights(e);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_ControlTrainLights([DispatchFilter("XPath", "ControlTrainLights")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeActionControlTrainLights(parseEventInfo);
 
         private class LayoutEventScriptNodeActionControlTrainLights : LayoutEventScriptNodeAction {
-            public LayoutEventScriptNodeActionControlTrainLights(LayoutEvent e) : base(e) {
+            public LayoutEventScriptNodeActionControlTrainLights(LayoutParseEventScript parseEventScript) : base(parseEventScript) {
             }
 
             public override void Execute() {
@@ -1191,9 +1164,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
         [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ControlTrainLights([DispatchFilter("XPath", "ControlTrainLights")] XmlElement element) => new LayoutEventScriptEditorTreeNodeControlTrainLights(element);
@@ -1247,16 +1220,14 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "ExecuteTripPlan")]
-        private void ParseExecuteTripPlan(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeActionExecuteTripPlan(e);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_ExecuteTripPlanNode([DispatchFilter("XPath", "ExecuteTripPlan")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeActionExecuteTripPlan(parseEventInfo);
 
         private class LayoutEventScriptNodeActionExecuteTripPlan : LayoutEventScriptNodeAction {
             private const string A_TripPlanId = "TripPlanID";
             private const string A_ShouldReverse = "ShouldReverse";
 
-            public LayoutEventScriptNodeActionExecuteTripPlan(LayoutEvent e) : base(e) {
+            public LayoutEventScriptNodeActionExecuteTripPlan(LayoutParseEventScript parseEventScript) : base(parseEventScript) {
             }
 
             public override void Execute() {
@@ -1288,9 +1259,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
         [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ExecuteTripPlanNode([DispatchFilter("XPath", "ExecuteTripPlan")] XmlElement element) => new LayoutEventScriptEditorTreeNodeExecuteTripPlan(element);
@@ -1350,10 +1321,8 @@ namespace LayoutManager.Tools {
 
         #region Runtime
 
-        [LayoutEvent("parse-event-script-definition", IfSender = "ExecuteRandomTripPlan")]
-        private void ParseExecuteRandomTripPlan(LayoutEvent e) {
-            e.Info = new LayoutEventScriptNodeActionExecuteRandomTripPlan(e, this);
-        }
+        [DispatchTarget]
+        private LayoutEventScriptNode ParseEventScriptDefinition_ExecuteRandomTripPlan([DispatchFilter("XPath", "ExecuteRandomTripPlan")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeActionExecuteRandomTripPlan(parseEventInfo, this);
 
         [LayoutEventDef("no-applicable-trip-plans-notification", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
         private class LayoutEventScriptNodeActionExecuteRandomTripPlan : LayoutEventScriptNodeAction {
@@ -1370,7 +1339,7 @@ namespace LayoutManager.Tools {
             private const string E_Filter = "Filter";
             private readonly LayoutModuleBase mb;
 
-            public LayoutEventScriptNodeActionExecuteRandomTripPlan(LayoutEvent e, LayoutModuleBase mb) : base(e) {
+            public LayoutEventScriptNodeActionExecuteRandomTripPlan(LayoutParseEventScript parseEventScript, LayoutModuleBase mb) : base(parseEventScript) {
                 this.mb = mb;
             }
 
@@ -1485,9 +1454,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Editing
+#region Editing
 
         [DispatchTarget]
         private LayoutEventScriptEditorTreeNode GetEventScriptEditorTreeNode_ExecuteRandomTripPlan([DispatchFilter("XPath", "ExecuteRandomTripPlan")] XmlElement element) => new LayoutEventScriptEditorTreeNodeExecuteRandomTripPlan(element);
@@ -1514,10 +1483,10 @@ namespace LayoutManager.Tools {
             protected override string Description => GetDescription(Element);
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #endregion // Actions
+#endregion // Actions
     }
 }

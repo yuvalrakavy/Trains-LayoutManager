@@ -1,4 +1,5 @@
 using System.Xml;
+using MethodDispatcher;
 
 namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// <summary>
@@ -28,7 +29,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             int i = 0;
             foreach (string timeConstraintName in new string[] { "Seconds", "Minutes", "Hours", "DayOfWeek" }) {
-                IIfTimeNode[] nodes = Ensure.NotNull<IIfTimeNode[]>(EventManager.Event(new LayoutEvent("parse-if-time-element", element, timeConstraintName)));
+                var nodes = Dispatch.Call.ParseIfTimeElement(element, timeConstraintName);
 
                 if (nodes.Length > 0)
                     treeView.Nodes.Add(new TimeSectionTreeNode(new string[] { "Seconds", "Minutes", "Hours", "Day of week" }[i],
@@ -46,7 +47,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
         private void Insert(string nodeElementName, string timeSectionTitle, Type treeNodeType) {
             XmlElement nodeElement = element.OwnerDocument.CreateElement(nodeElementName);
-            var node = Ensure.NotNull<IIfTimeNode>(EventManager.Event(new LayoutEvent("allocate-if-time-node", nodeElement)), "node");
+            var node = Dispatch.Call.AllocateIfTimeNode(nodeElement);
 
             node.Value = 0;
             TreeNodeBase treeNode = Ensure.NotNull<TreeNodeBase>(Activator.CreateInstance(treeNodeType, new object[] { node }));

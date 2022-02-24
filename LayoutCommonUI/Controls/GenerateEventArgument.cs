@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Xml;
+using MethodDispatcher;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
@@ -28,9 +29,9 @@ namespace LayoutManager.CommonUI.Controls {
             operandValueOf.Suffix = Prefix;
             operandValueOf.Initialize();
 
-            IDictionary symbolNameToTypeMap = new HybridDictionary();
+            Dictionary<string, Type> symbolNameToTypeMap = new();
 
-            EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap));
+            Dispatch.Call.AddContextSymbolsAndTypes(symbolNameToTypeMap);
 
             foreach (string n in symbolNameToTypeMap.Keys)
                 comboBoxReferencedObject.Items.Add(n);

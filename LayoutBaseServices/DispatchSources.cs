@@ -1,6 +1,7 @@
 ﻿using MethodDispatcher;
 using System;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace LayoutManager {
     public static class BaseServicesDispatchSources {
@@ -40,6 +41,48 @@ namespace LayoutManager {
         public static void SetScriptContext(this Dispatcher d, object v, LayoutScriptContext context) {
             ds_SetScriptContext ??= d[nameof(SetScriptContext)];
             ds_SetScriptContext.CallVoid(v, context);
+        }
+
+        static DispatchSource? ds_ParseIfTimeElement = null;
+        [DispatchSource]
+        public static IIfTimeNode[] ParseIfTimeElement(this Dispatcher d, XmlElement element, string constraintName) {
+            ds_ParseIfTimeElement ??= d[nameof(ParseIfTimeElement)];
+            return ds_ParseIfTimeElement.Call<IIfTimeNode[]>(element, constraintName);
+        }
+
+        static DispatchSource? ds_ParseEventScriptDefinition = null;
+        [DispatchSource]
+        public static LayoutEventScriptNode ParseEventScriptDefinition(this Dispatcher d, LayoutParseEventScript parseEventInfo) {
+            ds_ParseEventScriptDefinition ??= d[nameof(ParseEventScriptDefinition)];
+            return ds_ParseEventScriptDefinition.Call<LayoutEventScriptNode>(parseEventInfo);
+        }
+
+        static DispatchSource? ds_EventScriptError = null;
+        [DispatchSource]
+        public static void EventScriptError(this Dispatcher d, LayoutEventScript script, LayoutEventScriptErrorInfo errorInfo) {
+            ds_EventScriptError ??= d[nameof(EventScriptError)];
+            ds_EventScriptError.CallVoid(script, errorInfo);
+        }
+
+        static DispatchSource? ds_GetGlobalEventScriptContext = null;
+        [DispatchSource]
+        public static LayoutScriptContext? GetGlobalEventScriptContext(this Dispatcher d) {
+            ds_GetGlobalEventScriptContext ??= d[nameof(GetGlobalEventScriptContext)];
+            return ds_GetGlobalEventScriptContext.Call<LayoutScriptContext?>();
+        }
+
+        static DispatchSource? ds_GetCurrentDateTimeRequest = null;
+        [DispatchSource]
+        public static DateTime GetCurrentDateTimeRequest(this Dispatcher d) {
+            ds_GetCurrentDateTimeRequest ??= d[nameof(GetCurrentDateTimeRequest)];
+            return ds_GetCurrentDateTimeRequest.Call<DateTime>();
+        }
+
+        static DispatchSource? ds_AllocateIfTimeNode = null;
+        [DispatchSource]
+        public static IIfTimeNode AllocateIfTimeNode(this Dispatcher d, XmlElement nodeElement) {
+            ds_AllocateIfTimeNode ??= d[nameof(AllocateIfTimeNode)];
+            return ds_AllocateIfTimeNode.Call<IIfTimeNode>(nodeElement);
         }
     }
 }

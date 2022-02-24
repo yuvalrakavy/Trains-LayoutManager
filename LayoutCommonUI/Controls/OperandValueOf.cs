@@ -3,13 +3,14 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reflection;
 using System.Xml;
+using MethodDispatcher;
 
 namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for OperandValueOf.
     /// </summary>
     public partial class OperandValueOf : UserControl {
-        private IDictionary? symbolNameToTypeMap = null;
+        private Dictionary<string, Type>? symbolNameToTypeMap = null;
         private string propertiesOfSymbol = "";
         private bool propertyOrAttributeChanged = false;
 
@@ -100,9 +101,9 @@ namespace LayoutManager.CommonUI.Controls {
 
         protected void InitializePropertyOrAttributeSelector() {
             if (symbolNameToTypeMap == null) {
-                symbolNameToTypeMap = new HybridDictionary();
+                symbolNameToTypeMap = new();
 
-                EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap));
+                Dispatch.Call.AddContextSymbolsAndTypes(symbolNameToTypeMap);
 
                 comboBoxSymbol.Sorted = true;
                 foreach (string symbolName in symbolNameToTypeMap.Keys)
@@ -199,7 +200,8 @@ namespace LayoutManager.CommonUI.Controls {
                         var attributesList = new List<AttributesInfo>();
                         var attributesMap = new Dictionary<string, AttributeInfo>();
 
-                        EventManager.Event(new LayoutEvent("get-object-attributes", symbolType, attributesList));
+                        if(symbolType.BaseType != null)
+                            Dispatch.Call.GetObjectAttributes(attributesList, symbolType.BaseType);
 
                         foreach (AttributesInfo attributes in attributesList) {
                             foreach (AttributeInfo attribute in attributes) {

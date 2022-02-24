@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
+using MethodDispatcher;
 
 namespace LayoutManager.CommonUI.Dialogs {
     /// <summary>
@@ -131,7 +132,9 @@ namespace LayoutManager.CommonUI.Dialogs {
         private void ComboBoxName_DropDown(object? sender, EventArgs e) {
             if (attributesList == null) {
                 attributesList = new List<AttributesInfo>();
-                EventManager.Event(new LayoutEvent("get-object-attributes", attributesSource, attributesList));
+
+                if(attributesSource != null)
+                    Dispatch.Call.GetObjectAttributes(attributesList, attributesSource);
             }
 
             foreach (AttributesInfo attributes in attributesList) {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Xml;
+using MethodDispatcher;
 
 namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
     /// <summary>
@@ -11,7 +12,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
         private const string A_SetTo = "SetTo";
 
         private readonly XmlElement element;
-        private readonly IDictionary? symbolNameToTypeMap = null;
+        private readonly Dictionary<string, Type>? symbolNameToTypeMap = null;
 
         public SetAttribute(XmlElement element) {
             //
@@ -21,9 +22,9 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
 
             this.element = element;
 
-            symbolNameToTypeMap = new HybridDictionary();
+            symbolNameToTypeMap = new();
 
-            EventManager.Event(new LayoutEvent("add-context-symbols-and-types", this, symbolNameToTypeMap));
+            Dispatch.Call.AddContextSymbolsAndTypes(symbolNameToTypeMap);
 
             comboBoxSymbol.Sorted = true;
             foreach (string symbolName in symbolNameToTypeMap.Keys)
@@ -153,7 +154,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
                 var attributesList = new List<AttributesInfo>();
                 var attributesMap = new Dictionary<string, AttributeInfo>();
 
-                EventManager.Event(new LayoutEvent("get-object-attributes", symbolType, attributesList));
+                Dispatch.Call.GetObjectAttributes(attributesList, symbolType);
 
                 foreach (var attributes in attributesList) {
                     foreach (var attribute in attributes) {
