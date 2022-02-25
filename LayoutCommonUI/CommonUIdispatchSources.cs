@@ -2,6 +2,7 @@
 using System.Xml;
 using LayoutManager.CommonUI;
 using LayoutManager.CommonUI.Controls;
+using LayoutManager.Components;
 using LayoutManager.Model;
 using MethodDispatcher;
 
@@ -196,6 +197,98 @@ namespace LayoutManager {
         public static void GetObjectAttributes(this Dispatcher d, List<AttributesInfo> attributeList, Type attribueType) {
             ds_GetObjectAttributes ??= d[nameof(GetObjectAttributes)];
             ds_GetObjectAttributes.CallVoid(attribueType, attributeList);
+        }
+
+        static DispatchSource? ds_ShowControlModuleLocation = null;
+        [DispatchSource]
+        public static void ShowControlModuleLocation(this Dispatcher d, LayoutControlModuleLocationComponent component) {
+            ds_ShowControlModuleLocation ??= d[nameof(ShowControlModuleLocation)];
+            ds_ShowControlModuleLocation.CallVoid(component);
+        }
+
+        static DispatchSource? ds_GetFrameWindowId = null;
+        [DispatchSource]
+        public static Guid GetFrameWindowId(this Dispatcher d, Control control) {
+            ds_GetFrameWindowId ??= d[nameof(GetFrameWindowId)];
+            return ds_GetFrameWindowId.Call<Guid>(control);
+        }
+
+
+        static DispatchSource? ds_GetDefaultLengthUnit = null;
+        [DispatchSource]
+        public static string? GetDefaultLengthUnit(this Dispatcher d) {
+            ds_GetDefaultLengthUnit ??= d[nameof(GetDefaultLengthUnit)];
+            return ds_GetDefaultLengthUnit.Call<string?>();
+        }
+
+        static DispatchSource? ds_DisableLocomotiveListUpdate = null;
+        [DispatchSource]
+        public static void DisableLocomotiveListUpdate(this Dispatcher d) {
+            ds_DisableLocomotiveListUpdate ??= d[nameof(DisableLocomotiveListUpdate)];
+            ds_DisableLocomotiveListUpdate.CallVoid();
+        }
+
+        static DispatchSource? ds_EnableLocomotiveListUpdate = null;
+        [DispatchSource]
+        public static void EnableLocomotiveListUpdate(this Dispatcher d) {
+            ds_EnableLocomotiveListUpdate ??= d[nameof(EnableLocomotiveListUpdate)];
+            ds_EnableLocomotiveListUpdate.CallVoid();
+        }
+
+        static DispatchSource? ds_OnEnteredDesignMode = null;
+        [DispatchSource]
+        public static void OnEnteredDesignMode(this Dispatcher d) {
+            ds_OnEnteredDesignMode ??= d[nameof(OnEnteredDesignMode)];
+            ds_OnEnteredDesignMode.CallVoid();
+        }
+
+        static DispatchSource? ds_OnTrainSavedInCollection = null;
+        [DispatchSource]
+        public static void OnTrainSavedInCollection(this Dispatcher d, TrainInCollectionInfo trainInCollection) {
+            ds_OnTrainSavedInCollection ??= d[nameof(OnTrainSavedInCollection)];
+            ds_OnTrainSavedInCollection.CallVoid(trainInCollection);
+        }
+
+        static DispatchSource? ds_OnPolicyUpdated = null;
+        [DispatchSource]
+        public static void OnPolicyUpdated(this Dispatcher d, LayoutPolicyInfo policy, LayoutPoliciesCollection policiesCollection) {
+            ds_OnPolicyUpdated ??= d[nameof(OnPolicyUpdated)];
+            ds_OnPolicyUpdated.CallVoid(policy, policiesCollection);
+        }
+
+        static DispatchSource? ds_GetEventScriptOperatorName = null;
+        [DispatchSource]
+        public static string GetEventScriptOperatorName(this Dispatcher d, XmlElement element) {
+            ds_GetEventScriptOperatorName ??= d[nameof(GetEventScriptOperatorName)];
+            return ds_GetEventScriptOperatorName.Call<string>(element);
+        }
+
+        static DispatchSource? ds_GetConnectionPointTypeImage = null;
+        [DispatchSource]
+        public static Image? GetConnectionPointTypeImage(this Dispatcher d, string connectionPointType, bool topRow) {
+            ds_GetConnectionPointTypeImage ??= d[nameof(GetConnectionPointTypeImage)];
+            return ds_GetConnectionPointTypeImage.Call<Image?>(connectionPointType, topRow);
+        }
+
+        static DispatchSource? ds_GetConnectionPointComponentImage = null;
+        [DispatchSource]
+        public static Image? GetConnectionPointComponentImage(this Dispatcher d, IModelComponentConnectToControl component, ControlModule module, bool topRow, int index) {
+            ds_GetConnectionPointComponentImage ??= d[nameof(GetConnectionPointComponentImage)];
+            return ds_GetConnectionPointComponentImage.Call<Image?>(component, module, topRow, index);
+        }
+
+        static DispatchSource? ds_GetComponentToControlConnect = null;
+        [DispatchSource]
+        public static ControlConnectionPointDestination? GetComponentToControlConnect(this Dispatcher d) {
+            ds_GetComponentToControlConnect ??= d[nameof(GetComponentToControlConnect)];
+            return ds_GetComponentToControlConnect.Call<ControlConnectionPointDestination?>();
+        }
+
+        static DispatchSource? ds_GetContextSymbolInfoType = null;
+        [DispatchSource]
+        public static Type? GetContextSymbolInfoType(this Dispatcher d, Type symbolType) {
+            ds_GetContextSymbolInfoType ??= d[nameof(GetContextSymbolInfoType)];
+            return ds_GetContextSymbolInfoType.Call<Type?>(symbolType);
         }
 
     }

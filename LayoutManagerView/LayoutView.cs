@@ -1,3 +1,4 @@
+using LayoutManager;
 using LayoutManager.Model;
 using MethodDispatcher;
 using System;
@@ -870,7 +871,7 @@ namespace LayoutManager.View {
             }
         }
 
-        private Bitmap AllocateOffScreenBuffer(Graphics g, RectangleF clipBounds) => Ensure.NotNull<Bitmap>(EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", g, clipBounds)));
+        private Bitmap AllocateOffScreenBuffer(Graphics g, RectangleF clipBounds) => Dispatch.Call.AllocateOffScreenBuffer(g, clipBounds.Size);
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
@@ -1650,19 +1651,16 @@ namespace LayoutManager.View {
     internal class OffscreenBufferManager {
         private Bitmap? offScreenBuffer;
 
-        [LayoutEvent("allocate-offscreen-buffer")]
-        private void AllocateOffScreenBuffer(LayoutEvent e) {
-            Graphics g = Ensure.NotNull<Graphics>(e.Sender);
-            RectangleF clipBounds = Ensure.ValueNotNull<RectangleF>(e.Info);
-
-            if (offScreenBuffer == null || clipBounds.Width > offScreenBuffer.Width || clipBounds.Height > offScreenBuffer.Height) {
+        [DispatchTarget]
+        private Bitmap AllocateOffScreenBuffer(Graphics g, SizeF size) {
+            if (offScreenBuffer == null || size.Width > offScreenBuffer.Width || size.Height > offScreenBuffer.Height) {
                 if (offScreenBuffer != null)
                     offScreenBuffer.Dispose();
 
-                offScreenBuffer = new Bitmap((int)Math.Ceiling(clipBounds.Width), (int)Math.Ceiling(clipBounds.Height), g);
+                offScreenBuffer = new Bitmap((int)Math.Ceiling(size.Width), (int)Math.Ceiling(size.Height), g);
             }
 
-            e.Info = offScreenBuffer;
+            return offScreenBuffer;
         }
 
         [DispatchTarget]

@@ -1,9 +1,10 @@
-using LayoutManager.Model;
 using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
+using LayoutManager.Model;
 
 namespace LayoutManager.Dialogs {
     public partial class ImportPolicies : Form {
@@ -99,7 +100,7 @@ namespace LayoutManager.Dialogs {
                             policy.GlobalPolicy = policyItem.Policy.GlobalPolicy;
                             policy.ShowInMenu = policyItem.Policy.ShowInMenu;
 
-                            EventManager.Event(new LayoutEvent("policy-updated", policy, policyType.Policies));
+                            Dispatch.Notification.OnPolicyUpdated(policy, policyType.Policies);
                         }
                         else {
                             policy = policyItem.Policy;

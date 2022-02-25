@@ -52,26 +52,25 @@ namespace LayoutManager.Tools {
         /// or from LayoutObject (which is returned by the component Info property). This handler
         /// returns for a given ModelComponent based type, the type that contains its info
         /// </summary>
-        [LayoutEvent("get-context-symbol-info-type")]
-        private void GetContextSymbolInfoType(LayoutEvent e) {
-            var symbolType = Ensure.NotNull<Type>(e.Sender, "symbolType");
-
+        [DispatchTarget]
+        private Type? GetContextSymbolInfoType(Type symbolType) {
             if (symbolType == typeof(LayoutBlockDefinitionComponent) || symbolType.IsSubclassOf(typeof(LayoutBlockDefinitionComponent)))
-                e.Info = typeof(LayoutBlockDefinitionComponentInfo);
+                return typeof(LayoutBlockDefinitionComponentInfo);
             else if (symbolType == typeof(LayoutSignalComponent) || symbolType.IsSubclassOf(typeof(LayoutSignalComponent)))
-                e.Info = typeof(LayoutSignalComponentInfo);
+                return typeof(LayoutSignalComponentInfo);
+            else
+                return null;
         }
 
         #endregion
 
         #region Script operator to operator name mapping
 
-        [LayoutEvent("get-event-script-operator-name", IfSender = "IfString")]
-        private void GetIfStringOperatorName(LayoutEvent e) {
-            var ifStringElement = Ensure.NotNull<XmlElement>(e.Sender, "ifStringElement");
-            string compareOperator = ifStringElement.GetAttribute("Operation");
+        [DispatchTarget]
+        private string GetEventScriptOperatorName_IfString([DispatchFilter("XPath", "IfString")] XmlElement element) {
+            string compareOperator = element.GetAttribute("Operation");
 
-            e.Info = compareOperator switch {
+            return compareOperator switch {
                 "Equal" => "=",
                 "NotEqual" => "<>",
                 "Match" => "Match",
@@ -79,12 +78,11 @@ namespace LayoutManager.Tools {
             };
         }
 
-        [LayoutEvent("get-event-script-operator-name", IfSender = "IfNumber")]
-        private void GetIfNumberOperatorName(LayoutEvent e) {
-            var ifNumberElement = Ensure.NotNull<XmlElement>(e.Sender, "ifNumberElement");
-            string compareOperator = ifNumberElement.GetAttribute("Operation");
+        [DispatchTarget]
+        private string GetEventScriptOperatorName_IfNumber([DispatchFilter("XPath", "IfNumber")] XmlElement element) {
+            string compareOperator = element.GetAttribute("Operation");
 
-            e.Info = compareOperator switch {
+            return compareOperator switch {
                 "eq" => "=",
                 "ne" => "<>",
                 "gt" => ">",
@@ -95,12 +93,11 @@ namespace LayoutManager.Tools {
             };
         }
 
-        [LayoutEvent("get-event-script-operator-name", IfSender = "IfBoolean")]
-        private void GetIfBooleanOperatorName(LayoutEvent e) {
-            var ifBooleanElement = Ensure.NotNull<XmlElement>(e.Sender, "ifBooleanElement");
-            string compareOperator = ifBooleanElement.GetAttribute("Operation");
+        [DispatchTarget]
+        private string GetEventScriptOperatorName_IfBoolean([DispatchFilter("XPath", "IfBoolean")] XmlElement element) {
+            string compareOperator = element.GetAttribute("Operation");
 
-            e.Info = compareOperator switch {
+            return compareOperator switch {
                 "Equal" => "=",
                 "NotEqual" => "<>",
                 _ => "?"

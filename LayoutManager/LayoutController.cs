@@ -399,7 +399,7 @@ namespace LayoutManager {
             OperationModeSettings = null;
             LayoutModel.ActivePhases = LayoutPhase.All;
 
-            EventManager.Event(new LayoutEvent("enter-design-mode"));
+            Dispatch.Notification.OnEnteredDesignMode();
             LayoutModel.Instance.Redraw();
         }
 

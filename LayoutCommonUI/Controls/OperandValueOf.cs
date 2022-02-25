@@ -169,7 +169,7 @@ namespace LayoutManager.CommonUI.Controls {
                                 comboBoxTag.Items.Add(new TagEntry(property.Name, property.PropertyType));
                         }
 
-                        var infoType = (Type?)EventManager.Event(new LayoutEvent("get-context-symbol-info-type", symbolType));
+                        var infoType = Dispatch.Call.GetContextSymbolInfoType(symbolType);
 
                         if (infoType != null) {
                             PropertyInfo[] infoProperties = infoType.GetProperties();

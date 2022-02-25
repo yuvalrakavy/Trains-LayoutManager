@@ -158,12 +158,9 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        [LayoutEvent("policy-added")]
-        protected void PolicyAdded(LayoutEvent e) {
+        [DispatchTarget]
+        protected void OnPolicyAddedToPoliciesCollection(LayoutPoliciesCollection policies, LayoutPolicyInfo policy) {
             if (!editingPolicy) {
-                var policy = Ensure.NotNull<LayoutPolicyInfo>(e.Sender);
-                var policies = Ensure.NotNull<LayoutPoliciesCollection>(e.Info);
-
                 if (policies == this.Policies) {
                     PolicyItem policyItem = new(this, policy);
 
@@ -176,11 +173,8 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        [LayoutEvent("policy-updated")]
-        private void PolicyUpdated(LayoutEvent e) {
-            var policy = Ensure.NotNull<LayoutPolicyInfo>(e.Sender);
-            var policies = Ensure.NotNull<LayoutPoliciesCollection>(e.Info);
-
+        [DispatchTarget]
+        private void OnPolicyUpdated(LayoutPolicyInfo policy, LayoutPoliciesCollection policies) {
             if (policies == this.Policies) {
                 foreach (PolicyItem policyItem in listViewPolicies.Items)
                     if (policyItem.Policy.Id == policy.Id) {

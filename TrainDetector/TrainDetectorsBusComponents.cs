@@ -46,13 +46,12 @@ namespace LayoutManager.ControlComponents {
             return moduleType;
         }
 
-        [LayoutEvent("get-control-module-description", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='TrainDetectorController']")]
-        private void GetTrainDetectorControllerDescipriotn(LayoutEvent e) {
-            var module = Ensure.NotNull<ControlModule>(e.Sender);
+        [DispatchTarget]
+        private string GetTrainDetectorControllerDescipriotn(ControlModule module, string addressText, [DispatchFilter] string moduleTypeName = "TrainDetectorController") {
             var trainDetectorController = new TrainDetectorControllerModule(module);
             var ipEndPoint = trainDetectorController.ControllerIpAddress;
 
-            e.Info = ipEndPoint == null
+            return ipEndPoint == null
                 ? $"{trainDetectorController.Label} (unassigned)"
                 : $"{trainDetectorController.Label}@{ipEndPoint.Address}";
         }

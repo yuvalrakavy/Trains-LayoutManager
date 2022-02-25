@@ -1104,7 +1104,7 @@ namespace LayoutManager.Tools {
 
                 trainInCollection.Name = train.Name;
                 trainInCollection.CopyFrom(train, true);
-                EventManager.Event(new LayoutEvent("train-saved-in-collection", trainInCollection));
+                Dispatch.Notification.OnTrainSavedInCollection(trainInCollection);
                 collection.Save();
             }
         }

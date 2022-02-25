@@ -145,13 +145,9 @@ namespace LayoutManager.CommonUI.Controls {
         [DispatchTarget]
         private void OnControlBusAdded(IModelComponentIsBusProvider busProvider) => Recalc();
 
-        [LayoutEvent("show-control-modules-location")]
-        private void ShowControlModulesLocation(LayoutEvent e) {
-            var controlModuleLocationId = e.Sender switch {
-                LayoutControlModuleLocationComponent component => component.Id,
-                Guid guid => guid,
-                _ => throw new ArgumentException("Invalid sender for show-control-modules-location"),
-            };
+        [DispatchTarget]
+        private void ShowControlModuleLocation(LayoutControlModuleLocationComponent component) {
+            var controlModuleLocationId = component.Id;
 
             foreach (Item item in comboBoxLocation.Items)
                 if (item.Id == controlModuleLocationId) {
@@ -225,7 +221,7 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         private void ButtonClose_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("hide-layout-control", this));
+            Dispatch.Call.HideLayoutControl(Dispatch.Call.GetFrameWindowId(this));
         }
 
         private void ComboBoxBusProvider_SelectedIndexChanged(object? sender, EventArgs e) {

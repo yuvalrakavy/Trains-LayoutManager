@@ -162,15 +162,6 @@ namespace LayoutManager.CommonUI {
 
         public static string GetEventOrEventContainerDescription(XmlElement element, string prefix) => GetEventOrEventContainerDescription(element, prefix, null);
 
-        public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix, string suffix) =>
-            GetEventOrEventContainerDescription(Ensure.NotNull<XmlElement>(e.Sender, "element"), prefix, suffix);
-
-        public static string GetEventOrEventContainerDescription(LayoutEvent e, string prefix) {
-            var element = Ensure.NotNull<XmlElement>(e.Sender, "element");
-
-            return GetEventOrEventContainerDescription(element, prefix);
-        }
-
         public static string GetConditionContainerDescription(XmlElement containerElement, string containerName) {
             if (containerElement.ChildNodes.Count == 1)     // If there is only one some condition, return its description
                 return GetElementDescription((XmlElement)containerElement.ChildNodes[0]!);
@@ -675,7 +666,7 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetDescription(XmlElement element) {
-                string operatorName = (string)EventManager.Event(new LayoutEvent("get-event-script-operator-name", element))!;
+                string operatorName = Dispatch.Call.GetEventScriptOperatorName(element);
 
                 return "If (string) " + GetOperandDescription(element, "1", typeof(string)) + " " + operatorName + " " + GetOperandDescription(element, "2", typeof(string));
             }
@@ -722,7 +713,7 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetDescription(XmlElement element) {
-                string operatorName = (string)EventManager.Event(new LayoutEvent("get-event-script-operator-name", element))!;
+                string operatorName = Dispatch.Call.GetEventScriptOperatorName(element);
 
                 return "If (number) " + GetOperandDescription(element, "1", typeof(int)) + " " + operatorName + " " + GetOperandDescription(element, "2", typeof(int));
             }
@@ -769,7 +760,7 @@ namespace LayoutManager.CommonUI {
             }
 
             public static string GetDescription(XmlElement element) {
-                string operatorName = (string)EventManager.Event(new LayoutEvent("get-event-script-operator-name", element))!;
+                string operatorName = Dispatch.Call.GetEventScriptOperatorName(element);
 
                 return "If (Boolean) " + GetOperandDescription(element, "1", typeof(bool)) + " " + operatorName + " " + GetOperandDescription(element, "2", typeof(bool));
             }

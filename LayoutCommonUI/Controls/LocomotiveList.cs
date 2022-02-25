@@ -111,10 +111,12 @@ namespace LayoutManager.CommonUI.Controls {
 
         protected void UpdateElements() {
             if (ContainerElement != null) {
-                EventManager.Event(new LayoutEvent("disable-locomotive-list-update", this));
+                Dispatch.Call.DisableLocomotiveListUpdate();
+
                 foreach (XmlElement element in ContainerElement)
                     UpdateElementState(element);
-                EventManager.Event(new LayoutEvent("enable-locomotive-list-update", this));
+
+                Dispatch.Call.EnableLocomotiveListUpdate();
             }
         }
 
@@ -182,8 +184,8 @@ namespace LayoutManager.CommonUI.Controls {
             Invalidate();
         }
 
-        [LayoutEvent("enter-design-mode")]
-        private void EnterDesignMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnEnteredDesignMode() {
             operationMode = false;
             Invalidate();
         }
@@ -210,8 +212,8 @@ namespace LayoutManager.CommonUI.Controls {
             InvalidateTrainState(train);
         }
 
-        [LayoutEvent("train-saved-in-collection")]
-        private void TrainSavedInCollection(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnTrainSavedInCollection(TrainInCollectionInfo trainInCollection) {
             UpdateElements();
             Invalidate();
         }

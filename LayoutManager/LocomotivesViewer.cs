@@ -86,8 +86,8 @@ namespace LayoutManager {
             locomotiveList.AddLayoutMenuItems(new MenuOrMenuItem(contextMenuArrange));
         }
 
-        [LayoutEvent("enter-design-mode")]
-        private void EnterDesignMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnEnteredDesignMode() {
             operationMode = false;
             buttonOptions.Text = "&Options";
         }
@@ -108,13 +108,13 @@ namespace LayoutManager {
             UpdateButtons();
         }
 
-        [LayoutEvent("disable-locomotive-list-update")]
-        private void DisableLocomotiveListUpdate(LayoutEvent e) {
+        [DispatchTarget]
+        private void DisableLocomotiveListUpdate() {
             locomotiveList.DisableUpdate();
         }
 
-        [LayoutEvent("enable-locomotive-list-update")]
-        private void EnableLocomotiveListUpdate(LayoutEvent e) {
+        [DispatchTarget]
+        private void EnableLocomotiveListUpdate() {
             locomotiveList.EnableUpdate();
         }
 

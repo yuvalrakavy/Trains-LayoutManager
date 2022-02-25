@@ -1046,7 +1046,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                EventManager.Event(new LayoutEvent("show-control-modules-location", component));
+                Dispatch.Call.ShowControlModuleLocation(component);
             }
         }
 
@@ -1057,14 +1057,14 @@ namespace LayoutManager.Tools {
 
         [DispatchTarget]
         private void EditingDefaultActionCommand_ControlModuleLocation([DispatchFilter] LayoutControlModuleLocationComponent component, LayoutHitTestResult hitTestResult) {
-            EventManager.Event(new LayoutEvent("show-control-modules-location", component));
+            Dispatch.Call.ShowControlModuleLocation(component);
         }
 
         [LayoutEvent("default-action-command", SenderType = typeof(LayoutControlModuleLocationComponent))]
         private void ControlModuleLocationDefaultAction(LayoutEvent e) {
             var component = Ensure.NotNull<LayoutControlModuleLocationComponent>(e.Sender);
 
-            EventManager.Event(new LayoutEvent("show-control-modules-location", component));
+            Dispatch.Call.ShowControlModuleLocation(component);
         }
 
         #endregion

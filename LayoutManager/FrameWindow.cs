@@ -551,8 +551,16 @@ namespace LayoutManager {
             Dispatch.Call.ResetLayoutEmulation();
         }
 
-        [LayoutEvent("enter-design-mode")]
-        private void EnterDesignMode(LayoutEvent e) {
+        [DispatchTarget]
+        private Guid GetFrameWindowId(Control control) {
+            if (control.FindForm() is FrameWindow frameWindow)
+                return frameWindow.Id;
+            else
+                return LayoutController.ActiveFrameWindow.Id;
+        }
+
+        [DispatchTarget]
+        private void OnEnteredDesignMode() {
             SetUserInterfaceMode(null);
         }
 

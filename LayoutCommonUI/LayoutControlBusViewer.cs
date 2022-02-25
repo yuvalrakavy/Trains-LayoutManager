@@ -183,7 +183,7 @@ namespace LayoutManager.CommonUI {
                 else if (connectionPointType == ControlConnectionPointTypes.InputCurrent)
                     typeImage = imageListConnectionPointTypes.Images[3];
                 else
-                    typeImage = (Image?)EventManager.Event(new LayoutEvent("get-connection-point-type-image", this).SetOption("ConnectionPointType", connectionPointType).SetOption("TopRow", topRow));
+                    typeImage = Dispatch.Call.GetConnectionPointTypeImage(connectionPointType, topRow);
 
                 imageMap.Add(key, typeImage);
             }
@@ -203,12 +203,11 @@ namespace LayoutManager.CommonUI {
             var component = connectionPoint.Component;
 
             if (component != null) {
-                string key = component.GetType().Name + "-" + component.ToString() + topRow.ToString() + "_";
+                string key = $"{component.GetType().Name}-{component}{topRow}_";
                 Image? image;
 
                 if (!imageMap.ContainsKey(key)) {
-                    image = (Image?)EventManager.Event(
-                        new LayoutEvent("get-connection-point-component-image", component).SetOption("TopRow", topRow).SetOption("ModuleID", connectionPoint.Module.Id).SetOption("Index", connectionPoint.Index));
+                    image = Dispatch.Call.GetConnectionPointComponentImage(component, connectionPoint.Module, topRow, connectionPoint.Index);
 
                     imageMap.Add(key, image);
                 }
@@ -375,7 +374,7 @@ namespace LayoutManager.CommonUI {
                 return;
 
             var clipBounds = pe.Graphics.VisibleClipBounds;
-            var buffer = Ensure.NotNull<Bitmap>(EventManager.Event(new LayoutEvent("allocate-offscreen-buffer", pe.Graphics, clipBounds)));
+            var buffer = Dispatch.Call.AllocateOffScreenBuffer(pe.Graphics, clipBounds.Size);
 
             using (Graphics g = Graphics.FromImage(buffer)) {
                 // Translate so the top-left of the clip region is on the top/left (0,0)
@@ -444,8 +443,8 @@ namespace LayoutManager.CommonUI {
         [DispatchTarget]
         private void OnComponentConfigurationChanged(ModelComponent component) => Recalc();
 
-        [LayoutEvent("enter-design-mode")]
-        private void ChangeMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnEnteredDesignMode() {
             Recalc();
         }
 
@@ -486,11 +485,8 @@ namespace LayoutManager.CommonUI {
         private void OnComponentConnectedToControlModule(IModelComponentConnectToControl component, ControlConnectionPoint connetionPoint) => Recalc();
 
         [DispatchTarget]
-        private void OnComponentDisconnectedFromControlModule(ModelComponent component, ControlConnectionPoint connectionPoint) => Recalc();
-
-        [LayoutEvent("component-disconnected-from-control-module")]
-        private void ComponentDisconnectedFromControlModule(LayoutEvent e) {
-            var connectionPoint = Ensure.NotNull<ControlConnectionPoint>(e.Info);
+        private void OnComponentDisconnectedFromControlModule(ModelComponent component, ControlConnectionPoint connectionPoint) {
+            Recalc();
 
             if (selectedModule != null && connectionPoint.Module.Id == selectedModule.Id) {
                 SelectedModule = null;
@@ -503,13 +499,13 @@ namespace LayoutManager.CommonUI {
             }
         }
 
-        [LayoutEvent("layout-control-shown")]
-        private void LayoutControlShown(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnLayoutControlShown(Guid frameWindowId) {
             selectedComponents.Display(new LayoutSelectionLook(Color.Red));
         }
 
-        [LayoutEvent("layout-control-hidden")]
-        private void LayoutControlHidden(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnLayoutControlHidden(Guid frameWindowId) {
             selectedComponents.Hide();
         }
 
@@ -1338,8 +1334,8 @@ namespace LayoutManager.CommonUI {
                 addressText = Module.Address.ToString() + " - " + lastAddress.ToString();
             }
 
-            var text = (string?)EventManager.Event(new LayoutEvent("get-control-module-description", Module).SetOption("AddressText", addressText).SetOption("ModuleTypeName", Module.ModuleTypeName));
-            return text ?? Module.ModuleType.Name + " (" + addressText + ")" + (Module.Label != null ? "\n" + Module.Label : "");
+            var text = Dispatch.Call.GetControlModuleDescription(Module, addressText, Module.ModuleTypeName);
+            return text ?? $"{Module.ModuleType.Name} ({addressText}){(Module.Label != null ? $"\n{Module.Label}" : "")}";
         }
 
         public override DrawControlModule? FindModule(ControlModuleReference moduleRef) {
@@ -1522,7 +1518,7 @@ namespace LayoutManager.CommonUI {
 
         public override Cursor? Cursor {
             get {
-                var connectionDestination = (ControlConnectionPointDestination?)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
+                var connectionDestination = Dispatch.Call.GetComponentToControlConnect();
 
                 return connectionDestination != null && Module.ConnectionPoints.CanBeConnected(connectionDestination, Index)
                     ? Cursors.Cross

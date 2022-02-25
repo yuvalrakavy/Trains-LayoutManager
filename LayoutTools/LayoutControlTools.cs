@@ -21,10 +21,8 @@ namespace LayoutManager.Tools {
             componentToConnect = (ControlConnectionPointDestination?)e.Sender;
         }
 
-        [LayoutEvent("get-component-to-control-connect")]
-        private void GetComponentToControlConnect(LayoutEvent e) {
-            e.Info = componentToConnect;
-        }
+        [DispatchTarget]
+        private ControlConnectionPointDestination? GetComponentToControlConnect() => componentToConnect;
 
         [LayoutEvent("cancel-component-to-control-connect")]
         private void CancelComponentToControlConnect(LayoutEvent _) {
@@ -906,7 +904,7 @@ namespace LayoutManager.Tools {
 
         [DispatchTarget]
         private void OnComponentRemovedFromModel_AvoidConnectingRemovedComponents([DispatchFilter] IModelComponentConnectToControl component) {
-            var pendingConnectComponent = (ControlConnectionPointDestination?)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
+            var pendingConnectComponent = Dispatch.Call.GetComponentToControlConnect();
 
             if (pendingConnectComponent != null && component.Id == pendingConnectComponent.Component.Id)
                 EventManager.Event(new LayoutEvent("cancel-component-to-control-connect", component));
@@ -969,7 +967,7 @@ namespace LayoutManager.Tools {
                         }
                     }
 
-                    var pendingComponentConnect = (ControlConnectionPointDestination?)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
+                    var pendingComponentConnect = Dispatch.Call.GetComponentToControlConnect();
                     var pendingConnectionPointConnect = (ControlConnectionPointReference?)EventManager.Event(new LayoutEvent("get-control-to-component-connect", this));
 
                     if (pendingComponentConnect != null || pendingConnectionPointConnect != null) {
@@ -1331,7 +1329,7 @@ namespace LayoutManager.Tools {
 
         [DispatchTarget]
         private void ControlModuleDefaultAction([DispatchFilter] DrawControlConnectionPoint drawObject) {
-            var connectWhat = (ControlConnectionPointDestination?)EventManager.Event(new LayoutEvent("get-component-to-control-connect", this));
+            var connectWhat = Dispatch.Call.GetComponentToControlConnect();
 
             if (connectWhat != null && drawObject.Module.ConnectionPoints.CanBeConnected(connectWhat, drawObject.Index)) {
                 LayoutCompoundCommand command = new("Connect " + connectWhat.ConnectionDescription.Name + " to control module");

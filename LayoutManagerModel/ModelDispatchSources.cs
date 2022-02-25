@@ -1549,5 +1549,19 @@ namespace LayoutManager {
             ds_GetComponentMenuCategoryItems ??= d[nameof(GetComponentMenuCategoryItems)];
             ds_GetComponentMenuCategoryItems.CallVoid(track, categoryElement, categoryName);
         }
+
+        static DispatchSource? ds_AllocateOffScreenBuffer = null;
+        [DispatchSource]
+        public static Bitmap AllocateOffScreenBuffer(this Dispatcher d, Graphics g, SizeF size) {
+            ds_AllocateOffScreenBuffer ??= d[nameof(AllocateOffScreenBuffer)];
+            return ds_AllocateOffScreenBuffer.Call<Bitmap>(g, size);
+        }
+
+        static DispatchSource? ds_GetControlModuleDescription = null;
+        [DispatchSource]
+        public static string? GetControlModuleDescription(this Dispatcher d, ControlModule module, string addressText, string moduleTypeName) {
+            ds_GetControlModuleDescription ??= d[nameof(GetControlModuleDescription)];
+            return ds_GetControlModuleDescription.Call<string?>(module, addressText, moduleTypeName);
+        }
     }
 }
