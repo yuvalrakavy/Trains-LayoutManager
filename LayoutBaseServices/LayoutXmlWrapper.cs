@@ -57,7 +57,7 @@ namespace LayoutManager {
                 throw new DispatchFilterException("Missing Value");
 
             if (filterValue is string xPathValue) {
-                var element = ExtractXml(xPathValue);
+                var element = ExtractXml(parameterValue);
 
                 if (element == null)
                     return false;
