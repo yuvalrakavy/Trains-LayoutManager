@@ -493,7 +493,7 @@ namespace MethodDispatcher {
 
                 // If return type can be null, then 
                 Targets.AllowNullReturn =
-                    nullabilityContext.ReadState != NullabilityState.NotNull &&
+                    nullabilityContext.ReadState != NullabilityState.NotNull ||
                     (returnType.BaseType == typeof(Task) && nullabilityContext.GenericTypeArguments[0].ReadState != NullabilityState.NotNull);
             }
         }
