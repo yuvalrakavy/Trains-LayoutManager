@@ -29,10 +29,8 @@ namespace LayoutManager.Tools.Dialogs {
 
         public ControlConnectionPointDestination? ConnectionDestination => selectedDestination;
 
-        [LayoutEvent("query-learn-layout-pick-component-dialog")]
-        private void QueryLearnLayoutPickComponentDialog(LayoutEvent e) {
-            var dialogs = Ensure.NotNull<List<IControlConnectionPointDestinationReceiverDialog>>(e.Info);
-
+        [DispatchTarget]
+        void QueryLearnLayoutPickComponentDialog(IModelComponentConnectToControl component, List<IControlConnectionPointDestinationReceiverDialog> dialogs) {
             dialogs.Add(this);
         }
 

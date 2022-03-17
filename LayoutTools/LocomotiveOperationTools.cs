@@ -21,14 +21,12 @@ namespace LayoutManager.Tools {
 
         /// <summary>
         /// Build the menu with suggested blocks on which locomotives can be placed on track
-        /// If the blocks are all within a single area, a one level menu is builts. If the blocks
-        /// are in more than one area, then two level menu is builts. The first with the area names
+        /// If the blocks are all within a single area, a one level menu is built. If the blocks
+        /// are in more than one area, then two level menu is built. The first with the area names
         /// and the second level is with the block names.
         /// </summary>
-        [LayoutEvent("add-placeble-blocks-menu-entries")]
-        private void AddPlacebleBlocksMenuEntries(LayoutEvent e) {
-            var placedElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+        [DispatchTarget]
+        private void AddPlaceableBlocksMenuEntries(XmlElement placedElement, MenuOrMenuItem m) {
             var result = Dispatch.Call.CanLocomotiveBePlacedOnTrack(placedElement);
 
             if (result.Status != CanPlaceTrainStatus.CanPlaceTrain) {
@@ -115,7 +113,7 @@ namespace LayoutManager.Tools {
             if (train.NotManaged)
                 throw new LocomotiveNotManagedException(train.Locomotives[0].Locomotive);
 
-            if (EventManager.Event(new LayoutEvent("activate-locomotive-controller", train)) == null) {
+            if (Dispatch.Call.ActivateLocomotiveController(train) == null) {
                 Dialogs.LocomotiveController locoController = new(train);
 
                 locoController.Show();
@@ -126,10 +124,9 @@ namespace LayoutManager.Tools {
         /// Default handler for adding menu items to the locomotive collection context
         /// menu.
         /// </summary>
-        [LayoutEvent("add-locomotive-collection-operation-context-menu-entries")]
-        protected void AddLocomotiveCollectionOperationContextMenuEntries(LayoutEvent e) {
-            var placedElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+        [DispatchTarget]
+        [DispatchFilter("InOperationMode")]
+        protected void AddLocomotiveCollectionContextMenuEntries(XmlElement placedElement, MenuOrMenuItem m) {
             var train = LayoutModel.StateManager.Trains[LayoutModel.LocomotiveCollection.GetElementId(placedElement)];
 
             if (train == null) {
@@ -138,7 +135,7 @@ namespace LayoutManager.Tools {
                 if (context == null) {
                     var placeOnTrackItem = new LayoutMenuItem("Place on track");
 
-                    EventManager.Event(new LayoutEvent("add-placeble-blocks-menu-entries", placedElement, new MenuOrMenuItem(placeOnTrackItem)));
+                    Dispatch.Call.AddPlaceableBlocksMenuEntries(placedElement, new MenuOrMenuItem(placeOnTrackItem));
                     placeOnTrackItem.Enabled = placeOnTrackItem.DropDownItems.Count > 0;
                     m.Items.Add(placeOnTrackItem);
                 }
@@ -174,7 +171,7 @@ namespace LayoutManager.Tools {
                 else {
                     var locomotiveProgrammingMenuItem = new LayoutMenuItem("&Program locomotive");
 
-                    EventManager.Event(new LayoutEvent("add-locomotive-programming-menu-entries", locomotive, new MenuOrMenuItem(locomotiveProgrammingMenuItem)));
+                    Dispatch.Call.AddLocomotiveProgrammingMenuEntries(locomotive, new MenuOrMenuItem(locomotiveProgrammingMenuItem));
 
                     if (locomotiveProgrammingMenuItem.DropDownItems.Count == 1)
                         m.Items.Add(locomotiveProgrammingMenuItem.DropDownItems[0]);
@@ -184,9 +181,8 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("edit-train-properties")]
-        private void EditTrainProperties(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
+        [DispatchTarget]
+        private void EditTrainProperties(TrainStateInfo train) {
             Dialogs.TrainProperties trainProperties = new(train);
 
             trainProperties.ShowDialog();
@@ -262,11 +258,8 @@ namespace LayoutManager.Tools {
 
         #region Locomotive Programming menu entries
 
-        [LayoutEvent("add-locomotive-programming-menu-entries")]
-        private void AddSetLocomotiveSetAddress(LayoutEvent e) {
-            var locomotive = Ensure.NotNull<LocomotiveInfo>(e.Sender);
-            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget]
+        void AddLocomotiveProgrammingMenuEntries(LocomotiveInfo locomotive, MenuOrMenuItem m) {
             if (locomotive.DecoderType is DecoderWithNumericAddressTypeInfo)
                 m.Items.Add(new LayoutMenuItem("Set address...", null, (_, _) => DoSetLocomotiveAddress(locomotive)));
         }
@@ -402,7 +395,7 @@ namespace LayoutManager.Tools {
             }
 
             protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent("edit-train-properties", train));
+                Dispatch.Call.EditTrainProperties(train);
             }
         }
 

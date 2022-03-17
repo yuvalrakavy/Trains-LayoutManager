@@ -16,31 +16,31 @@ namespace LayoutManager.Tools {
         private ControlConnectionPointDestination? componentToConnect = null;
         private ControlConnectionPointReference? controlPointToConnect = null;
 
-        [LayoutEvent("request-component-to-control-connect")]
-        private void RequestComponentToControlConnect(LayoutEvent e) {
-            componentToConnect = (ControlConnectionPointDestination?)e.Sender;
+        [DispatchTarget]
+        private void RequestComponentToControlConnect(ControlConnectionPointDestination destination) {
+            componentToConnect = destination;
         }
 
         [DispatchTarget]
         private ControlConnectionPointDestination? GetComponentToControlConnect() => componentToConnect;
 
-        [LayoutEvent("cancel-component-to-control-connect")]
-        private void CancelComponentToControlConnect(LayoutEvent _) {
+        [DispatchTarget]
+        private void CancelComponentToControlConnect() {
             componentToConnect = null;
         }
 
-        [LayoutEvent("request-control-to-component-connect")]
-        private void RequestControlToComponentConnect(LayoutEvent e) {
-            controlPointToConnect = (ControlConnectionPointReference?)e.Sender;
+        [DispatchTarget]
+        private void RequestControlToComponentConnect(ControlConnectionPointReference connectionPointReference) {
+            controlPointToConnect = connectionPointReference;
         }
 
-        [LayoutEvent("get-control-to-component-connect")]
-        private void GetControlToComponentConnect(LayoutEvent e) {
-            e.Info = controlPointToConnect;
+        [DispatchTarget]
+        private ControlConnectionPointReference? GetControlToComponentConnect() {
+            return controlPointToConnect;
         }
 
-        [LayoutEvent("cancel-control-to-component-connect")]
-        private void CancelControlToComponentConnect(LayoutEvent _) {
+        [DispatchTarget]
+        private void CancelControlToComponentConnect() {
             controlPointToConnect = null;
         }
 
@@ -50,7 +50,7 @@ namespace LayoutManager.Tools {
 
         #region Data structures
 
-        private class ControlAutoConnectRequest : ICloneable {
+        public class ControlAutoConnectRequest : ICloneable {
             public LayoutPhase Phase { get; set; }                                  // What is the scope of the connection
             public IModelComponentConnectToControl? OptionalComponent { get; set; }          // The component to be connected
             public IModelComponentIsCommandStation? CommandStation { get; set; }     // default: If more than one, prompt
@@ -169,23 +169,19 @@ namespace LayoutManager.Tools {
 
         #endregion
 
-        [LayoutEvent("request-control-auto-connect")]
-        private void RequestControlAutoConnect(LayoutEvent e) {
-            var request = Ensure.NotNull<ControlAutoConnectRequest>(e.Sender);
-            var command = (LayoutCompoundCommand?)e.Info;
-
+        [DispatchTarget]
+        private ControlConnectionPoint? RequestControlAutoConnect(ControlAutoConnectRequest request, LayoutCompoundCommand? command) {
             if (command == null)
                 command = new LayoutCompoundCommand("Automatically connect " + request.ConnectionDescription.DisplayName, true);
 
             if (command != null)
-                e.Info = DoAutoConnect(request, false, command);
+                return DoAutoConnect(request, false, command);
+
+            return null;
         }
 
-        [LayoutEvent("connect-component-to-control-module-address-request")]
-        private void ConnectComponentToControlModuleAddressRequest(LayoutEvent e) {
-            var connectionDestination = Ensure.NotNull<ControlConnectionPointDestination>(e.Sender);
-            var csEvent = Ensure.NotNull<CommandStationInputEvent>(e.Info);
-
+        [DispatchTarget]
+        ControlConnectionPoint? ConnectComponentToControlModuleAddress(ControlConnectionPointDestination connectionDestination, CommandStationInputEvent csEvent) {
             ControlAutoConnectRequest request = new(connectionDestination.Component, connectionDestination.ConnectionDescription) {
                 CommandStation = (IModelComponentIsCommandStation)csEvent.CommandStation,
                 Bus = csEvent.Bus,
@@ -195,16 +191,12 @@ namespace LayoutManager.Tools {
                 SetProgrammingRequired = false
             };
 
-            LayoutCompoundCommand command = new("Connect " + request.ConnectionDescription.DisplayName + " to address " + csEvent.GetAddressTextForComponent(connectionDestination), true);
-            e.Info = DoAutoConnect(request, false, command);
+            LayoutCompoundCommand command = new($"Connect {request.ConnectionDescription.DisplayName} to address {csEvent.GetAddressTextForComponent(connectionDestination)}", true);
+            return DoAutoConnect(request, false, command);
         }
 
-        [LayoutEvent("get-nearest-control-module-location")]
-        private void GetNearestControlModuleLocation(LayoutEvent e) {
-            var component = Ensure.NotNull<IModelComponentConnectToControl>(e.Sender);
-
-            e.Info = FindNearestModuleLocation(ControlAutoConnectRequest.ModuleLocationPhase(component), component);
-        }
+        [DispatchTarget]
+        private LayoutControlModuleLocationComponent? GetNearestControlModuleLocation(IModelComponentConnectToControl component) => FindNearestModuleLocation(ControlAutoConnectRequest.ModuleLocationPhase(component), component);
 
         private ControlConnectionPoint? DoAutoConnect(ControlAutoConnectRequest request, bool connectLayout, LayoutCompoundCommand command) {
             var defaultModules = new Dictionary<Guid, string>();
@@ -241,7 +233,7 @@ namespace LayoutManager.Tools {
             }
 
             if (request.Bus != null) {
-                // Check that that the component can be connected to this bus
+                // Check that the component can be connected to this bus
                 if (request.Bus.BusType.GetConnectableControlModuleTypeNames(new ControlConnectionPointDestination(request.Component, request.ConnectionDescription)).Count == 0)
                     throw new LayoutException(request.Component,
                         "This component " + request.ConnectionDescription.DisplayName + " cannot be connected to control modules that are connected to the command station using " + request.Bus.Name);
@@ -743,8 +735,8 @@ namespace LayoutManager.Tools {
 
         #endregion
 
-        [LayoutEvent("connect-layout-to-control-request")]
-        private void ConnectLayoutToControlRequest(LayoutEvent _) {
+        [DispatchTarget]
+        private void ConnectLayoutToControlRequest() {
             using AutoConnectDialogs.GetConnectLayoutOptions d = new();
 
             if (d.ShowDialog(LayoutController.ActiveFrameWindow) == DialogResult.Cancel)
@@ -879,27 +871,22 @@ namespace LayoutManager.Tools {
 
         #region "Add ons" and referential integrity to non-control components
 
-        [LayoutEvent("prepare-for-component-remove-command", SenderType = typeof(LayoutControlModuleLocationComponent))]
-        private void PrepareForLayoutControlModuleLocationComponentRemove(LayoutEvent e) {
-            var component = Ensure.NotNull<LayoutControlModuleLocationComponent>(e.Sender);
-            var deleteCommand = Ensure.NotNull<LayoutCompoundCommand>(e.Info);
-
+        [DispatchTarget]
+        private void PrepareForComponentRemoveCommand_ModuleLocation([DispatchFilter] LayoutControlModuleLocationComponent component, ILayoutCompoundCommand command) {
             ControlModule[] modulesAtLocation = LayoutModel.ControlManager.GetModulesAtLocation(component);
 
             // Add commands to assign all components that were at this location to no location
             foreach (ControlModule module in modulesAtLocation)
-                deleteCommand.Add(new AssignControlModuleLocationCommand(module, Guid.Empty));
+                command.Add(new AssignControlModuleLocationCommand(module, Guid.Empty));
         }
 
-        [LayoutEvent("prepare-for-component-remove-command", SenderType = typeof(IModelComponentConnectToControl))]
-        private void PrepareForConnectableComponentRemove(LayoutEvent e) {
-            var component = Ensure.NotNull<IModelComponentConnectToControl>(e.Sender);
+        [DispatchTarget]
+        private void PrepareForComponentRemoveCommand_ConnectToControl([DispatchFilter] IModelComponentConnectToControl component, ILayoutCompoundCommand command) {
             var connections = LayoutModel.ControlManager.ConnectionPoints[component];
-            var deleteCommand = Ensure.NotNull<LayoutCompoundCommand>(e.Info);
 
             if (connections != null)
                 foreach (ControlConnectionPoint connectionPoint in connections)
-                    deleteCommand.Add(new DisconnectComponentFromConnectionPointCommand(connectionPoint));
+                    command.Add(new DisconnectComponentFromConnectionPointCommand(connectionPoint));
         }
 
         [DispatchTarget]
@@ -907,7 +894,7 @@ namespace LayoutManager.Tools {
             var pendingConnectComponent = Dispatch.Call.GetComponentToControlConnect();
 
             if (pendingConnectComponent != null && component.Id == pendingConnectComponent.Component.Id)
-                EventManager.Event(new LayoutEvent("cancel-component-to-control-connect", component));
+                Dispatch.Call.CancelComponentToControlConnect();
         }
 
         [DispatchTarget]
@@ -933,7 +920,8 @@ namespace LayoutManager.Tools {
 
                 if (!component.FullyConnected) {
                     List<IControlConnectionPointDestinationReceiverDialog> dialogs = new();
-                    EventManager.Event(new LayoutEvent("query-learn-layout-pick-component-dialog", component, dialogs));
+
+                    Dispatch.Call.QueryLearnLayoutPickComponentDialog(component, dialogs);
 
                     if (dialogs.Count > 0) {
                         IControlConnectionPointDestinationReceiverDialog dialog = dialogs[0];
@@ -968,7 +956,7 @@ namespace LayoutManager.Tools {
                     }
 
                     var pendingComponentConnect = Dispatch.Call.GetComponentToControlConnect();
-                    var pendingConnectionPointConnect = (ControlConnectionPointReference?)EventManager.Event(new LayoutEvent("get-control-to-component-connect", this));
+                    var pendingConnectionPointConnect = Dispatch.Call.GetControlToComponentConnect();
 
                     if (pendingComponentConnect != null || pendingConnectionPointConnect != null) {
                         if (pendingConnectionPointConnect != null) {
@@ -1054,7 +1042,7 @@ namespace LayoutManager.Tools {
         }
 
         [DispatchTarget(Order = 200)]
-        [DispatchFilter(Type = "InOperationMode")]
+        [DispatchFilter("InOperationMode")]
         private void AddComponentContextMenuEntries_Operation(Guid frameWindowId, [DispatchFilter] IModelComponentConnectToControl component, MenuOrMenuItem menu) {
             var connectionPoints = LayoutModel.ControlManager.ConnectionPoints[component];
 
@@ -1068,17 +1056,17 @@ namespace LayoutManager.Tools {
 
         #region Connectible components default action
 
-        [LayoutEvent("query-editing-default-action", SenderType = typeof(IModelComponentConnectToControl))]
-        private void ConnectableComponentQueryEditingDefaultAction(LayoutEvent e) {
-            var connectableComponent = Ensure.NotNull<IModelComponentConnectToControl>(e.Sender);
-
-            if (!connectableComponent.FullyConnected) {
+        [DispatchTarget]
+        private bool QueryEditingDefaultAction_ModuleLocation([DispatchFilter] IModelComponentConnectToControl component) {
+            if (!component.FullyConnected) {
                 List<IControlConnectionPointDestinationReceiverDialog> dialogs = new();
-                EventManager.Event(new LayoutEvent("query-learn-layout-pick-component-dialog", connectableComponent, dialogs));
+                Dispatch.Call.QueryLearnLayoutPickComponentDialog(component, dialogs);
 
                 if (dialogs.Count > 0)
-                    e.Info = true;
+                    return true;
             }
+
+            return false;
         }
 
         [DispatchTarget]
@@ -1093,7 +1081,7 @@ namespace LayoutManager.Tools {
 
             if (feedbackConnection.HasValue) {
                 List<IControlConnectionPointDestinationReceiverDialog> dialogs = new();
-                EventManager.Event(new LayoutEvent("query-learn-layout-pick-component-dialog", component, dialogs));
+                Dispatch.Call.QueryLearnLayoutPickComponentDialog(component, dialogs);
 
                 if (dialogs.Count > 0)
                     dialogs[0].AddControlConnectionPointDestination(new ControlConnectionPointDestination(component, feedbackConnection.Value));
@@ -1179,12 +1167,11 @@ namespace LayoutManager.Tools {
         private void ControlModuleDefaultAction([DispatchFilter] DrawControlClickToAddModule drawObject) {
             ControlBus bus = drawObject.Bus;
 
-            EventManager.Event(bus.BusType.ClickToAddModuleEventName, drawObject);
+            Dispatch.Call.ClickToAdd(bus.BusType.ClickToAddModuleDispatchSource, drawObject);
         }
 
-        [LayoutEvent("control-module-click-to-add")]
-        private void DefaultClickToAddAction(LayoutEvent e) {
-            DrawControlClickToAddModule drawObject = Ensure.NotNull<DrawControlClickToAddModule>(e.Sender);
+        [DispatchTarget]
+        private void ClickToAddControlModule(DrawControlClickToAddModule drawObject) {
             ControlBus bus = drawObject.Bus;
             IList<ControlModuleType> moduleTypes = bus.BusType.ModuleTypes.ToList();
 
@@ -1233,7 +1220,7 @@ namespace LayoutManager.Tools {
 
                 if (programmers.Any()) {
                     var controlProgrammingActions = new List<ControlProgrammingAction>();
-                    EventManager.Event(new LayoutEvent<ControlModule, IList<ControlProgrammingAction>>("get-control-module-programming-actions", module, controlProgrammingActions));
+                    Dispatch.Call.GetControlModuleProgrammingActions(module, controlProgrammingActions);
 
                     if (programmers.Count() == 1) {
                         foreach (var programmingAction in controlProgrammingActions)
@@ -1279,19 +1266,16 @@ namespace LayoutManager.Tools {
 
         [DispatchTarget]
         private void OnControlModuleRemoved(ControlModule module) {
-            var pendingConnectionPointConnect = (ControlConnectionPointReference?)EventManager.Event(new LayoutEvent("get-control-to-component-connect", this));
+            var pendingConnectionPointConnect = Dispatch.Call.GetControlToComponentConnect();
 
             if (pendingConnectionPointConnect != null && pendingConnectionPointConnect.Module?.Id == module.Id)
-                EventManager.Event(new LayoutEvent("cancel-control-to-component-connect", this));
+                Dispatch.Call.CancelControlToComponentConnect();
         }
 
-        [LayoutEvent("get-control-module-programming-actions")]
-        private void GetControlModuleProgrammingActions(LayoutEvent e) {
-            var module = Ensure.NotNull<ControlModule>(e.Sender);
-            var list = Ensure.NotNull<IList<ControlProgrammingAction>>(e.Info);
-
+        [DispatchTarget]
+        private void GetControlModuleProgrammingActions(ControlModule module, IList<ControlProgrammingAction> actions) {
             if (LayoutAction.HasAction("set-address", module)) {
-                list.Add(new ControlProgrammingAction("Program address", (aProgrammer, aModule) => {
+                actions.Add(new ControlProgrammingAction("Program address", (aProgrammer, aModule) => {
                     var programmingState = new ControlModuleProgrammingState(aModule, aProgrammer) {
                         ProgrammingActions = new LayoutActionContainer<ControlModule>(aModule)
                     };
@@ -1337,7 +1321,7 @@ namespace LayoutManager.Tools {
                 ConnectComponentToControlConnectionPointCommand connectCommand = new(drawObject.Module, drawObject.Index, connectWhat.Component,
                     connectWhat.ConnectionDescription.Name, connectWhat.ConnectionDescription.DisplayName);
 
-                EventManager.Event(new LayoutEvent("cancel-component-to-control-connect", this));
+                Dispatch.Call.CancelComponentToControlConnect();
 
                 command.Add(connectCommand);
                 command.Add(new SetControlUserActionRequiredCommand(new ControlConnectionPointReference(drawObject.Module, drawObject.Index), true));
@@ -1357,7 +1341,7 @@ namespace LayoutManager.Tools {
             if (drawObject.Module.ConnectionPoints.IsConnected(drawObject.Index))
                 menu.Items.Add(new DisconnectComponentMenuItem(drawObject.Module.ConnectionPoints[drawObject.Index]));
             else {
-                var pendingConnectionPointConnect = (ControlConnectionPointReference?)EventManager.Event(new LayoutEvent("get-control-to-component-connect", this));
+                var pendingConnectionPointConnect = Dispatch.Call.GetControlToComponentConnect();
 
                 if (pendingConnectionPointConnect != null)
                     menu.Items.Add(new CancelPendingConnectionPointConnectMenuItem());
@@ -1698,7 +1682,7 @@ namespace LayoutManager.Tools {
             }
 
             protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent("request-component-to-control-connect", new ControlConnectionPointDestination(component, connectionDescription)));
+                Dispatch.Call.RequestComponentToControlConnect(new ControlConnectionPointDestination(component, connectionDescription));
                 Dispatch.Call.ShowLayoutControl(LayoutController.ActiveFrameWindow.Id);
             }
         }
@@ -1724,7 +1708,7 @@ namespace LayoutManager.Tools {
                 IEnumerable<LayoutControlModuleLocationComponent> moduleLocations = LayoutModel.Components<LayoutControlModuleLocationComponent>(ControlAutoConnectRequest.ModuleLocationPhase(component.Spot.Phase));
 
                 if (moduleLocations != null && moduleLocations.Any()) {
-                    var defaultModuleLocation = (LayoutControlModuleLocationComponent?)EventManager.Event(new LayoutEvent<IModelComponentConnectToControl>("get-nearest-control-module-location", component));
+                    var defaultModuleLocation = Dispatch.Call.GetNearestControlModuleLocation(component);
 
                     DropDownItems.Add(new AutomaticConnectComponentMenuItem(frameWindowId, "Default control module location", new ControlAutoConnectRequest(component, connectionDescription)));
                     DropDownItems.Add(new ToolStripSeparator());
@@ -1745,14 +1729,16 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                try {
-                    var connectionPoint = (ControlConnectionPoint?)EventManager.Event(new LayoutEvent("request-control-auto-connect", request));
+                if (request != null) {
+                    try {
+                        var connectionPoint = Dispatch.Call.RequestControlAutoConnect(request);
 
-                    if (connectionPoint != null)
-                        Dispatch.Call.ShowControlConnectionPoint(frameWindowId, new ControlConnectionPointReference(connectionPoint));
-                }
-                catch (LayoutException ex) {
-                    ex.Report();
+                        if (connectionPoint != null)
+                            Dispatch.Call.ShowControlConnectionPoint(frameWindowId, new ControlConnectionPointReference(connectionPoint));
+                    }
+                    catch (LayoutException ex) {
+                        ex.Report();
+                    }
                 }
             }
         }
@@ -1783,9 +1769,7 @@ namespace LayoutManager.Tools {
                 Text = "Cancel component to control connect";
             }
 
-            protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent("cancel-component-to-control-connect", this));
-            }
+            protected override void OnClick(EventArgs e) => Dispatch.Call.CancelComponentToControlConnect();
         }
 
         private class ConnectControlConnectionPointMenuItem : LayoutMenuItem {
@@ -1809,7 +1793,7 @@ namespace LayoutManager.Tools {
                         connectionDescription.Name, connectionDescription.DisplayName);
 
                     LayoutController.Do(command);
-                    EventManager.Event(new LayoutEvent("cancel-control-to-component-connect", this));
+                    Dispatch.Call.CancelControlToComponentConnect();
                 }
             }
         }
@@ -1840,7 +1824,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                EventManager.Event(new LayoutEvent("cancel-control-to-component-connect", this));
+                Dispatch.Call.CancelControlToComponentConnect();
             }
         }
 
@@ -1855,7 +1839,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 base.OnClick(e);
 
-                EventManager.Event(new LayoutEvent("request-control-to-component-connect", connectionPoint));
+                Dispatch.Call.RequestControlToComponentConnect(connectionPoint);
             }
         }
 

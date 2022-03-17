@@ -184,12 +184,12 @@ namespace LayoutManager.Tools.Dialogs {
             var m = new ContextMenuStrip();
 
             m.Items.Add("Locomotive...", null, (_, _) => {
-                EventManager.Event(new LayoutEvent("add-new-locomotive-to-collection", this));
+                Dispatch.Call.AddNewLocomotiveToCollection();
                 ForceSearch();
             });
 
             m.Items.Add("Train...", null, (_, _) => {
-                EventManager.Event(new LayoutEvent("add-new-train-to-collection", this));
+                Dispatch.Call.AddNewTrainToCollection();
                 ForceSearch();
             });
 

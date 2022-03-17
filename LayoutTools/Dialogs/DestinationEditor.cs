@@ -98,10 +98,8 @@ namespace LayoutManager.Tools.Dialogs {
             base.Dispose(disposing);
         }
 
-        [LayoutEvent("query-edit-destination-dialog")]
-        private void QueryEditDestinationDialog(LayoutEvent e) {
-            var blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender);
-            var dialogs = Ensure.NotNull<List<IModelComponentReceiverDialog>>(e.Info);
+        [DispatchTarget]
+        private void QueryEditDestinationDialog(LayoutBlockDefinitionComponent blockDefinition, List<IModelComponentReceiverDialog> dialogs) {
             bool locationInList = false;
 
             foreach (LocationItem item in listViewLocations.Items)

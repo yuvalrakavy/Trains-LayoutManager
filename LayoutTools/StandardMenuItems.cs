@@ -3,6 +3,7 @@ using LayoutManager.Model;
 using System;
 using System.Reflection;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 namespace LayoutManager.Tools {
     public class LayoutComponentMenuItem : LayoutMenuItem {
@@ -24,14 +25,7 @@ namespace LayoutManager.Tools {
             this.component = component;
             this.dialogType = dialogType;
 
-            string menuName = "&Properties...";
-
-            if (LayoutController.IsOperationMode)
-                menuName = Ensure.NotNull<string>(EventManager.Event(new LayoutEvent<ModelComponent, string, string>("get-component-operation-properties-menu-name", component, menuName)));
-            else
-                menuName = Ensure.NotNull<string>(EventManager.Event(new LayoutEvent<ModelComponent, string, string>("get-component-editing-properties-menu-name", component, menuName)));
-
-            this.Text = menuName;
+            this.Text = Dispatch.Call.GetComponentPropertiesMenuName(component) ?? "&Properties...";
         }
 
         protected override void OnClick(EventArgs e) {

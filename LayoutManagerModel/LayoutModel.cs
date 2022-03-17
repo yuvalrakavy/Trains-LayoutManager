@@ -1395,6 +1395,26 @@ namespace LayoutManager.Model {
         #endregion
     }
 
+    public class PlacementInfo {
+        public PlacementInfo(LayoutModelArea area, Point location) {
+            this.Area = area;
+            this.Location = location;
+        }
+
+        public PlacementInfo(ModelComponent component) {
+            Area = component.Spot.Area;
+            Location = component.Location;
+        }
+
+        public LayoutModelArea Area { get; init; }
+        public Point Location { get; init; }
+
+        public LayoutModelSpotComponentCollection Spot => Area.Grid[Location];
+
+        public LayoutTrackComponent Track => Ensure.NotNull<LayoutTrackComponent>(Spot.Track);
+    }
+
+
     public class LayoutModelAreaDictionary : Dictionary<Guid, LayoutModelArea>, IEnumerable<LayoutModelArea> {
         public event EventHandler? AreaAdded;
         public event EventHandler? AreaRemoved;

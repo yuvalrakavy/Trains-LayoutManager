@@ -4,6 +4,7 @@ using LayoutManager.Components;
 using LayoutManager.Model;
 using System;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 #endregion
 
@@ -68,28 +69,26 @@ namespace LayoutManager.Tools.Dialogs {
             int state = 0;
 
             if (!int.TryParse(textBoxAddress.Text, out int address) || address < bus.BusType.FirstAddress || address > bus.BusType.LastAddress) {
-                MessageBox.Show(this, "You have entered an invalid addres", "Missing or melaformed input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "You have entered an invalid address", "Missing or malformed input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxAddress.Focus();
                 return;
             }
 
             if (bus.BusType.AddressingMethod == ControlAddressingMethod.ModuleConnectionPointAddressing) {
                 if (!int.TryParse(textBoxIndex.Text, out index)) {
-                    MessageBox.Show(this, "You have entered an invalid index", "Missing or melaformed input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, "You have entered an invalid index", "Missing or malformed input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     textBoxIndex.Focus();
                     return;
                 }
             }
 
             if (textBoxState.Text.Trim().Length > 0 && !int.TryParse(textBoxState.Text, out state)) {
-                MessageBox.Show(this, "You have entered an invalid state", "Melaformed input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "You have entered an invalid state", "Mela-formed input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 textBoxAddress.Focus();
                 return;
             }
 
-            CommandStationInputEvent commandStationEvent = new((ModelComponent)commandStation, bus, address, index, state);
-
-            EventManager.Event(new LayoutEvent("design-time-command-station-event", this, commandStationEvent));
+            Dispatch.Notification.OnDesignTimeCommandStationEvent(new((ModelComponent)commandStation, bus, address, index, state));
 
             DialogResult = DialogResult.OK;
         }

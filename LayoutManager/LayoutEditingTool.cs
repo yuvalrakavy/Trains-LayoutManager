@@ -97,7 +97,7 @@ namespace LayoutManager {
                 oldTrack = spot.Track;
 
                 foreach (ModelComponent c in components)
-                    if (Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("query-editing-default-action", c, (bool)false)))) {
+                    if (Dispatch.Call.QueryEditingDefaultAction(c)) {
                         componentWithDefaultEditingAction = c;
                         break;
                     }
@@ -120,8 +120,7 @@ namespace LayoutManager {
 
                     categories.LoadXml("<ComponentMenuCategories />");
 
-                    EventManager.Event(new LayoutEvent("get-component-menu-categories", categories.DocumentElement,
-                        oldTrack, null));
+                    Dispatch.Call.GetComponentMenuCategories(categories.DocumentElement!, oldTrack);
 
                     var childNodes = categories.DocumentElement?.ChildNodes;
 
@@ -158,18 +157,14 @@ namespace LayoutManager {
                 }
 
                 if (component != null) {
-                    bool placeComponent;
-                    var placementXml = $"<PlacementInfo AreaID='{area.AreaGuid}' X='{ml.X}' Y='{ml.Y}' />";
+                    var placement = new PlacementInfo(area, new Point(ml.X, ml.Y));
 
-                    placeComponent = Ensure.ValueNotNull<bool>(EventManager.Event(new LayoutEvent("model-component-placement-request", component,
-                        true, placementXml)));
-
-                    if (placeComponent) {
+                    if (Dispatch.Call.RequestModelComponentPlacement(component, placement)) {
                         var command = new LayoutCompoundCommand($"add {component}", true) {
                             new LayoutComponentPlacmentCommand(area, ml, component, $"add {component}", area.Phase(ml))
                         };
 
-                        EventManager.Event(new LayoutEvent("model-component-post-placement-request", component, command, placementXml));
+                        Dispatch.Notification.OnModelComponentPlacedNotification(component, command, placement);
                         LayoutController.Do(command);
                     }
                 }
@@ -272,9 +267,7 @@ namespace LayoutManager {
                 this.Items.Add(new LayoutImageMenuItem(itemElement));
         }
 
-        protected override void Paint(Graphics g) {
-            EventManager.Event(new LayoutEvent("paint-image-menu-category", categoryElement, g));
-        }
+        protected override void Paint(Graphics g) => Dispatch.Call.PaintImageMenuCategory(categoryElement, g);
     }
 
     internal class LayoutImageMenuItem : ImageMenuItem {

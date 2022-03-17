@@ -153,10 +153,8 @@ namespace MarklinDigital {
 
         #region Request event handlers
 
-        [LayoutEvent("add-train-operation-menu", Order = 100)]
-        private void AddTrainOperationMenu(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+        [DispatchTarget(Order = 100)]
+        private void AddToTrainOperationMenu(TrainStateInfo train, MenuOrMenuItem menu) {
             bool trainInActiveTrip = Dispatch.Call.IsTrainInActiveTrip(train);
 
             if (train.CommandStation != null && train.CommandStation.Id == Id) {
@@ -546,9 +544,8 @@ namespace MarklinDigital {
                         new ControlConnectionPointReference(commandStation.S88Bus, feedbackResult.Unit, feedbackResult.Contacts[i].ContactNo - 1), feedbackResult.Contacts[i].IsSet ? 1 : 0)
                     );
                 else
-                    invoker.QueueEvent(new LayoutEvent("design-time-command-station-event", this, new CommandStationInputEvent(commandStation, commandStation.S88Bus,
-                        (feedbackResult.Unit * 16) + feedbackResult.Contacts[i].ContactNo - 1, feedbackResult.Contacts[i].IsSet ? 1 : 0),
-                        null));
+                    invoker.Queue(() => Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(commandStation, commandStation.S88Bus,
+                        (feedbackResult.Unit * 16) + feedbackResult.Contacts[i].ContactNo - 1, feedbackResult.Contacts[i].IsSet ? 1 : 0)));
             }
         }
 

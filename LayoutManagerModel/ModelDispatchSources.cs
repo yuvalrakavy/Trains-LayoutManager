@@ -215,9 +215,9 @@ namespace LayoutManager {
 
         static DispatchSource? ds_GetControlModuleAction = null;
         [DispatchSource]
-        public static ILayoutAction? GetControlModuleAction(this Dispatcher d, XmlElement actionElement, ControlModule module, string moduleTypeName, string actionType) {
+        public static ILayoutAction? GetControlModuleAction(this Dispatcher d, XmlElement actionElement, ControlModule module, string actionType) {
             ds_GetControlModuleAction ??= d[nameof(GetControlModuleAction)];
-            return ds_GetControlModuleAction.CallUntilNotNull<ILayoutAction>(actionElement, module, moduleTypeName, actionType);
+            return ds_GetControlModuleAction.CallUntilNotNull<ILayoutAction>(actionElement, module, actionType);
         }
 
 
@@ -1550,6 +1550,20 @@ namespace LayoutManager {
             ds_GetComponentMenuCategoryItems.CallVoid(track, categoryElement, categoryName);
         }
 
+        static DispatchSource? ds_GetComponentMenuCategories = null;
+        [DispatchSource]
+        public static void GetComponentMenuCategories(this Dispatcher d, XmlElement element, LayoutTrackComponent? oldTrack) {
+            ds_GetComponentMenuCategories ??= d[nameof(GetComponentMenuCategories)];
+            ds_GetComponentMenuCategories.CallVoid(element, oldTrack);
+        }
+
+        static DispatchSource? ds_PaintImageMenuCategory = null;
+        [DispatchSource]
+        public static void PaintImageMenuCategory(this Dispatcher d, XmlElement element, Graphics g) {
+            ds_PaintImageMenuCategory ??= d[nameof(PaintImageMenuCategory)];
+            ds_PaintImageMenuCategory.CallVoid(element, g);
+        }
+
         static DispatchSource? ds_AllocateOffScreenBuffer = null;
         [DispatchSource]
         public static Bitmap AllocateOffScreenBuffer(this Dispatcher d, Graphics g, SizeF size) {
@@ -1563,5 +1577,55 @@ namespace LayoutManager {
             ds_GetControlModuleDescription ??= d[nameof(GetControlModuleDescription)];
             return ds_GetControlModuleDescription.Call<string?>(module, addressText, moduleTypeName);
         }
+
+        static DispatchSource? ds_RequestModelComponentPlacement = null;
+        [DispatchSource]
+        public static bool RequestModelComponentPlacement(this Dispatcher d, ModelComponent component, PlacementInfo placement)  {
+            ds_RequestModelComponentPlacement ??= d[nameof(RequestModelComponentPlacement)];
+            return ds_RequestModelComponentPlacement.CallBoolFunctions(invokeUntil: false, invokeAll: false, component, placement);
+        }
+
+        static DispatchSource? ds_OnModelComponentPlacedNotification = null;
+        [DispatchSource]
+        public static void OnModelComponentPlacedNotification(this Dispatcher d, ModelComponent component, ILayoutCompoundCommand command, PlacementInfo placement) {
+            ds_OnModelComponentPlacedNotification ??= d[nameof(OnModelComponentPlacedNotification)];    
+            ds_OnModelComponentPlacedNotification.CallVoid(component, command, placement);
+        }
+
+        static DispatchSource? ds_OnCommandStationEmergencyStop = null;
+        [DispatchSource]
+        public static void OnCommandStationEmergencyStop(this Dispatcher d, IModelComponentIsCommandStation commandStation, string reason) {
+            ds_OnCommandStationEmergencyStop ??= d[nameof(OnCommandStationEmergencyStop)];
+            ds_OnCommandStationEmergencyStop.CallVoid(commandStation, reason);
+        }
+
+        static DispatchSource? ds_OnActionStatusChanged = null;
+        [DispatchSource]
+        public static void OnActionStatusChanged(this Dispatcher d, LayoutAction action, ActionStatus status) {
+            ds_OnActionStatusChanged ??= d[nameof(OnActionStatusChanged)];
+            ds_OnActionStatusChanged.CallVoid(action, status);
+        }
+
+        static DispatchSource? ds_ValidateControlModuleLabel = null;
+        [DispatchSource]
+        public static string? ValidateControlModuleLabel(this Dispatcher d, ControlModule module, string label) {
+            ds_ValidateControlModuleLabel ??= d[nameof(ValidateControlModuleLabel)];
+            return ds_ValidateControlModuleLabel.Call<string?>(module, label);
+        }
+
+        static DispatchSource? ds_OnTrainNameChanged = null;
+        [DispatchSource]
+        public static void OnTrainNameChanged(this Dispatcher d, TrainCommonInfo train) {
+            ds_OnTrainNameChanged ??= d[nameof(OnTrainNameChanged)];
+            ds_OnTrainNameChanged.CallVoid(train);
+        }
+
+        static DispatchSource? ds_OnDesignTimeCommandStationEvent = null;
+        [DispatchSource]
+        public static void OnDesignTimeCommandStationEvent(this Dispatcher d, CommandStationInputEvent inputEvent) {
+            ds_OnDesignTimeCommandStationEvent ??= d[nameof(OnDesignTimeCommandStationEvent)];
+            ds_OnDesignTimeCommandStationEvent.CallVoid(inputEvent);
+        }
+
     }
 }

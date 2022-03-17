@@ -151,7 +151,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void CheckBoxToggle_CheckedChanged(object? sender, EventArgs e) {
             if (checkBoxToggle.Checked) {
                 if (toggleEvent == null) {
-                    toggleEvent = EventManager.DelayedEvent((int)numericUpDownToggleTime.Value * 1000, new LayoutEvent("test-layout-object-toggle", this));
+                    toggleEvent = EventManager.DelayedEvent((int)numericUpDownToggleTime.Value * 1000, TestLayoutObjectToggle);
                     State = 1 - State;
                 }
             }
@@ -163,14 +163,11 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        [LayoutEvent("test-layout-object-toggle")]
-        private void TestLayoutObjectToggle(LayoutEvent e) {
-            if (e.Sender == this) {
-                State = 1 - State;
+        private void TestLayoutObjectToggle() {
+            State = 1 - State;
 
-                if (checkBoxToggle.Checked)
-                    toggleEvent = EventManager.DelayedEvent((int)numericUpDownToggleTime.Value * 1000, new LayoutEvent("test-layout-object-toggle", this));
-            }
+            if (checkBoxToggle.Checked)
+                toggleEvent = EventManager.DelayedEvent((int)numericUpDownToggleTime.Value * 1000, TestLayoutObjectToggle);
         }
 
         [DispatchTarget]
@@ -298,13 +295,15 @@ namespace LayoutManager.Tools.Dialogs {
                 PickComponentToConnectToAddress pickDialog = new(csEvent);
 
                 new SemiModalDialog(this, pickDialog, (dialog, info) => {
-                    if (pickDialog.DialogResult == DialogResult.OK) {
-                        ControlConnectionPoint result = Ensure.NotNull<ControlConnectionPoint>(EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, csEvent)));
+                    if (pickDialog.DialogResult == DialogResult.OK && pickDialog.ConnectionDestination != null) {
+                        var result = Dispatch.Call.ConnectComponentToControlModuleAddress(pickDialog.ConnectionDestination, csEvent);
 
-                        Dispatch.Call.ShowControlConnectionPoint(frameWindowId, connectionPointRef);
-                        this.component = result.Component;
-                        Initialize();
-                        panelIllustration.Invalidate();
+                        if (result != null) {
+                            Dispatch.Call.ShowControlConnectionPoint(frameWindowId, connectionPointRef);
+                            this.component = result.Component;
+                            Initialize();
+                            panelIllustration.Invalidate();
+                        }
                     }
                 }, null).ShowDialog();
             }

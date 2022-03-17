@@ -1608,7 +1608,7 @@ namespace LayoutManager {
             Dispatch.Call.EmergencyStopRequest("User initiated");
         }
 
-        private void MenuItemConnectLayout_Click(object? sender, EventArgs e) => EventManager.Event(new LayoutEvent("connect-layout-to-control-request", this));
+        private void MenuItemConnectLayout_Click(object? sender, EventArgs e) => Dispatch.Call.ConnectLayoutToControlRequest();
 
         private void MenuItemLearnLayout_Click(object? sender, EventArgs e) {
             try {

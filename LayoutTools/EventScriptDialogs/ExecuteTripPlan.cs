@@ -90,11 +90,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             base.Dispose(disposing);
         }
 
-        [LayoutEvent("query-execute-trip-plan-dialog")]
-        private void QueryExecuteTripPlanDialog(LayoutEvent e) {
-            var _ = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Sender);
-            var dialogs = Ensure.NotNull<List<IModelComponentReceiverDialog>>(e.Info);
-
+        [DispatchTarget]
+        private void QueryExecuteTripPlanDialog(LayoutBlockDefinitionComponent blockDefinition, List<IModelComponentReceiverDialog> dialogs) {
             dialogs.Add(this);
         }
 
@@ -102,7 +99,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
-        private void ButtonOK_Click(object? sender, System.EventArgs e) {
+        private void ButtonOK_Click(object? sender, EventArgs e) {
             var tripPlan = tripPlanList.SelectedTripPlan;
 
             if (tripPlan == null) {

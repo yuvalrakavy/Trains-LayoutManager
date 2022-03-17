@@ -11,7 +11,7 @@ namespace LayoutManager.Tools.Dialogs {
         private readonly LayoutBlockDefinitionComponentInfo info;
         private readonly PlacementInfo placementInfo;
 
-        public AdvancedBlockInfoProperties(LayoutBlockDefinitionComponentInfo info, PlacementInfo placementInfo) {
+        public AdvancedBlockInfoProperties(LayoutBlockDefinitionComponentInfo info,  PlacementInfo placementInfo) {
             //
             // Required for Windows Form Designer support
             //

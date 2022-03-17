@@ -3,6 +3,7 @@ using LayoutManager.Model;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 /// This file contain implementation of commands that are carried out on a selection
 /// 
@@ -18,7 +19,7 @@ namespace LayoutManager {
 
             foreach (ModelComponent component in LayoutController.UserSelection) {
                 deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
-                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteSelectionCommand));
+                Dispatch.Call.PrepareForComponentRemoveCommand(component, deleteSelectionCommand);       
                 deleteSelectionCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
             }
 
@@ -67,7 +68,7 @@ namespace LayoutManager {
 
             foreach (ModelComponent component in LayoutController.UserSelection) {
                 deleteSelectionCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
-                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteSelectionCommand));
+                Dispatch.Call.PrepareForComponentRemoveCommand(component, deleteSelectionCommand);
                 deleteSelectionCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
             }
 

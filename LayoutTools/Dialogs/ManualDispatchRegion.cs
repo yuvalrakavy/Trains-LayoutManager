@@ -73,11 +73,9 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Manual Dispatch Region - " + textBoxName.Text;
         }
 
-        [LayoutEvent("query-edit-manual-dispatch-region-dialog")]
-        private void QueryEditManualDispatchRegionDialog(LayoutEvent e) {
-            var componentReceiverDialogs = Ensure.NotNull<List<IModelComponentReceiverDialog>>(e.Info, "receiverDialogs");
-
-            componentReceiverDialogs.Add((IModelComponentReceiverDialog)this);
+        [DispatchTarget]
+        private void QueryEditManualDispatchRegionDialog(LayoutBlockDefinitionComponent blockDefinition, List<IModelComponentReceiverDialog> dialogs) {
+            dialogs.Add(this);
         }
 
         [DispatchTarget]

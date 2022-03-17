@@ -79,8 +79,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.Text = "Train " + train.DisplayName + " Properties";
         }
 
-        [LayoutEvent("train-configuration-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void TrainNameChanged(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnTrainNameChanged([DispatchFilter("IsMyId")] TrainCommonInfo train) {
             SetTitleBar();
         }
 
@@ -96,7 +96,6 @@ namespace LayoutManager.Tools.Dialogs {
             base.Dispose(disposing);
         }
 
-        [LayoutEventDef("train-configuration-changed", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo), InfoType = typeof(string))]
         private void ButtonOK_Click(object? sender, System.EventArgs e) {
             // Validate
 
@@ -128,7 +127,7 @@ namespace LayoutManager.Tools.Dialogs {
             drivingParameters.Commit();
             attributesEditor.Commit();
 
-            EventManager.Event(new LayoutEvent("train-configuration-changed", train, train.Name));
+            Dispatch.Notification.OnTrainConfigurationChanged(train);
             train.RefreshSpeedLimit();
             train.Redraw();
 
@@ -201,7 +200,7 @@ namespace LayoutManager.Tools.Dialogs {
             TrainLocomotiveItem selected = (TrainLocomotiveItem)listViewLocomotives.SelectedItems[0];
             TrainLocomotiveInfo trainLoco = selected.TrainLocomotive;
 
-            EventManager.Event(new LayoutEvent("edit-locomotive-properties", trainLoco.Locomotive));
+            Dispatch.Call.EditLocomotiveProperties(trainLoco.Locomotive);
             locomotiveEdited = true;
             train.FlushCachedValues();
             selected.Update();

@@ -15,6 +15,14 @@ namespace LayoutManager {
             ds_AddDetailsWindowSections.CallVoid(component, container);
         }
 
+
+        static DispatchSource? ds_QueryEditingDefaultAction = null;
+        [DispatchSource]
+        public static bool QueryEditingDefaultAction(this Dispatcher d, ModelComponent component) {
+            ds_QueryEditingDefaultAction ??= d[nameof(QueryEditingDefaultAction)];
+            return ds_QueryEditingDefaultAction.CallBoolFunctions(invokeUntil: true, invokeAll: false, component);
+        }
+
         static DispatchSource? ds_EditingDefaultActionCommand = null;
         [DispatchSource]
         public static void EditingDefaultActionCommand(this Dispatcher d, ModelComponent component, LayoutHitTestResult hitResults) {

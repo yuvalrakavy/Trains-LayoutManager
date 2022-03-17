@@ -52,21 +52,17 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private bool QueryAction_SetMassothFeedbackDecoderAddress([DispatchFilter(Type = "XPath", Value = "[start-with(@ModuleTypeName, 'Massoth817001']")] ControlModule target, [DispatchFilter] string actionName = "set-address") {
+        private bool QueryAction_SetMassothFeedbackDecoderAddress([DispatchFilter("ModuleType", "Massoth817001.*")] ControlModule target, [DispatchFilter] string actionName = "set-address") {
             return true;
         }
 
-        //[LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001']")]
         [DispatchTarget]
-        private LayoutAction? GetControlModuleAction_ProgramMassothTriggerFeedbackDecoderAddress(XmlElement actionElement, ControlModule module,
-          [DispatchFilter] string moduleTypeName = "Massoth8170001", [DispatchFilter] string actionType = "set-address") {
+        private LayoutAction? GetControlModuleAction_ProgramMassothTriggerFeedbackDecoderAddress(XmlElement actionElement, [DispatchFilter("ModuleType", "Massoth8170001")] ControlModule module, [DispatchFilter] string actionType = "set-address") {
             return new ProgramMassothTriggerFeedbackDecoderAddress(actionElement, module);
         }
 
-        //[LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[@ModuleTypeName='Massoth8170001level']")]
         [DispatchTarget]
-        private LayoutAction? GetControlModuleAction_ProgramMassothLevelFeedbackDecoderAddress(XmlElement actionElement, ControlModule module,
-          [DispatchFilter] string moduleTypeName = "Massoth8170001level", [DispatchFilter] string actionType = "set-address") {
+        private LayoutAction? GetControlModuleAction_ProgramMassothLevelFeedbackDecoderAddress(XmlElement actionElement, [DispatchFilter("ModuleType", "Massoth8170001level")] ControlModule module, [DispatchFilter] string actionType = "set-address") {
             return new ProgramMassothLevelFeedbackDecoderAddress(actionElement, module);
         }
 

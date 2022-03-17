@@ -12,13 +12,11 @@ namespace TrainDetector {
     [LayoutModule("Train Detector Component Editing Tool", UserControl = false)]
     public class ComponentTool : System.ComponentModel.Component, ILayoutModuleSetup {
 
-        [LayoutEvent("model-component-placement-request", SenderType = typeof(TrainDetectorsComponent))]
-        private void PlaceNumatoTrainDetectpr(LayoutEvent e) {
-            var component = Ensure.NotNull<TrainDetectorsComponent>(e.Sender);
-
+        [DispatchTarget]
+        bool RequestModelComponentPlacement([DispatchFilter] TrainDetectorsComponent component, PlacementInfo placement) {
             if (LayoutModel.Components<TrainDetectorsComponent>(LayoutPhase.All).Any()) {
                 MessageBox.Show("Layout cannot contain more than one 'Train Detector' component", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                e.Info = false;
+                return false;
             }
             else {
                 using var propertiesDialog = new Dialogs.TrainDetectorProperties(component, initialPlacment: true);
@@ -27,17 +25,15 @@ namespace TrainDetector {
                     component.XmlInfo.XmlDocument = propertiesDialog.XmlInfo.XmlDocument;
                     if (propertiesDialog.AutoDetect) { }
 
-                    e.Info = true;      // Place component
+                    return true;      // Place component
                 }
                 else
-                    e.Info = false;     // Do not place component
+                    return false;     // Do not place component
             }
         }
 
-        [LayoutEvent("model-component-post-placement-request", SenderType = typeof(TrainDetectorsComponent))]
-        private async void CheckIfAutoDetect(LayoutEvent e) {
-            var component = Ensure.NotNull<TrainDetectorsComponent>(e.Sender);
-
+        [DispatchTarget]
+        async void OnModelComponentPlacedNotification([DispatchFilter] TrainDetectorsComponent component, ILayoutCompoundCommand command, PlacementInfo placement) {
             if (component.Info.AutoDetect) {
                 var detector = new TrainDetectorControllersDetection(component.TrainDetectorsBus, null);
 
@@ -113,21 +109,20 @@ namespace TrainDetector {
                     await networkHandler.Request((requestNumber) => networkHandler.SendPacketAsync(new ConfigSetRequestPacket(requestNumber, "Name", name), controller.ControllerIpAddress));
                 }
                 catch (TimeoutException) {
-                    MessageBox.Show("Error: could not program train detector controller with the new name (it is online?)", "Timeout error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Error: could not program train detector controller with the new name (it is on-line?)", "Timeout error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
 
-        [LayoutEvent("validate-control-module-label", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='TrainDetectorController']")]
-        private void ValidateControlModuleLabel(LayoutEvent e) {
-            var module = Ensure.NotNull<ControlModule>(e.Sender);
-            var label = (string?)e.GetOption("Label");
-
+        [DispatchTarget]
+        private string? ValidateControlModuleLabel([DispatchFilter("ModuleType", "TrainDetectorController")] ControlModule module, string label) {
             if (string.IsNullOrWhiteSpace(label))
-                e.Info = "Module label cannot be empty";
+                return "Module label cannot be empty";
 
             if (module.Bus.Modules.Any(otherModule => otherModule.Id != module.Id && otherModule.Label == label))
-                e.Info = $"A module with the entered label ({label}), is already defined";
+                return $"A module with the entered label ({label}), is already defined";
+
+            return null;
         }
 
     }

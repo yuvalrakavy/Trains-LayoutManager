@@ -195,7 +195,7 @@ namespace LayoutManager.Tools.Controls {
             var selected = GetSelected();
 
             if (selected != null)
-                EventManager.Event(new LayoutEvent("save-trip-plan", selected.TripAssignment.TripPlan, this.ParentForm));
+                Dispatch.Call.SaveTripPlan(selected.TripAssignment.TripPlan, this.ParentForm);
         }
 
         private void ButtonView_Click(object? sender, System.EventArgs e) {

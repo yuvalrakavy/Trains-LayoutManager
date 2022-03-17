@@ -78,13 +78,10 @@ namespace LayoutManager.Tools.Dialogs {
             listBoxSignals.Items.Add(new LinkedSignalItem(signalComponent));
         }
 
-        [LayoutEvent("query-bind-signals-dialogs")]
-        private void QueryBindSignalsDialog(LayoutEvent e) {
-            var queryBlockEdge = (LayoutBlockEdgeBase?)e.Sender;
-            var list = Ensure.NotNull<IList<IModelComponentReceiverDialog>>(e.Info);
-
-            if (queryBlockEdge == null || queryBlockEdge.Id == BlockEdge.Id)
-                list.Add((IModelComponentReceiverDialog)this);
+        [DispatchTarget]
+        private void QueryBindSignalsDialogs(LayoutBlockEdgeBase? blockEdge, List<IModelComponentReceiverDialog> dialogs) {
+            if (blockEdge == null || blockEdge.Id == BlockEdge.Id)
+                dialogs.Add((IModelComponentReceiverDialog)this);
         }
 
         [DispatchTarget]

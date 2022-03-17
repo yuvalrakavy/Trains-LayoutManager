@@ -19,6 +19,7 @@ namespace LayoutManager.Tools {
         public Guid TripPlanId { get; set; }
         public bool ShouldReverse { get; set; }
         public int? Penalty { get; set; }
+        public bool IsCircular {  get; set; }
         public RouteClearanceQuality? ClearanceQuality { get; set; }
     }
 
@@ -193,6 +194,7 @@ namespace LayoutManager.Tools {
                             ShouldReverse = false,
                             Penalty = quality?.Penalty,
                             ClearanceQuality = quality?.ClearanceQuality,
+                            IsCircular = tripPlan.IsCircular,
                         });
                     }
                     else if ((quality = VerifyTripPlan(tripPlan, shouldReverese: true)).IsValidRoute) {
@@ -201,6 +203,7 @@ namespace LayoutManager.Tools {
                             ShouldReverse = true,
                             Penalty = quality?.Penalty,
                             ClearanceQuality = quality?.ClearanceQuality,
+                            IsCircular = tripPlan.IsCircular,
                         });
                     }
 
@@ -241,10 +244,8 @@ namespace LayoutManager.Tools {
 
         #region Save Trip plan
 
-        [LayoutEvent("save-trip-plan")]
-        private void SaveTripPlan(LayoutEvent e) {
-            var tripPlan = Ensure.NotNull<TripPlanInfo>(e.Sender);
-            var parentForm = Ensure.NotNull<Form>(e.Info);
+        [DispatchTarget]
+        private void SaveTripPlan(TripPlanInfo tripPlan, Form? parentForm) {
             using Dialogs.SaveTripPlan saveTripPlan = new();
 
             Guid editedTripPlanID = Guid.Empty;
@@ -389,24 +390,24 @@ namespace LayoutManager.Tools {
             return true;
         }
 
-        [LayoutEvent("check-trip-plan-destination-request")]
-        private void CheckTripPlanDestination(LayoutEvent e) {
-            var tripPlan = Ensure.NotNull<TripPlanInfo>(e.Sender);
-
-            if (tripPlan.IsCircular)
-                e.Info = true;          // Trip plan is circular, so there is no "clear" destination (TODO: is that the right policy?)
+        [DispatchTarget]
+        private bool CheckTripPlanDestination(ApplicableTripPlanData applicableTripPlan) {
+            if (applicableTripPlan.IsCircular)
+                return true;          // Trip plan is circular, so there is no "clear" destination (TODO: is that the right policy?)
             else {
-                TripPlanWaypointInfo lastWaypoint = tripPlan.Waypoints[tripPlan.Waypoints.Count - 1];
+                var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[applicableTripPlan.TripPlanId];
 
-                e.Info = false;
+                if (tripPlan != null) {
+                    TripPlanWaypointInfo lastWaypoint = tripPlan.Waypoints[tripPlan.Waypoints.Count - 1];
 
-                // Check that at least one location in the last destination is available.
-                foreach (LayoutBlock block in lastWaypoint.Destination.Blocks) {
-                    if (IsBlockAfreeDestination(block)) {
-                        e.Info = true;
-                        break;
+                    // Check that at least one location in the last destination is available.
+                    foreach (LayoutBlock block in lastWaypoint.Destination.Blocks) {
+                        if (IsBlockAfreeDestination(block))
+                            return true;
                     }
                 }
+
+                return false;
             }
         }
 

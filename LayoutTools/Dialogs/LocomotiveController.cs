@@ -69,10 +69,10 @@ namespace LayoutManager.Tools.Dialogs {
 
         #region Layout Event Handlers
 
-        [LayoutEvent("activate-locomotive-controller", IfSender = "*[@ID='`string(@ID)`']")]
-        private void AcivateLocomotiveController(LayoutEvent e) {
+        [DispatchTarget]
+        private Form ActivateLocomotiveController([DispatchFilter("IsMyId")] TrainStateInfo train) {
             this.Activate();
-            e.Info = this;
+            return this;
         }
 
 
@@ -117,8 +117,8 @@ namespace LayoutManager.Tools.Dialogs {
             buttonLight.FlatStyle =lights ? FlatStyle.Flat : FlatStyle.Standard;
         }
 
-        [LayoutEvent("train-configuration-changed", IfSender = "*[@ID='`string(@ID)`']")]
-        private void TrainNameChanged(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnTrainNameChanged([DispatchFilter("IsMyId")] TrainCommonInfo train) {
             SetTitleBar();
         }
 
@@ -180,10 +180,9 @@ namespace LayoutManager.Tools.Dialogs {
             }
         }
 
-        [LayoutEvent("add-locomotive-controller-function-menu-entries", IfSender = "*[@ID='`string(@ID)`']")]
-        private void AddLocomotiveControllerFunctionMenuEntries(LayoutEvent e) {
+        [DispatchTarget]
+        private void AddLocomotiveControllerFunctionMenuEntries([DispatchFilter("IsMyId")] TrainStateInfo train, MenuOrMenuItem m) {
             var functions = new SortedList<string, List<LocomotiveInfo>>();
-            var m = new MenuOrMenuItem(Ensure.NotNull<object>(e.Info));
 
             foreach (TrainLocomotiveInfo trainLoco in train.Locomotives)
                 AddLocomotiveFunctions(functions, trainLoco.Locomotive);
@@ -500,7 +499,7 @@ namespace LayoutManager.Tools.Dialogs {
         private void ButtonFunction_Click(object? sender, System.EventArgs e) {
             var functionMenu = new ContextMenuStrip();
 
-            EventManager.Event(new LayoutEvent("add-locomotive-controller-function-menu-entries", train, functionMenu));
+            Dispatch.Call.AddLocomotiveControllerFunctionMenuEntries(train, new MenuOrMenuItem(functionMenu));
 
             if (functionMenu.Items.Count == 0) {
                 var noFunctions = new LayoutMenuItem("No functions") {
@@ -513,7 +512,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void ButtonProperties_Click(object? sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent("edit-train-properties", train));
+            Dispatch.Call.EditTrainProperties(train);
         }
 
         private void PanelSpeedLimit_Paint(object? sender, System.Windows.Forms.PaintEventArgs e) {

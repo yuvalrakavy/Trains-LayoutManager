@@ -428,7 +428,7 @@ namespace LayoutManager.Tools {
                 }
 
                 if (!Occurred && policy != null && policy.EventScriptElement != null) {
-                    eventScript = EventManager.EventScript(policy.Name, policy.EventScriptElement, ((LayoutEventScript)Script).ScopeIDs, () => EventManager.Event(new LayoutEvent("run-policy-done", this)));
+                    eventScript = EventManager.EventScript(policy.Name, policy.EventScriptElement, ((LayoutEventScript)Script).ScopeIDs, () => RunPolicyDone());
                     eventScript.ParentContext = Context;
 
                     eventScript.Reset();
@@ -446,15 +446,12 @@ namespace LayoutManager.Tools {
                 base.Dispose(disposing);
             }
 
-            [LayoutEvent("run-policy-done")]
-            private void RunPolicyDone(LayoutEvent e) {
-                if (e.Sender == this) {
-                    if (eventScript != null) {          // Make sure that the event was not canceled (race condition)
-                        if (IsConditionTrue)
-                            Occurred = true;
-                        else        // Condition is not true, RunPolicy again and check condition again
-                            eventScript.Reset();
-                    }
+            private void RunPolicyDone() {
+                if (eventScript != null) {          // Make sure that the event was not canceled (race condition)
+                    if (IsConditionTrue)
+                        Occurred = true;
+                    else        // Condition is not true, RunPolicy again and check condition again
+                        eventScript.Reset();
                 }
             }
         }
@@ -1321,7 +1318,6 @@ namespace LayoutManager.Tools {
         [DispatchTarget]
         private LayoutEventScriptNode ParseEventScriptDefinition_ExecuteRandomTripPlan([DispatchFilter("XPath", "ExecuteRandomTripPlan")] LayoutParseEventScript parseEventInfo) => new LayoutEventScriptNodeActionExecuteRandomTripPlan(parseEventInfo, this);
 
-        [LayoutEventDef("no-applicable-trip-plans-notification", Role = LayoutEventRole.Notification, SenderType = typeof(TrainStateInfo))]
         private class LayoutEventScriptNodeActionExecuteRandomTripPlan : LayoutEventScriptNodeAction {
             private static readonly LayoutTraceSwitch traceRandomTripPlan = new("ExecuteRandomTripPlan", "Execute Random Trip-plan");
             private const string A_StaticGrade = "StaticGrade";
@@ -1349,8 +1345,8 @@ namespace LayoutManager.Tools {
                 var applicableTripPlansElement = workingDoc.CreateElement(E_ApplicableTripPlans);
                 var selectCircular = (bool)Element.AttributeValue(A_SelectCircularTripPlans);
                 string selectReversedMethod = Element.GetAttribute(A_ReversedTripPlanSelection);
-                var tripPlanCandidates = new List<XmlElement>();
-                var reversedTripPlanCandidates = new List<XmlElement>();
+                var tripPlanCandidates = new List<ApplicableTripPlanData>();
+                var reversedTripPlanCandidates = new List<ApplicableTripPlanData>();
                 var filter = new LayoutConditionScript("Execute Random Trip-plan Filter", Ensure.NotNull<XmlElement>(Element[E_Filter]), true);
                 var scriptContext = filter.ScriptContext;
 
@@ -1359,33 +1355,29 @@ namespace LayoutManager.Tools {
                 workingDoc.AppendChild(applicableTripPlansElement);
                 applicableTripPlansElement.SetAttributeValue(A_StaticGrade, false);
 
-                EventManager.Event(new LayoutEvent("get-applicable-trip-plans-request", train, applicableTripPlansElement));
+                var applicableTripPlans = Dispatch.Call.GetApplicableTripPlansRequest(train, false, LayoutComponentConnectionPoint.Empty);
 
-                if (traceRandomTripPlan.TraceVerbose) {
-                    Trace.WriteLine("*** Execute Random trip plan ***");
-                    Trace.WriteLine("Applicable trip plan");
-                    Trace.WriteLine(applicableTripPlansElement.OuterXml);
-                }
+                foreach(var applicableTripPlan in applicableTripPlans.TripPlans) {
+                    var penalty = applicableTripPlan.Penalty;
+                    var clearanceQuality = applicableTripPlan.ClearanceQuality;
 
-                foreach (XmlElement applicableTripPlanElement in applicableTripPlansElement) {
-                    var tripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[(Guid)applicableTripPlanElement.AttributeValue(A_TripPlanId)];
-                    var penalty = (int)applicableTripPlanElement.AttributeValue(A_Penalty);
-                    var clearanceQuality = applicableTripPlanElement.AttributeValue(A_ClearanceQuality).Enum<RouteClearanceQuality>() ?? throw new ArgumentException("clearanceQuality");
-                    RouteQuality routeQuality = new(train.Id, clearanceQuality, penalty);
+                    if (penalty.HasValue && clearanceQuality.HasValue) {
+                        RouteQuality routeQuality = new(train.Id, clearanceQuality.Value, penalty.Value);
 
-                    if (tripPlan != null && routeQuality.IsFree) {
-                        if (!tripPlan.IsCircular || selectCircular) {
-                            Dispatch.Call.SetScriptContext(tripPlan, scriptContext);
+                        if (applicableTripPlan != null && routeQuality.IsFree) {
+                            if (!applicableTripPlan.IsCircular || selectCircular) {
+                                Dispatch.Call.SetScriptContext(applicableTripPlan, scriptContext);
 
-                            Application.DoEvents();
+                                Application.DoEvents();
 
-                            if (filter.IsTrue) {
-                                bool destinationIsFree = (bool)(EventManager.Event(new LayoutEvent("check-trip-plan-destination-request", tripPlan)) ?? false);
+                                if (filter.IsTrue) {
+                                    bool destinationIsFree = Dispatch.Call.CheckTripPlanDestination(applicableTripPlan);
 
-                                if ((bool)applicableTripPlanElement.AttributeValue(A_ShouldReverse) || !destinationIsFree)
-                                    reversedTripPlanCandidates.Add(applicableTripPlanElement);
-                                else
-                                    tripPlanCandidates.Add(applicableTripPlanElement);
+                                    if (applicableTripPlan.ShouldReverse || !destinationIsFree)
+                                        reversedTripPlanCandidates.Add(applicableTripPlan);
+                                    else
+                                        tripPlanCandidates.Add(applicableTripPlan);
+                                }
                             }
                         }
                     }
@@ -1410,27 +1402,24 @@ namespace LayoutManager.Tools {
                         break;
                 }
 
-                if (upperLimit == 0)
-                    EventManager.Event(new LayoutEvent("no-applicable-trip-plans-notification", train));
-                else {
+                if (upperLimit > 0) {
                     int index = new Random().Next(upperLimit);
-                    XmlElement? selectedApplicableTripPlanElement;
+                    ApplicableTripPlanData? selectedApplicableTripPlan;
 
                     if (tripPlanCandidates.Count == 0 && selectReversedMethod != "Yes")
                         LayoutModuleBase.Message(train, "No optimal trip-plan are available for selection by 'execute random trip-plan'");
 
                     if (index >= tripPlanCandidates.Count)
-                        selectedApplicableTripPlanElement = (XmlElement)reversedTripPlanCandidates[index - tripPlanCandidates.Count];
+                        selectedApplicableTripPlan = reversedTripPlanCandidates[index - tripPlanCandidates.Count];
                     else
-                        selectedApplicableTripPlanElement = (XmlElement)tripPlanCandidates[index];
+                        selectedApplicableTripPlan = tripPlanCandidates[index];
 
-                    if (selectedApplicableTripPlanElement != null) {
-                        var selectedTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[(Guid)selectedApplicableTripPlanElement.AttributeValue(A_TripPlanId)];
-                        var shouldReverse = (bool)selectedApplicableTripPlanElement.AttributeValue(A_ShouldReverse);
+                    if (selectedApplicableTripPlan != null) {
+                        var selectedTripPlan = LayoutModel.StateManager.TripPlansCatalog.TripPlans[selectedApplicableTripPlan.TripPlanId];
+                        var shouldReverse = selectedApplicableTripPlan.ShouldReverse;
 
                         if (selectedTripPlan != null) {
                             if (traceRandomTripPlan.TraceInfo) {
-                                Trace.WriteLine("*** Selected trip: " + selectedApplicableTripPlanElement.OuterXml);
                                 selectedTripPlan.Dump();
                             }
 

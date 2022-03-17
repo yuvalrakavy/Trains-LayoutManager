@@ -1204,6 +1204,7 @@ namespace LayoutManager.Model {
                 nameElement.InnerText = value;
 
                 Redraw();
+                Dispatch.Notification.OnTrainNameChanged(this);
             }
         }
 

@@ -1,4 +1,5 @@
 using LayoutManager.Model;
+using MethodDispatcher;
 using System.Windows.Forms;
 
 //****
@@ -18,7 +19,7 @@ namespace LayoutManager {
 
         protected override void DefaultAction(LayoutModelArea area, LayoutHitTestResult hitTestResult) {
             foreach (ModelComponent component in hitTestResult.Selection)
-                EventManager.Event(new LayoutEvent("default-action-command", component, hitTestResult));
+                Dispatch.Call.DefaultActionCommand(component, hitTestResult);
         }
     }
 }

@@ -1,5 +1,6 @@
 using LayoutManager;
 using LayoutManager.CommonUI;
+using LayoutManager.Model;
 using MethodDispatcher;
 using System;
 using System.ComponentModel;
@@ -46,16 +47,15 @@ namespace Intellibox {
 
         #endregion
 
-        [LayoutEvent("model-component-placement-request", SenderType = typeof(IntelliboxComponent))]
-        private void PlaceTrackContactRequest(LayoutEvent e) {
-            var component = Ensure.NotNull<IntelliboxComponent>(e.Sender);
+        [DispatchTarget]
+        bool RequestModelComponentPlacement([DispatchFilter] IntelliboxComponent component, PlacementInfo placement) {
             using Dialogs.CentralStationProperties csProperties = new(component);
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
-                e.Info = true;      // Place component
+                return true;      // Place component
             }
             else
-                e.Info = false;		// Do not place component
+                return false;		// Do not place component
         }
 
         [DispatchTarget]

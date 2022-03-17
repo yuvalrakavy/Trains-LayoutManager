@@ -437,8 +437,7 @@ namespace DiMAX {
                             if (OperationMode)
                                 DCCbusNotification(p.Address, p.State);
                             else if (LayoutController.IsDesignTimeActivation)
-                                EventManager.Event(new LayoutEvent("design-time-command-station-event", this, new CommandStationInputEvent(this, DCCbus, p.Address, p.State),
-                                    null));
+                                Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(this, DCCbus, p.Address, p.State));
                         }
                         break;
 
@@ -448,8 +447,7 @@ namespace DiMAX {
                             if (OperationMode)
                                 DiMAXbusNotification(p.Address, p.State);
                             else if (LayoutController.IsDesignTimeActivation)
-                                EventManager.Event(new LayoutEvent("design-time-command-station-event", this, new CommandStationInputEvent(this, DiMAXbus, p.Address, p.State),
-                                    null));
+                                Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(this, DiMAXbus, p.Address, p.State));
                         }
                         break;
 

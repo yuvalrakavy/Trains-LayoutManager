@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using MethodDispatcher;
 
 namespace LayoutManager {
     #region Context Menu items
@@ -42,7 +43,7 @@ namespace LayoutManager {
             LayoutCompoundCommand deleteCommand = new("delete");
 
             for (int i = components.Count - 1; i >= 0; i--) {
-                EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", components[i], deleteCommand));
+                Dispatch.Call.PrepareForComponentRemoveCommand(components[i], deleteCommand);
                 deleteCommand.Add(new LayoutComponentRemovalCommand(components[i], "Delete"));
             }
 
@@ -131,7 +132,7 @@ namespace LayoutManager {
                 if (LayoutController.UserSelection.Count > 0) {
                     foreach (ModelComponent component in LayoutController.UserSelection) {
                         pasteCommand.Add(new LayoutComponentDeselectCommand(LayoutController.UserSelection, component, "unselect"));
-                        EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, pasteCommand));
+                        Dispatch.Call.PrepareForComponentRemoveCommand(component, pasteCommand);
                         pasteCommand.Add(new LayoutComponentRemovalCommand(component, "delete"));
                     }
                 }
@@ -181,7 +182,7 @@ namespace LayoutManager {
 
             LayoutCompoundCommand deleteCommand = new("remove " + component.ToString());
 
-            EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", component, deleteCommand));
+            Dispatch.Call.PrepareForComponentRemoveCommand(component, deleteCommand);
             deleteCommand.Add(new LayoutComponentRemovalCommand(component, "remove " + component.ToString()));
             LayoutController.Do(deleteCommand);
         }

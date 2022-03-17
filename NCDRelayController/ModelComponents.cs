@@ -386,8 +386,7 @@ namespace NCDRelayController {
                             if (LayoutController.IsOperationMode)
                                 events.Add(() => Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(module.Bus, moduleNumber + 1, i), isSet));
                             else if (LayoutController.IsDesignTimeActivation)
-                                events.Add(() => EventManager.Event(new LayoutEvent("design-time-command-station-event", busProvider, new CommandStationInputEvent((ModelComponent)busProvider, module.Bus, moduleNumber + 1, i, isSet),
-                                    null)));
+                                events.Add(() => Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent((ModelComponent)busProvider, module.Bus, moduleNumber + 1, i, isSet)));
                         }
 
                         mask <<= 1;

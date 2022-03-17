@@ -22,18 +22,15 @@ namespace LayoutManager.Tools.Dialogs {
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
-        [LayoutEvent("get-command-station-notification-dialog")]
-        private void GetCommandStationNotificationDialog(LayoutEvent e) {
-            if (e.Sender == _commandStation)
-                e.Info = this;
+        [DispatchTarget]
+        private Form? GetCommandStationNotificationDialog(IModelComponentIsCommandStation commandStation) {
+            return commandStation == _commandStation ? this : null;
         }
 
-        [LayoutEvent("update-command-station-notification-dialog")]
-        private void UpdateCommandStationNotificationDialog(LayoutEvent e) {
-            if (e.Sender == _commandStation) {
-                var reason = Ensure.NotNull<string>(e.Info);
+        [DispatchTarget]
+        private void UpdateCommandStationNotificationDialog(IModelComponentIsCommandStation commandStation, string reason) {
+            if (commandStation == _commandStation)
                 labelReason.Text = reason;
-            }
         }
 
         [DispatchTarget]
@@ -48,7 +45,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void ButtonPowerOn_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("cancel-emergency-stop-request", _commandStation));
+            Dispatch.Call.CancelEmergencyStopRequest(_commandStation);
         }
 
         private void ButtonAbortTrips_Click(object? sender, EventArgs e) {

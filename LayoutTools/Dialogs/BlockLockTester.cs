@@ -82,7 +82,6 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void ButtonClose_Click(object? sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent("block-tester-dialog-closed", this));
             Close();
         }
     }

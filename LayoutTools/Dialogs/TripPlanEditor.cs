@@ -64,13 +64,8 @@ namespace LayoutManager.Tools.Dialogs {
                 Close();
         }
 
-        [LayoutEvent("query-edit-trip-plan-for-train")]
-        private void QueryEditTripPlanForTrain(LayoutEvent e) {
-            var queriedTrain = Ensure.NotNull<TrainsStateInfo>(e.Sender);
-
-            if (queriedTrain.Id == train.Id)
-                e.Info = tripPlanEditor1.ActiveForm;
-        }
+        [DispatchTarget]
+        private Form? QueryEditTripPlanForTrain(TrainStateInfo queriedTrain) => queriedTrain.Id == train.Id ? tripPlanEditor1.ActiveForm : null;
 
         [DispatchTarget]
         private void OnExitOperationMode() {
@@ -126,7 +121,7 @@ namespace LayoutManager.Tools.Dialogs {
         }
 
         private void ButtonSaveTripPlan_Click(object? sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent("save-trip-plan", tripPlanEditor1.TripPlan));
+            Dispatch.Call.SaveTripPlan(tripPlanEditor1.TripPlan, null);
         }
 
         private void TripPlanEditor_Closing(object? sender, CancelEventArgs e) {

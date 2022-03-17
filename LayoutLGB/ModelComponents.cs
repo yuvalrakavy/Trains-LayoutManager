@@ -218,8 +218,7 @@ namespace LayoutLGB {
                             LGBbusNotification(message.Address, message.Value);
                         }
                         else if (LayoutController.IsDesignTimeActivation)
-                            EventManager.Event(new LayoutEvent("design-time-command-station-event", this, new CommandStationInputEvent(this, message.Address <= 128 ? DCCbus : LGBbus, message.Address, message.Value),
-                                null));
+                            Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(this, message.Address <= 128 ? DCCbus : LGBbus, message.Address, message.Value));
                         break;
 
                     case MTScommand.ResetStation:

@@ -71,39 +71,29 @@ namespace LayoutManager.Tools {
         // handler. This will allow to add categories in evey position in the menu simply by
         // setting the 'Order' parameter of the event handler.
 
-        [LayoutEvent("get-component-menu-categories", Order = 0)]
-        private void AddTrackCategory(LayoutEvent e) {
-            var categories = Ensure.NotNull<XmlElement>(e.Sender);
-
-            AddChild(categories, "<Category Name='Tracks' Tooltip='Tracks' Image='0' />");
+        [DispatchTarget(Order = 0)]
+        void GetComponentMenuCategories_Track(XmlElement element, LayoutTrackComponent? oldTrack) {
+            AddChild(element, "<Category Name='Tracks' Tooltip='Tracks' Image='0' />");
         }
 
-        [LayoutEvent("get-component-menu-categories", Order = 100)]
-        private void AddComposedComponentCategory(LayoutEvent e) {
-            var categories = Ensure.NotNull<XmlElement>(e.Sender);
-
-            AddChild(categories, "<Category Name='ComposedTracks' Tooltip='Turnouts, cross, etc.' Image='4' />");
+        [DispatchTarget(Order = 100)]
+        void GetComponentMenuCategories_ComposedTrack(XmlElement element, LayoutTrackComponent? oldTrack) {
+            AddChild(element, "<Category Name='ComposedTracks' Tooltip='Turnouts, cross, etc.' Image='4' />");
         }
 
-        [LayoutEvent("get-component-menu-categories", Order = 200)]
-        private void AddBlockCategory(LayoutEvent e) {
-            var categories = Ensure.NotNull<XmlElement>(e.Sender);
-
-            AddChild(categories, "<Category Name='Block' Tooltip='Tracks contacts / Blocks' Image='1' />");
+        [DispatchTarget(Order = 200)]
+        void GetComponentMenuCategories_Block(XmlElement element, LayoutTrackComponent? oldTrack) {
+            AddChild(element, "<Category Name='Block' Tooltip='Tracks contacts / Blocks' Image='1' />");
         }
 
-        [LayoutEvent("get-component-menu-categories", Order = 300)]
-        private void AddAnnotationCategory(LayoutEvent e) {
-            var categories = Ensure.NotNull<XmlElement>(e.Sender);
-
-            AddChild(categories, "<Category Name='Annotation' Tooltip='Text &amp; Images' Image='2' />");
+        [DispatchTarget(Order = 300)]
+        void GetComponentMenuCategories_Annotation(XmlElement element, LayoutTrackComponent? oldTrack) {
+            AddChild(element, "<Category Name='Annotation' Tooltip='Text &amp; Images' Image='2' />");
         }
 
-        [LayoutEvent("get-component-menu-categories", Order = 400)]
-        private void AddControlCategory(LayoutEvent e) {
-            var categories = Ensure.NotNull<XmlElement>(e.Sender);
-
-            AddChild(categories, "<Category Name='Control' Tooltip='Layout power control elements' Image='3' />");
+        [DispatchTarget(Order = 400)]
+        void GetComponentMenuCategories_Control(XmlElement element, LayoutTrackComponent? oldTrack) {
+            AddChild(element, "<Category Name='Control' Tooltip='Layout power control elements' Image='3' />");
         }
 
         /*--------------------------------------------------------------------------------------*/
@@ -111,11 +101,9 @@ namespace LayoutManager.Tools {
         /// <summary>
         /// Paint the categories. The Image attribute is the category's image in the image list
         /// </summary>
-        [LayoutEvent("paint-image-menu-category", IfSender = "Category[@Image]")]
-        private void PaintAnnotationCategory(LayoutEvent e) {
-            var categoryElement = Ensure.NotNull<XmlElement>(e.Sender);
-            var g = Ensure.NotNull<Graphics>(e.Info);
-            var imageIndex = (int)categoryElement.AttributeValue(A_Image);
+        [DispatchTarget]
+        private void PaintImageMenuCategory([DispatchFilter("XPath", "Category[@Image]")] XmlElement element, Graphics g) {
+            var imageIndex = (int)element.AttributeValue(A_Image);
 
             g.DrawImage(imageListCategories.Images[imageIndex], 0, 0);
         }

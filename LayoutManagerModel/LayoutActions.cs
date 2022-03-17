@@ -41,7 +41,7 @@ namespace LayoutManager.Model {
         }
 
         private ILayoutAction? GetAction(object owner, XmlElement actionElement, string actionType) {
-            return owner is ControlModule module ? Dispatch.Call.GetControlModuleAction(actionElement, module, module.ModuleTypeName, actionType) : null;
+            return owner is ControlModule module ? Dispatch.Call.GetControlModuleAction(actionElement, module, actionType) : null;
         }
 
     }
@@ -254,7 +254,7 @@ namespace LayoutManager.Model {
             set {
                 SetAttributeValue(A_Status, value);
                 if (value != ActionStatus.Pending)
-                    EventManager.Event("action-status-changed", this, value);
+                    Dispatch.Notification.OnActionStatusChanged(this, value);
             }
         }
 

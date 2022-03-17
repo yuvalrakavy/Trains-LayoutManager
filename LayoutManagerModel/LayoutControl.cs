@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 #pragma warning disable IDE0051, IDE0052, IDE0060, CA1032
@@ -946,6 +947,32 @@ namespace LayoutManager.Model {
         #endregion
     }
 
+    public static class ControlDispatchFilters {
+        static readonly Dictionary<string, Regex> regexMap = new();
+
+        static bool ModuleTypeParameterFilter(object? filterValue, object? targetObject, object? parameterValue) {
+            string moduleTypeFilter = filterValue as string ?? throw new DispatchFilterException("Filter value must be string with control module type name");
+
+            if (!regexMap.TryGetValue(moduleTypeFilter, out Regex? moduleTypeRegEx)) {
+                moduleTypeRegEx = new Regex(moduleTypeFilter);
+                regexMap.Add(moduleTypeFilter, moduleTypeRegEx);
+            }
+
+            string? parameterModuleTypeName = parameterValue switch {
+                ControlModule module => module.ModuleTypeName,
+                ControlModuleReference moduleReference => moduleReference.Module.ModuleTypeName,
+                _ => null,
+            };
+
+
+            return parameterModuleTypeName != null && moduleTypeRegEx.IsMatch(parameterModuleTypeName);
+        }
+
+        [DispatchTarget]
+        static void AddDispatcherFilters() {
+            Dispatch.AddCustomParameterFilter("ModuleType", ModuleTypeParameterFilter);
+        }
+    }
     /// <summary>
     /// Hold long term reference to control module.
     /// </summary>
@@ -1584,8 +1611,8 @@ namespace LayoutManager.Model {
             set => SetAttributeValue(A_Usage, value);
         }
 
-        public string ClickToAddModuleEventName {
-            get => (string?)AttributeValue(A_ClickToAddEventName) ?? "control-module-click-to-add";
+        public string ClickToAddModuleDispatchSource {
+            get => (string?)AttributeValue(A_ClickToAddEventName) ?? "ClickToAddControlModule";
             set => SetAttributeValue(A_ClickToAddEventName, value);
         }
 

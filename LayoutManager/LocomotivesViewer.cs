@@ -127,17 +127,16 @@ namespace LayoutManager {
             locomotiveCollection?.Save();
         }
 
-        [LayoutEvent("edit-locomotive-properties")]
-        private void EditLocomotiveProperties(LayoutEvent e) {
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+        [DispatchTarget]
+        private void EditLocomotiveProperties(LocomotiveInfo loco) {
             Dialogs.LocomotiveProperties locoProperties = new(loco);
 
             if (locoProperties.ShowDialog(this) == DialogResult.OK)
                 locomotiveCollection?.Save();
         }
 
-        [LayoutEvent("add-new-locomotive-to-collection")]
-        private void AddNewLocomotiveToCollection(LayoutEvent e) {
+        [DispatchTarget]
+        private void AddNewLocomotiveToCollection() {
             if (locomotiveCollection == null)
                 return;
 
@@ -155,8 +154,8 @@ namespace LayoutManager {
             }
         }
 
-        [LayoutEvent("add-new-train-to-collection")]
-        private void AddNewTrainToCollection(LayoutEvent e) {
+        [DispatchTarget]
+        private void AddNewTrainToCollection() {
             if (locomotiveCollection == null)
                 return;
 
@@ -205,30 +204,24 @@ namespace LayoutManager {
             }
         }
 
-        [LayoutEvent("add-locomotive-collection-editing-context-menu-entries")]
-        private void AddLocomotiveCollectionEditingContextMenuEntries(LayoutEvent e) {
-            var clickedElement = (XmlElement?)e.Sender;
-            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget]
+        [DispatchFilter("InDesignMode")]
+        protected void AddLocomotiveCollectionContextMenuEntries_Design(XmlElement clickedElement, MenuOrMenuItem m) {
             if (clickedElement != null) {
                 m.Items.Add(new EditLocomotiveCollectionItemPropertiesMenuItem(clickedElement, "&Properties..."));
                 m.Items.Add(new DeleteLocomotiveCollectionItemMenuItem(clickedElement, CanDelete(clickedElement)));
             }
         }
 
-        [LayoutEvent("add-locomotive-collection-operation-context-menu-entries", Order = 100)]
-        private void AddLocomotiveCollectionOperationContextMenuEntries(LayoutEvent e) {
-            var clickedElement = (XmlElement?)e.Sender;
-            var m = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
+        [DispatchTarget]
+        [DispatchFilter("InOperationMode")]
+        protected void AddLocomotiveCollectionContextMenuEntries_Operation(XmlElement clickedElement, MenuOrMenuItem m) {
+            if (m.Items.Count > 0)
+                m.Items.Add(new ToolStripSeparator());
 
-            if (clickedElement != null) {
-                if (m.Items.Count > 0)
-                    m.Items.Add(new ToolStripSeparator());
-
-                if (clickedElement.Name == E_Locomotive)
-                    m.Items.Add(new EditLocomotiveCollectionItemPropertiesMenuItem(clickedElement, "&Locomotive properties..."));
-                m.Items.Add(new DeleteLocomotiveCollectionItemMenuItem(clickedElement, CanDelete(clickedElement)));
-            }
+            if (clickedElement.Name == E_Locomotive)
+                m.Items.Add(new EditLocomotiveCollectionItemPropertiesMenuItem(clickedElement, "&Locomotive properties..."));
+            m.Items.Add(new DeleteLocomotiveCollectionItemMenuItem(clickedElement, CanDelete(clickedElement)));
         }
 
         #region Context menu items
@@ -279,9 +272,7 @@ namespace LayoutManager {
             contextMenuAdd.Show(this, new Point(buttonAdd.Left, buttonAdd.Bottom + 2));
         }
 
-        private void MenuItemAddLocomotive_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("add-new-locomotive-to-collection", this));
-        }
+        private void MenuItemAddLocomotive_Click(object? sender, EventArgs e) => Dispatch.Call.AddNewLocomotiveToCollection();
 
         private void ButtonOptions_Click(object? sender, EventArgs e) {
             if (!operationMode)
@@ -326,9 +317,7 @@ namespace LayoutManager {
             EventManager.Event(new LayoutEvent("delete-locomotive-collection-item", selectedElement));
         }
 
-        private void MenuItemAddTrain_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("add-new-train-to-collection", this));
-        }
+        private void MenuItemAddTrain_Click(object? sender, EventArgs e) => Dispatch.Call.AddNewTrainToCollection();
 
         private void LocomotiveList_MouseDown(object? sender, MouseEventArgs e) {
             if ((e.Button & MouseButtons.Right) != 0) {
@@ -338,10 +327,7 @@ namespace LayoutManager {
                     if (locomotiveList.Items[clickedIndex] is IXmlQueryListBoxXmlElementItem clickedItem) {
                         var m = new ContextMenuStrip();
 
-                        if (operationMode)
-                            EventManager.Event(new LayoutEvent("add-locomotive-collection-operation-context-menu-entries", clickedItem.Element, new MenuOrMenuItem(m)));
-                        else
-                            EventManager.Event(new LayoutEvent("add-locomotive-collection-editing-context-menu-entries", clickedItem.Element, new MenuOrMenuItem(m)));
+                        Dispatch.Call.AddLocomotiveCollectionContextMenuEntries(clickedItem.Element, new MenuOrMenuItem(m));
 
                         if (m.Items.Count > 0) {
                             Rectangle itemRect = locomotiveList.GetItemRectangle(clickedIndex);

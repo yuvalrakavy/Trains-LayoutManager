@@ -37,9 +37,8 @@ namespace LayoutManager.Dialogs {
             UpdateButtons();
         }
 
-        [LayoutEvent("design-time-command-station-event")]
-        private void DesignTimeCommandStationEvent(LayoutEvent e) {
-            var csEvent = Ensure.NotNull<CommandStationInputEvent>(e.Info);
+        [DispatchTarget]
+        private void OnDesignTimeCommandStationEvent(CommandStationInputEvent csEvent) {
             EventItem? eventItem = null;
 
             foreach (EventItem item in listViewEvents.Items)
@@ -301,8 +300,8 @@ namespace LayoutManager.Dialogs {
                 Tools.Dialogs.PickComponentToConnectToAddress pickDialog = new(selected.CommandStationEvent);
 
                 new SemiModalDialog(this, pickDialog, (Form dialog, object? info) => {
-                    if (pickDialog.DialogResult == DialogResult.OK) {
-                        var connectionPoint = (ControlConnectionPoint?)EventManager.Event(new LayoutEvent("connect-component-to-control-module-address-request", pickDialog.ConnectionDestination, selected.CommandStationEvent));
+                    if (pickDialog.DialogResult == DialogResult.OK && pickDialog.ConnectionDestination != null) {
+                        var connectionPoint = Dispatch.Call.ConnectComponentToControlModuleAddress(pickDialog.ConnectionDestination, selected.CommandStationEvent);
 
                         if (connectionPoint != null)
                             Dispatch.Call.ShowControlConnectionPoint(frameWindowId, new ControlConnectionPointReference(connectionPoint));

@@ -14,34 +14,6 @@ using System.Xml;
 
 #nullable enable
 namespace LayoutManager.Tools {
-    public class PlacementInfo {
-        private const string E_PlacementInfo = "PlacementInfo";
-        private const string A_AreaID = "AreaID";
-        private const string A_x = "X";
-        private const string A_y = "Y";
-        private Point location;
-
-        public PlacementInfo(LayoutEvent e) {
-            var placementInfoElement = Ensure.NotNull<XmlElement>(e.XmlInfo.DocumentElement[E_PlacementInfo]);
-
-            Area = LayoutModel.Areas[(Guid)placementInfoElement.AttributeValue(A_AreaID)];
-            location = new Point((int)placementInfoElement.AttributeValue(A_x), (int)placementInfoElement.AttributeValue(A_y));
-        }
-
-        public PlacementInfo(ModelComponent component) {
-            Area = component.Spot.Area;
-            location = component.Location;
-        }
-
-        public LayoutModelArea Area { get; }
-
-        public Point Location => location;
-
-        public LayoutModelSpotComponentCollection Spot => Area.Grid[Location];
-
-        public LayoutTrackComponent Track => Ensure.NotNull<LayoutTrackComponent>(Spot.Track);
-    }
-
     /// <summary>
     /// Summary description for ComponentTools.
     /// </summary>
@@ -104,12 +76,10 @@ namespace LayoutManager.Tools {
                                                new PropertiesDialogMapEntry(typeof(LayoutPowerSelectorComponent), typeof(Dialogs.PowerSelectorProperties)),
         };
 
-        #region Generic event handlers for component that appear in the 'propertiesDialogMap'
+#region Generic event handlers for component that appear in the 'propertiesDialogMap'
 
-        [LayoutEvent("model-component-placement-request")]
-        private void PlaceComponent(LayoutEvent e) {
-            var component = Ensure.NotNull<ModelComponent>(e.Sender);
-
+        [DispatchTarget]
+        bool RequestModelComponentPlacement(ModelComponent component, PlacementInfo placement) {
             foreach (PropertiesDialogMapEntry entry in propertiesDialogMap) {
                 if (entry.componentType.IsInstanceOfType(component) && (entry.options & PropertyDialogOptions.NotOpenOnPlacement) == 0) {
                     var constructor = entry.propertiesDialogType.GetConstructor(new Type[] { typeof(ModelComponent), typeof(PlacementInfo) });
@@ -118,7 +88,7 @@ namespace LayoutManager.Tools {
                     if (constructor != null) {
                         dialog = (ILayoutComponentPropertiesDialog?)entry.propertiesDialogType.Assembly?.CreateInstance(
                             entry.propertiesDialogType.FullName!, false,
-                            BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null, new Object[] { component, new PlacementInfo(e) }, null, Array.Empty<Object>());
+                            BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance, null, new Object[] { component, placement }, null, Array.Empty<Object>());
                     }
                     else {
                         constructor = entry.propertiesDialogType.GetConstructor(new Type[] { typeof(ModelComponent) });
@@ -134,14 +104,14 @@ namespace LayoutManager.Tools {
 
                     if (dialog != null && dialog.ShowDialog() == DialogResult.OK) {
                         component.XmlInfo.XmlDocument = dialog.XmlInfo.XmlDocument;
-                        e.Info = true;      // Place component
+                        return true;      // Place component
                     }
                     else
-                        e.Info = false;     // Do not place component
-
-                    break;
+                        return false;     // Do not place component
                 }
             }
+
+            return true;        // No property dialog was found, so no dialog is canceled
         }
 
         [DispatchTarget(Order = 500)]
@@ -169,9 +139,9 @@ namespace LayoutManager.Tools {
             return false;
         }
 
-        #endregion
+#endregion
 
-        #region Testing component
+#region Testing component
 
         private static bool CanTestComponent(IModelComponentConnectToControl connectableComponent) {
             if (connectableComponent.FullyConnected) {
@@ -245,9 +215,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Track Link Component
+#region Track Link Component
 
         [DispatchTarget]
         private void AddDetailsWindowSections_TrackLink([DispatchFilter] LayoutTrackLinkComponent trackLinkComponent, PopupWindowContainerSection container) {
@@ -259,24 +229,21 @@ namespace LayoutManager.Tools {
                 LayoutTrackLinkComponent linkedComponent = trackLinkComponent.LinkedComponent;
                 LayoutTrackLinkTextInfo linkedTextProvider = new(linkedComponent, "Name");
 
-                container.AddText("Linked to: " + linkedTextProvider.Name);
+                container.AddText($"Linked to: {linkedTextProvider.Name}");
             }
             else
                 container.AddText("Not yet linked");
         }
 
-        [LayoutEvent("model-component-placement-request", SenderType = typeof(LayoutTrackLinkComponent))]
-        private void PlaceTrackLinkRequest(LayoutEvent e) {
-            var component = Ensure.NotNull<LayoutTrackLinkComponent>(e.Sender);
-            var placementProvider = new PlacementInfo(e);
-            var area = placementProvider.Area;
-            var trackLinkProperties = new Dialogs.TrackLinkProperties(area, component);
+        [DispatchTarget]
+        bool RequestModelComponentPlacement([DispatchFilter] LayoutTrackLinkComponent component, PlacementInfo placement) {
+            var trackLinkProperties = new Dialogs.TrackLinkProperties(placement.Area, component);
 
             if (trackLinkProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = trackLinkProperties.XmlInfo.XmlDocument;
 
                 LayoutCompoundCommand addCommand = new("Add track-link") {
-                    new LayoutComponentPlacmentCommand(area, placementProvider.Location, component, "Add track link", area.Phase(placementProvider.Location))
+                    new LayoutComponentPlacmentCommand(placement.Area, placement.Location, component, "Add track link", placement.Area.Phase(placement.Location))
                 };
 
                 if (trackLinkProperties.TrackLink != null) {
@@ -291,7 +258,7 @@ namespace LayoutManager.Tools {
                 LayoutController.Do(addCommand);
             }
 
-            e.Info = false;         // Do not place component, it is already placed
+            return false;         // Do not place component, it is already placed
         }
 
         [DispatchTarget]
@@ -347,10 +314,8 @@ namespace LayoutManager.Tools {
             ));
         }
 
-        [LayoutEvent("query-editing-default-action", SenderType = typeof(LayoutTrackLinkComponent))]
-        private void TrackLinkQueryEditingDefaultAction(LayoutEvent e) {
-            e.Info = true;
-        }
+        [DispatchTarget]
+        private bool QueryEditingDefaultAction_TrackLink([DispatchFilter] LayoutTrackLinkComponent component) => true;
 
         [DispatchTarget]
         private void EditingDefaultActionCommand_TrackLink([DispatchFilter] LayoutTrackLinkComponent trackLink, LayoutHitTestResult hitTestResult) {
@@ -360,16 +325,15 @@ namespace LayoutManager.Tools {
                 Dispatch.Call.EnsureComponentVisible(hitTestResult.FrameWindow.Id, linkedComponent, true);
         }
 
-        [LayoutEvent("default-action-command", SenderType = typeof(LayoutTrackLinkComponent))]
-        private void TrackLinkDefaultAction(LayoutEvent e) {
-            var trackLink = Ensure.NotNull<LayoutTrackLinkComponent>(e.Sender);
-            var linkedComponent = trackLink.LinkedComponent;
+        [DispatchTarget]
+        void DefaultActionCommand_TrackLink([DispatchFilter] LayoutTrackLinkComponent component, LayoutHitTestResult hitTestResult) {
+            var linkedComponent = component.LinkedComponent;
 
             if (linkedComponent != null)
                 Dispatch.Call.EnsureComponentVisible(LayoutController.ActiveFrameWindow.Id, linkedComponent, true);
         }
 
-        #region Track Link Menu item classes
+#region Track Link Menu item classes
 
         private class TrackLinkMenuItemProperties : LayoutMenuItem {
             private readonly LayoutTrackLinkComponent trackLinkComponent;
@@ -438,11 +402,11 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Block Edge component
+#region Block Edge component
 
         [DispatchTarget]
         [DispatchFilter("InDesignMode")]
@@ -454,8 +418,8 @@ namespace LayoutManager.Tools {
             var myBindDialog = new List<IModelComponentReceiverDialog>();
             var allBindDialog = new List<IModelComponentReceiverDialog>();
 
-            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", component, myBindDialog));
-            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", null, allBindDialog));
+            Dispatch.Call.QueryBindSignalsDialogs(component, myBindDialog);
+            Dispatch.Call.QueryBindSignalsDialogs(null, allBindDialog);
 
             var item = new BlockEdgeBindSignalMenuItem(component);
 
@@ -477,7 +441,7 @@ namespace LayoutManager.Tools {
             protected override void OnClick(EventArgs e) {
                 var myBindDialog = new List<IModelComponentReceiverDialog>();
 
-                EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", blockEdge, myBindDialog));
+                Dispatch.Call.QueryBindSignalsDialogs(blockEdge, myBindDialog);
 
                 if (myBindDialog.Count > 0) {
                     Form f = (Form)myBindDialog[0];
@@ -492,9 +456,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Signal component
+#region Signal component
 
         [DispatchTarget]
         [DispatchFilter("InDesignMode")]
@@ -505,7 +469,7 @@ namespace LayoutManager.Tools {
         private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutSignalComponent component, MenuOrMenuItem menu) {
             var allBindDialog = new List<IModelComponentReceiverDialog>();
 
-            EventManager.Event(new LayoutEvent("query-bind-signals-dialogs", null, allBindDialog));
+            Dispatch.Call.QueryBindSignalsDialogs(null, allBindDialog);
 
             if (allBindDialog.Count > 0) {
                 var item = new SignalBindSignalMenuItem((IModelComponentReceiverDialog)allBindDialog[0], component);
@@ -529,11 +493,11 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Shift components
+#region Shift components
 
-        #region Base class
+#region Base class
 
         private class ShiftLimit {
             public int From;
@@ -597,13 +561,13 @@ namespace LayoutManager.Tools {
                     this.compareOrder = compareOrder;
                 }
 
-                #region IComparer<int> Members
+#region IComparer<int> Members
 
                 public int Compare(int x, int y) {
                     return compareOrder == Order.Ascending ? x - y : y - x;
                 }
 
-                #endregion
+#endregion
             }
 
             private class ZorderSorter : IComparer {
@@ -647,7 +611,7 @@ namespace LayoutManager.Tools {
                                 Array.Sort(components, new ZorderSorter());     // Sort, so the first delete components will be those with higher Z order
 
                                 for (int i = components.Length - 1; i >= 0; i--) {
-                                    EventManager.Event(new LayoutEvent("prepare-for-component-remove-command", components[i], shiftCommand));
+                                    Dispatch.Call.PrepareForComponentRemoveCommand(components[i], shiftCommand);
                                     shiftCommand.Add(new LayoutComponentRemovalCommand(components[i], "Delete"));
                                 }
                             }
@@ -883,9 +847,9 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
-        #region Shift command menu entries
+#region Shift command menu entries
 
         private class ShiftComponentsUpMenuEntry : ShiftComponentsMenuEntryBase {
             public ShiftComponentsUpMenuEntry(LayoutHitTestResult hitTestResult) :
@@ -947,7 +911,7 @@ namespace LayoutManager.Tools {
             }
         }
 
-        #endregion
+#endregion
 
         internal class ShiftComponentsMenuEntry : LayoutMenuItem {
             public ShiftComponentsMenuEntry(LayoutHitTestResult hitTestResult) {
@@ -981,11 +945,9 @@ namespace LayoutManager.Tools {
             menu.Items.Add(new ShiftComponentsMenuEntry(hitTestResult));
         }
 
-        [LayoutEvent("add-component-editing-context-menu-common-entries", Order = 100)]
-        private void AddShiftComponentMenuEntry(LayoutEvent e) {
-            var hitTestResult = Ensure.NotNull<LayoutHitTestResult>(e.Sender);
-            var menu = Ensure.ValueNotNull<MenuOrMenuItem>(e.Info);
-
+        [DispatchTarget(Order =100)]
+        [DispatchFilter("InDesignMode")]
+        private void AddSelectionMenuEntries_ShiftComponents(LayoutHitTestResult hitTestResult, MenuOrMenuItem menu) {
             menu.Items.Add(new ShiftComponentsMenuEntry(hitTestResult));
         }
 
@@ -995,9 +957,9 @@ namespace LayoutManager.Tools {
             menu.Items.Add(new MoveSelectionMenuEntry(hitTestResult));
         }
 
-        #endregion
+#endregion
 
-        #region Count Components
+#region Count Components
 
         [DispatchTarget(Order = 101)]
         [DispatchFilter("InDesignMode")]
@@ -1020,9 +982,9 @@ namespace LayoutManager.Tools {
             });
         }
 
-        #endregion
+#endregion
 
-        #region Module Location Component
+#region Module Location Component
 
         [DispatchTarget]
         [DispatchFilter("InDesignMode")]
@@ -1050,26 +1012,22 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [LayoutEvent("query-editing-default-action", SenderType = typeof(LayoutControlModuleLocationComponent))]
-        private void ControlModuleLocationQueryEditingDefaultAction(LayoutEvent e) {
-            e.Info = true;
-        }
+        [DispatchTarget]
+        private bool QueryEditingDefaultAction_ModuleLocation([DispatchFilter] LayoutControlModuleLocationComponent component) => true;
 
         [DispatchTarget]
         private void EditingDefaultActionCommand_ControlModuleLocation([DispatchFilter] LayoutControlModuleLocationComponent component, LayoutHitTestResult hitTestResult) {
             Dispatch.Call.ShowControlModuleLocation(component);
         }
 
-        [LayoutEvent("default-action-command", SenderType = typeof(LayoutControlModuleLocationComponent))]
-        private void ControlModuleLocationDefaultAction(LayoutEvent e) {
-            var component = Ensure.NotNull<LayoutControlModuleLocationComponent>(e.Sender);
-
+        [DispatchTarget]
+        void DefaultActionCommand_ModuleLocation([DispatchFilter] LayoutControlModuleLocationComponent component, LayoutHitTestResult hitTestResult) {
             Dispatch.Call.ShowControlModuleLocation(component);
         }
 
-        #endregion
+#endregion
 
-        #region Component independent handing of Details window
+#region Component independent handing of Details window
 
         [DispatchTarget(Order = 10)]
         private void AddDetailsWindowSections_HasName([DispatchFilter] IModelComponentHasName component, PopupWindowContainerSection container) {
@@ -1107,9 +1065,9 @@ namespace LayoutManager.Tools {
                 container.AddVerticalSection(new PopupWindowTextSection("This component needs to be connected"));
         }
 
-        #endregion
+#endregion
 
-        #region Block Definition details pop-up window handler
+#region Block Definition details pop-up window handler
 
         [DispatchTarget(Order = 200)]
         private void AddDetailsWindowSections_BlockDefinition([DispatchFilter] LayoutBlockDefinitionComponent blockDefinition, PopupWindowContainerSection container) {
@@ -1182,16 +1140,16 @@ namespace LayoutManager.Tools {
                 container.AddVerticalSection(new PopupWindowPoliciesSection("Activate on train entry:", info.Policies, LayoutModel.StateManager.BlockInfoPolicies));
         }
 
-        #endregion
+#endregion
 
-        #region Text component pop-up window handler
+#region Text component pop-up window handler
 
         [DispatchTarget]
         private void AddDetailsWindowSections_Text([DispatchFilter] LayoutTextComponent textComponent, PopupWindowContainerSection container) {
             container.AddText(textComponent.TextProvider.Name);
         }
 
-        #endregion
+#endregion
 
     }
 }

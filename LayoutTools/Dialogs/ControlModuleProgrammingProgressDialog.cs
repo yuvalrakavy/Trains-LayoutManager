@@ -32,11 +32,8 @@ namespace LayoutManager.Tools.Dialogs {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);
         }
 
-        [LayoutEvent("action-status-changed")]
-        private void ActionStatusChanged(LayoutEvent e) {
-            var action = Ensure.NotNull<ILayoutAction>(e.Sender);
-            var status = Ensure.ValueNotNull<ActionStatus>(e.Info);
-
+        [DispatchTarget]
+        private void OnActionStatusChanged(LayoutAction action, ActionStatus status) {
             foreach (ActionItem actionItem in listViewActions.Items) {
                 if (actionItem.Id == action.Id) {
                     actionItem.Status = status;

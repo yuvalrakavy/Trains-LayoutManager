@@ -234,7 +234,7 @@ namespace LayoutManager.Tools.Dialogs {
                     m.Items.Add(connectionDescription.DisplayName, null,
                         (_, _) => {
                             ControlConnectionPointDestination destination = new(turnout, desc);
-                            EventManager.Event(new LayoutEvent("request-component-to-control-connect", destination));
+                            Dispatch.Call.RequestComponentToControlConnect(destination);
                         });
                 }
             }

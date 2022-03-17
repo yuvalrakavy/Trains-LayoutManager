@@ -470,12 +470,10 @@ namespace LayoutManager.Tools.Controls {
 
         #region Layout Event Handler
 
-        [LayoutEvent("query-edit-trip-plan-dialog")]
-        private void QueryEditTripPlanDialog(LayoutEvent e) {
-            var dialogs = Ensure.NotNull<List<ITripPlanEditorDialog>>(e.Info);
-
+        [DispatchTarget]
+        private void QueryEditTripPlanDialog(LayoutBlockDefinitionComponent blockDefinitions, List<ITripPlanEditorDialog> dialogs) {
             if (Enabled && !viewOnly)
-                dialogs.Add((ITripPlanEditorDialog)this);
+                dialogs.Add(this);
         }
 
         [DispatchTarget]

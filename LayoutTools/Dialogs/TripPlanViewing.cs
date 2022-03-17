@@ -1,5 +1,6 @@
 using LayoutManager.Model;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -44,8 +45,6 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void TripPlanViewing_Closed(object? sender, System.EventArgs e) => Dispose(true);
 
-        private void ButtonSave_Click(object? sender, System.EventArgs e) {
-            EventManager.Event(new LayoutEvent("save-trip-plan", tripPlan, this));
-        }
+        private void ButtonSave_Click(object? sender, System.EventArgs e) => Dispatch.Call.SaveTripPlan(tripPlan, this);
     }
 }

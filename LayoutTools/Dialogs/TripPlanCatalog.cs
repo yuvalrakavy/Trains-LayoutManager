@@ -53,13 +53,11 @@ namespace LayoutManager.Tools.Dialogs {
             UpdateButtons();
         }
 
-        [LayoutEvent("show-saved-trip-plans-for-train")]
-        private void ShowSavedTripPlansForTrain(LayoutEvent e) {
-            var aTrain = Ensure.NotNull<TrainStateInfo>(e.Sender);
-
+        [DispatchTarget]
+        private bool ShowSavedTripPlansForTrain(TrainStateInfo aTrain) {
             SetTrain(aTrain);
             Activate();
-            e.Info = true;
+            return true;
         }
 
         private void UpdateButtons() {

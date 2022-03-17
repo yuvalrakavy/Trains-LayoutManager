@@ -1,5 +1,6 @@
 using LayoutManager;
 using LayoutManager.CommonUI;
+using LayoutManager.Model;
 using MethodDispatcher;
 using System;
 using System.ComponentModel;
@@ -36,24 +37,20 @@ namespace NumatoController {
 
         #endregion
 
-        [LayoutEvent("model-component-placement-request", SenderType = typeof(NumatoController))]
-        private void PlaceNumatoRelayController(LayoutEvent e) {
-            var component = Ensure.NotNull<NumatoController>(e.Sender);
+        [DispatchTarget]
+        bool RequestModelComponentPlacement([DispatchFilter] NumatoController component, PlacementInfo placement) {
             using var csProperties = new Dialogs.NumatoControllerProperties(component);
 
             if (csProperties.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 component.XmlInfo.XmlDocument = csProperties.XmlInfo.XmlDocument;
-                e.Info = true;      // Place component
+                return true;      // Place component
             }
             else
-                e.Info = false;     // Do not place component
+                return false;     // Do not place component
         }
 
-        [LayoutEvent("model-component-post-placement-request", SenderType = typeof(NumatoController))]
-        private void PlaceNumatoRelayControllerRelayModule(LayoutEvent e) {
-            var component = Ensure.NotNull<NumatoController>(e.Sender);
-            var command = Ensure.NotNull<ILayoutCompoundCommand>(e.Info);
-
+        [DispatchTarget]
+        void OnModelComponentPlacedNotification([DispatchFilter] NumatoController component, ILayoutCompoundCommand command, PlacementInfo placement) {
             var bus = component.RelayBus;
             var moduleType = $"{component.RelaysCount}_NumatoRelays";
             var addControlModuleCommand = new AddControlModuleCommand(bus, moduleType, Guid.Empty, 0);

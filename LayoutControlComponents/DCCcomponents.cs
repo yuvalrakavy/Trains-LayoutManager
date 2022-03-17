@@ -140,8 +140,7 @@ namespace LayoutManager.ControlComponents {
 
         //[LayoutEvent("get-action", IfSender = "Action[@Type='set-address']", InfoType = typeof(ControlModule), IfInfo = "*[starts-with(@ModuleTypeName, 'Massoth8156')]")]
         [DispatchTarget]
-        private LayoutAction? GetControlModuleAction_ProgramMassothSwitchDecoderAddress(XmlElement actionElement, ControlModule module,
-            [DispatchFilter(Type = "RegEx", Value = "Massoth8156.*")] string moduleTypeName, [DispatchFilter] string actionName = "set-address") {
+        private LayoutAction? GetControlModuleAction_ProgramMassothSwitchDecoderAddress(XmlElement actionElement, [DispatchFilter("ModuleType", "Massoth8156.*")] ControlModule module, [DispatchFilter] string actionName = "set-address") {
             return new ProgramMassothSwitchDecoderAddress(actionElement, module);
 
         }

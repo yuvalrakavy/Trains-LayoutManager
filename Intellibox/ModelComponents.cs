@@ -592,8 +592,41 @@ namespace Intellibox {
 
         protected ControlBus S88Bus => _S88bus ??= Ensure.NotNull<ControlBus>(LayoutModel.ControlManager.Buses.GetBus(CommandStation, "S88BUS"));
 
+        private static void IntelliboxNotifiyLocomotiveState(IntelliboxComponent component, ExternalLocomotiveEventInfo info) {
+            var addressMap = Dispatch.Call.GetOnTrackLocomotiveAddressMap(component);
+            var addressMapEntry = addressMap?[info.Unit];
+
+            if (addressMapEntry == null)
+                LayoutModuleBase.Warning("Locomotive status reported for a unrecognized locomotive (unit " + info.Unit + ")");
+            else {
+                TrainStateInfo train = addressMapEntry.Train;
+
+                int speedInSteps = 0;
+
+                if (info.LogicalSpeed > 1) {
+                    double factor = (double)train.SpeedSteps / 126;
+
+                    speedInSteps = (int)Math.Round((info.LogicalSpeed - 2) * factor);
+
+                    if (speedInSteps == 0)
+                        speedInSteps = 1;
+                    else if (speedInSteps > train.SpeedSteps)
+                        speedInSteps = train.SpeedSteps;
+
+                    if (info.Direction == LocomotiveOrientation.Backward)
+                        speedInSteps = -speedInSteps;
+                }
+
+                Dispatch.Notification.OnLocomotiveMotion(component, speedInSteps, info.Unit);
+
+                if (info.Lights != train.Lights)
+                    Dispatch.Notification.OnLocomotiveLightsChanged(component, info.Unit, info.Lights);
+            }
+        }
+
+
         public override void Do() {
-            List<LayoutEvent> events = new();
+            List<Action> events = new();
 
             byte[] reply = new byte[3];
 
@@ -620,8 +653,7 @@ namespace Intellibox {
                     if (LayoutController.IsOperationMode)
                         Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(MotorolaBus, address), state);
                     else if (LayoutController.IsDesignTimeActivation)
-                        events.Add(new LayoutEvent("design-time-command-station-event", CommandStation, new CommandStationInputEvent(CommandStation, MotorolaBus, address, state),
-                            null));
+                        events.Add(() => Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(CommandStation, MotorolaBus, address, state)));
                 }
             }
 
@@ -654,8 +686,7 @@ namespace Intellibox {
                     bool lights = (highAddressAndDir & 0x40) != 0;
 
                     if (CommandStation.OperationMode)
-                        events.Add(new LayoutEvent("intellibox-notify-locomotive-state", CommandStation, new ExternalLocomotiveEventInfo(unit, logicalSpeed, functionMask, direction, lights),
-                            null));
+                        events.Add(() => IntelliboxNotifiyLocomotiveState(CommandStation, new ExternalLocomotiveEventInfo(unit, logicalSpeed, functionMask, direction, lights)));
 
                     logicalSpeed = GetResponse();
                 }
@@ -711,7 +742,7 @@ namespace Intellibox {
             for (int i = 0; i < feedbackData.Count; i++)
                 feedbackData[i].Tick(CommandStation, i, events);
 
-            CommandStation.InterThreadEventInvoker.QueueEvent(new LayoutEvent("intellibox-invoke-events", CommandStation, events));
+            CommandStation.InterThreadEventInvoker.Queue(() => events.ForEach(action => action()));
         }
 
         public override string ToString() => "Process Events";
@@ -747,7 +778,7 @@ namespace Intellibox {
             /// <param name="commandStation">The command station</param>
             /// <param name="moduleNumber">Module number (0 based)</param>
             /// <param name="events">List of events to which to add the event</param>
-            public void Tick(IntelliboxComponent commandStation, int moduleNumber, List<LayoutEvent> events) {
+            public void Tick(IntelliboxComponent commandStation, int moduleNumber, List<Action> events) {
                 for (int i = 0; i < 16; i++) {
                     if (debounceCounters[i] > 0) {
                         if (--debounceCounters[i] == 0) {
@@ -756,8 +787,7 @@ namespace Intellibox {
                             if (LayoutController.IsOperationMode)
                                 Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(commandStation.S88Bus, moduleNumber + 1, 15 - i), isSet ? 1 : 0);
                             else if (LayoutController.IsDesignTimeActivation)
-                                events.Add(new LayoutEvent("design-time-command-station-event", commandStation, new CommandStationInputEvent(commandStation, commandStation.S88Bus, moduleNumber + 1, 15 - i, isSet ? 1 : 0),
-                                    null));
+                                events.Add(() => Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(commandStation, commandStation.S88Bus, moduleNumber + 1, 15 - i, isSet ? 1 : 0)));
                         }
                     }
                 }

@@ -22,7 +22,7 @@ namespace LayoutManager.ControlComponents {
                 FirstAddress = 0,
                 LastAddress = int.MaxValue,
                 Usage = ControlConnectionPointUsage.Input,
-                ClickToAddModuleEventName = "click-to-add-train-detector",
+                ClickToAddModuleDispatchSource = "ClickToAddTrainDetector",
                 CanChangeAddress = false,
                 AllowEmptyLabel = false,
             };

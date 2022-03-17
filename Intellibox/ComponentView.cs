@@ -170,41 +170,6 @@ namespace Intellibox {
             events.ForEach((LayoutEvent ev) => EventManager.Event(ev));
         }
 
-        [LayoutEvent("intellibox-notify-locomotive-state")]
-        private void IntelliboxNotifiyLocomotiveState(LayoutEvent e) {
-            var component = Ensure.NotNull<IntelliboxComponent>(e.Sender);
-            var info = Ensure.ValueNotNull<ExternalLocomotiveEventInfo>(e.Info);
-            var addressMap = Dispatch.Call.GetOnTrackLocomotiveAddressMap(component);
-            var addressMapEntry = addressMap?[info.Unit];
-
-            if (addressMapEntry == null)
-                LayoutModuleBase.Warning("Locomotive status reported for a unrecognized locomotive (unit " + info.Unit + ")");
-            else {
-                TrainStateInfo train = addressMapEntry.Train;
-
-                int speedInSteps = 0;
-
-                if (info.LogicalSpeed > 1) {
-                    double factor = (double)train.SpeedSteps / 126;
-
-                    speedInSteps = (int)Math.Round((info.LogicalSpeed - 2) * factor);
-
-                    if (speedInSteps == 0)
-                        speedInSteps = 1;
-                    else if (speedInSteps > train.SpeedSteps)
-                        speedInSteps = train.SpeedSteps;
-
-                    if (info.Direction == LocomotiveOrientation.Backward)
-                        speedInSteps = -speedInSteps;
-                }
-
-                Dispatch.Notification.OnLocomotiveMotion(component, speedInSteps, info.Unit);
-
-                if (info.Lights != train.Lights)
-                    Dispatch.Notification.OnLocomotiveLightsChanged(component, info.Unit, info.Lights);
-            }
-        }
-
         #endregion
 
     }
