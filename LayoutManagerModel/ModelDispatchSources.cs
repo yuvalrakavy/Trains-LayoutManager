@@ -995,6 +995,15 @@ namespace LayoutManager {
             return Task.WhenAll(tasks);
         }
 
+        static DispatchSource? ds_EnterOperationModeAsync = null;
+        [DispatchSource]
+        public static Task EnterOperationModeAsync(this Dispatcher d) {
+            ds_EnterOperationModeAsync ??= d[nameof(EnterOperationModeAsync)];
+            var tasks = ds_EnterOperationModeAsync.CallCollect<Task>();
+            return Task.WhenAll(tasks);
+        }
+
+
         static DispatchSource? ds_OnCommandStationPowerOff = null;
         [DispatchSource]
         public static void OnCommandStationPowerOff(this Dispatcher d, IModelComponentHasNameAndId commandStation) {

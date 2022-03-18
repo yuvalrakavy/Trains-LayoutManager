@@ -122,11 +122,6 @@ namespace LayoutManager {
             LayoutModel.WriteModelXmlInfo();
         }
 
-        [LayoutEvent("locomotive-set-updated-locomotive-definition")]
-        private void LocomotiveDefinitionUpdated(LayoutEvent e) {
-            locomotiveCollection?.Save();
-        }
-
         [DispatchTarget]
         private void EditLocomotiveProperties(LocomotiveInfo loco) {
             Dialogs.LocomotiveProperties locoProperties = new(loco);
@@ -172,10 +167,8 @@ namespace LayoutManager {
             }
         }
 
-        [LayoutEvent("edit-locomotive-collection-item")]
-        private void EditLocomotiveCollectionItem(LayoutEvent e) {
-            var selectedElement = (XmlElement?)e.Sender;
-
+        [DispatchTarget]
+        private void EditLocomotiveCollectionItem(XmlElement selectedElement) {
             if (selectedElement != null) {
                 if (selectedElement.Name == E_Locomotive) {
                     LocomotiveInfo loco = new(selectedElement);
@@ -193,10 +186,8 @@ namespace LayoutManager {
             }
         }
 
-        [LayoutEvent("delete-locomotive-collection-item")]
-        private void DeleteLocomotiveCollectionItem(LayoutEvent e) {
-            var selectedElement = (XmlElement?)e.Sender;
-
+        [DispatchTarget]
+        private void DeleteLocomotiveCollectionItem(XmlElement selectedElement) {
             if (selectedElement != null && CanDelete(selectedElement)) {
                 selectedElement.ParentNode?.RemoveChild(selectedElement);
                 locomotiveCollection?.EnsureReferentialIntegrity();
@@ -235,7 +226,7 @@ namespace LayoutManager {
             }
 
             protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent("edit-locomotive-collection-item", element));
+                Dispatch.Call.EditLocomotiveCollectionItem(element);
             }
         }
 
@@ -249,9 +240,7 @@ namespace LayoutManager {
                 Enabled = canDelete;
             }
 
-            protected override void OnClick(EventArgs e) {
-                EventManager.Event(new LayoutEvent("delete-locomotive-collection-item", element));
-            }
+            protected override void OnClick(EventArgs e) => Dispatch.Call.DeleteLocomotiveCollectionItem(element);
         }
 
         #endregion
@@ -308,13 +297,14 @@ namespace LayoutManager {
         private void ButtonEdit_Click(object? sender, EventArgs e) {
             var selectedElement = locomotiveList.SelectedXmlElement;
 
-            EventManager.Event(new LayoutEvent("edit-locomotive-collection-item", selectedElement));
+            Dispatch.Call.EditLocomotiveCollectionItem(selectedElement);
         }
 
         private void ButtonDelete_Click(object? sender, EventArgs e) {
             var selectedElement = locomotiveList.SelectedXmlElement;
 
-            EventManager.Event(new LayoutEvent("delete-locomotive-collection-item", selectedElement));
+            if(selectedElement != null)
+                Dispatch.Call.DeleteLocomotiveCollectionItem(selectedElement);
         }
 
         private void MenuItemAddTrain_Click(object? sender, EventArgs e) => Dispatch.Call.AddNewTrainToCollection();
@@ -340,7 +330,7 @@ namespace LayoutManager {
         }
 
         private void ButtonClose_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("hide-locomotives", this));
+            Dispatch.Call.HideLocomotives(LayoutController.ActiveFrameWindow.Id);
         }
     }
 }

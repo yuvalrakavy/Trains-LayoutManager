@@ -2,6 +2,7 @@
 using LayoutManager.View;
 using MethodDispatcher;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace LayoutManager {
@@ -78,5 +79,13 @@ namespace LayoutManager {
             ds_GetModelComponentDrawingRegions ??= d[nameof(GetModelComponentDrawingRegions)];
             ds_GetModelComponentDrawingRegions.CallVoid(component, regions);
         }
+
+        static DispatchSource? ds_GetImage = null;
+        [DispatchSource]
+        public static Image GetImage(this Dispatcher d) {
+            ds_GetImage ??= d[nameof(GetImage)];
+            return ds_GetImage.Call<Image>();
+        }
+
     }
 }

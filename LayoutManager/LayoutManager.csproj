@@ -71,8 +71,11 @@
     <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="LayoutFrameWindow_Orig\**" />
     <Compile Remove="orig\**" />
+    <EmbeddedResource Remove="LayoutFrameWindow_Orig\**" />
     <EmbeddedResource Remove="orig\**" />
+    <None Remove="LayoutFrameWindow_Orig\**" />
     <None Remove="orig\**" />
   </ItemGroup>
   <ItemGroup>

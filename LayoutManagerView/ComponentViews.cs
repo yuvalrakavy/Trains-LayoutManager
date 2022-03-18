@@ -1217,9 +1217,9 @@ namespace LayoutManager.View {
 
         #region Control Module Location component
 
-        [LayoutEvent("get-image", SenderType = typeof(ControlModuleLocationPainter))]
-        private void GetControlModuleLocationImage(LayoutEvent e) {
-            e.Info = imageListComponents.Images[1];
+        [DispatchTarget]
+        private Image GetImage() {
+            return imageListComponents.Images[1];
         }
 
         [DispatchTarget]

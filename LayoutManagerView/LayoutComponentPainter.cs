@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using MethodDispatcher;
 
 namespace LayoutManager.Components {
     /// <summary>
@@ -879,7 +880,7 @@ namespace LayoutManager.Components {
 
         public void Paint(Graphics g) {
             System.Drawing.Imaging.ImageAttributes attributes = new();
-            Image image = Ensure.NotNull<Image>(EventManager.Event(new LayoutEvent("get-image", this)));
+            Image image = Dispatch.Call.GetImage();
 
             attributes.SetColorKey(Color.White, Color.White);
 

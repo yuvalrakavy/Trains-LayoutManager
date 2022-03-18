@@ -87,7 +87,7 @@ namespace LayoutManager.Dialogs {
                 }
                 else {
                     Dispatch.Call.AddMessage($"Components that matched '{textBoxFind.Text}'", results);
-                    EventManager.Event(new LayoutEvent("show-messages", this));
+                    Dispatch.Call.ShowMessages();
                 }
 
                 Close();

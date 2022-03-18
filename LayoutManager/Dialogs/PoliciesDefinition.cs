@@ -55,10 +55,8 @@ namespace LayoutManager.Dialogs {
             base.Dispose(disposing);
         }
 
-        [LayoutEvent("query-policies-definition-dialog")]
-        private void QueryPoliciesDefinitionDialog(LayoutEvent e) {
-            e.Info = this;
-        }
+        [DispatchTarget]
+        private Form? QueryPoliciesDefinitionDialog() => this;
 
         private void PoliciesDefinition_Closed(object? sender, EventArgs e) {
             EventManager.Subscriptions.RemoveObjectSubscriptions(this);

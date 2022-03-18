@@ -308,7 +308,7 @@ namespace LayoutManager {
                             layoutDesignTimeActivationNesting = 0;
                         }
 
-                        EventManager.Event(new LayoutEvent("exit-design-mode", this));
+                        Dispatch.Call.ExitDesignMode();
                     }
 
                     commandManager.Clear();         // Clear undo stack
@@ -319,7 +319,7 @@ namespace LayoutManager {
                     trainsAnalysisPhaseCount = performTrainsAnalysis.Count;
 
                     if (trainsAnalysisPhaseCount > 0)
-                        EventManager.Event(new LayoutEvent("begin-trains-analysis-phase", this));
+                        Dispatch.Notification.OnBeginingTrainsAnalysisPhase();
 
                     OperationModeSettings = settings;
                     LayoutModel.ActivePhases = settings.Phases;
@@ -336,8 +336,7 @@ namespace LayoutManager {
                             Dispatch.Call.ClearLayoutState();
                     }
 
-                    Dispatch.Notification.OnEnteredOperationMode(settings);
-                    Task.WhenAll(EventManager.AsyncEventBroadcast(new LayoutEvent("enter-operation-mode-async", settings))).Wait(500);
+                    Dispatch.Call.EnterOperationModeAsync().Wait(500);
                     LayoutModel.Instance.Redraw();
                 }
                 catch (AggregateException ex) {
@@ -365,10 +364,7 @@ namespace LayoutManager {
             bool simulation = LayoutController.IsOperationSimulationMode;
 
             Dispatch.Notification.OnExitOperationMode();
-
-            Trace.WriteLine("Before invoking exit-operation-mode-async");
             await Dispatch.Call.ExitOperationModeAsync();
-            Trace.WriteLine("After invoking exit-operation-mode-async");
 
             if (simulation)
                 await Task.Delay(200);      // Allow the emulator to process last command
@@ -377,8 +373,8 @@ namespace LayoutManager {
         [DispatchTarget]
         private void OnCommandStationTrainAnalysisPhaseDone() {
             if (--trainsAnalysisPhaseCount == 0) {
-                EventManager.Event(new LayoutEvent("end-trains-analysis-phase", this));
                 Dispatch.Call.PerformTrainsAnalysis();
+                Dispatch.Notification.OnEndingTrainsAnalysisPhase();
             }
 
             Debug.Assert(trainsAnalysisPhaseCount >= 0);
@@ -661,21 +657,21 @@ namespace LayoutManager {
         public void Area_Added(object? sender, EventArgs e) {
             var area = Ensure.NotNull<LayoutModelArea>(sender);
 
-            EventManager.Event(new LayoutEvent<LayoutModelArea>("area-added", area));
+            Dispatch.Notification.OnAreaAdded(area);
             LayoutModified();
         }
 
         public void Area_Removed(object? sender, EventArgs e) {
             var area = Ensure.NotNull<LayoutModelArea>(sender);
 
-            EventManager.Event(new LayoutEvent<LayoutModelArea>("area-removed", area));
+            Dispatch.Notification.OnAreaRemoved(area);
             LayoutModified();
         }
 
         public void Area_Renamed(object? sender, EventArgs e) {
             var area = Ensure.NotNull<LayoutModelArea>(sender);
 
-            EventManager.Event(new LayoutEvent<LayoutModelArea>("area-renamed", area));
+            Dispatch.Notification.OnAreaRenamed(area);
             LayoutModified();
         }
 
@@ -688,11 +684,6 @@ namespace LayoutManager {
         }
 
         public LayoutModuleManager ModuleManager { get; }
-
-        [LayoutEvent("get-module-manager")]
-        private void GetModuleManager(LayoutEvent e) {
-            e.Info = ModuleManager;
-        }
 
         public bool IsOperationMode => OperationModeSettings != null;
 
@@ -728,8 +719,8 @@ namespace LayoutManager {
 
         #region Event Handlers
 
-        [LayoutEvent("save-layout")]
-        private void SaveLayout(LayoutEvent e) {
+        [DispatchTarget]
+        private void SaveLayout() {
             SaveModel(LayoutFilename);
             SaveDisplayState(FrameWindows);
 

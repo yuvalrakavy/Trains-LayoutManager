@@ -214,11 +214,9 @@ namespace LayoutManager {
             return result;
         }
 
-        [LayoutEvent("change-phase")]
-        private void ChangePhase(LayoutEvent e0) {
-            var e = (LayoutEventInfoValueType<LayoutSelection, LayoutPhase>)e0;
-            LayoutSelection selection = e.Sender ?? LayoutController.UserSelection;
-            LayoutPhase phase = e.Info;
+        [DispatchTarget]
+        private void ChangePhase(LayoutSelection? inSelection, LayoutPhase phase) {
+            LayoutSelection selection = inSelection ?? LayoutController.UserSelection;
             string phaseName = "**UNKNOWN**";
 
             switch (phase) {

@@ -92,16 +92,16 @@ namespace LayoutManager.Dialogs {
             }
         }
 
-        [LayoutEvent("activate-learn-layout")]
-        private void ActivateLearnLayout(LayoutEvent e) {
+        [DispatchTarget]
+        private Form? ActivateLearnLayout() {
             if (WindowState == FormWindowState.Minimized)
                 WindowState = FormWindowState.Normal;
 
-            e.Info = this;
+            return this;
         }
 
-        [LayoutEvent("exit-design-mode")]
-        private void ExitDesignMode(LayoutEvent e) {
+        [DispatchTarget]
+        private void ExitDesignMode() {
             buttonClose.PerformClick();
         }
 

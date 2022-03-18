@@ -515,22 +515,6 @@ namespace LayoutManager {
                 toolBarButtonToggleGrid.Checked = ActiveView.ShowGrid != ShowGridLinesOption.Hide;
         }
 
-        [LayoutEvent("test")]
-        private void Test(LayoutEvent e) {
-            Trace.WriteLine("Got event test");
-            Trace.WriteLine("Sender is " + (e.Sender == null ? "Null" : e.Sender.ToString()));
-            Trace.WriteLine("Info is " + (e.Info == null ? "Null" : e.Info.ToString()));
-
-            var optionsElement = e.Element["Options"];
-
-            if (optionsElement != null) {
-                Trace.WriteLine("Options:");
-
-                foreach (XmlAttribute a in optionsElement.Attributes)
-                    Trace.WriteLine("  Option " + a.Name + " is " + a.Value);
-            }
-        }
-
         [DispatchTarget]
         private void ToolsMenuOpenRequest(MenuOrMenuItem toolsMenu) {
             var layoutEmulationServices = Dispatch.Call.GetLayoutEmulationServices();
@@ -569,14 +553,14 @@ namespace LayoutManager {
             SetUserInterfaceMode(settings);
         }
 
-        [LayoutEvent("begin-trains-analysis-phase")]
-        private void BeginTrainsAnalysisPhase(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnBeginingTrainsAnalysisPhase() {
             //SUSPENDED
             //statusBarPanelOperation.Text = "Analyzing trains status...";
         }
 
-        [LayoutEvent("end-trains-analysis-phase")]
-        private void EndTrainsAnalysisPhase(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnEndingTrainsAnalysisPhase() {
             //SUSPENDED
             //statusBarPanelOperation.Text = "Ready";
         }
@@ -712,8 +696,8 @@ namespace LayoutManager {
             toolBarButtonToggleAllLayoutManualDispatch.Checked = active;
         }
 
-        [LayoutEvent("manual-dispatch-region-status-changed")]
-        private void ManualDispatchRegionStatusChanged(LayoutEvent e) {
+        [DispatchTarget]
+        private void OnManualDispatchRegionStatusChanged(ManualDispatchRegionInfo aManualDispatchRegion, bool active) {
             bool enableAllLayoutManualDispatch = true;
 
             foreach (ManualDispatchRegionInfo manualDispatchRegion in LayoutModel.StateManager.ManualDispatchRegions)
@@ -906,19 +890,16 @@ namespace LayoutManager {
 
         #endregion
 
-        [LayoutEvent("area-added")]
-        private void AreaAdded(LayoutEvent e) {
-            var area = Ensure.NotNull<LayoutModelArea>(e.Sender);
+        [DispatchTarget]
+        private void OnAreaAdded(LayoutModelArea area) {
             var areaPage = new LayoutFrameWindowAreaTabPage(area);
 
             tabAreas.TabPages.Add(areaPage);
             AddViewToArea(areaPage, "Overview");
         }
 
-        [LayoutEvent("area-removed")]
-        private void AreaRemoved(LayoutEvent e) {
-            var area = Ensure.NotNull<LayoutModelArea>(e.Sender);
-
+        [DispatchTarget]
+        private void OnAreaRemoved(LayoutModelArea area) {
             foreach (LayoutFrameWindowAreaTabPage areaTabPage in tabAreas.TabPages) {
                 if (areaTabPage.Area == area) {
                     tabAreas.TabPages.Remove(areaTabPage);
@@ -927,11 +908,8 @@ namespace LayoutManager {
             }
         }
 
-        [LayoutEvent("area-renamed")]
-        private void AreaRenamed(LayoutEvent e0) {
-            var e = (LayoutEvent<LayoutModelArea>)e0;
-            var area = e.Sender;
-
+        [DispatchTarget]
+        private void OnAreaRenamed(LayoutModelArea area) {
             foreach (LayoutFrameWindowAreaTabPage areaTabPage in tabAreas.TabPages) {
                 if (areaTabPage.Area == area) {
                     areaTabPage.Text = area.Name;
@@ -1036,7 +1014,7 @@ namespace LayoutManager {
         }
 
         private void MenuItemSave_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEvent("save-layout", this));
+            Dispatch.Call.SaveLayout();
         }
 
         private void MenuSaveAs_Click(object? sender, EventArgs e) {
@@ -1438,7 +1416,7 @@ namespace LayoutManager {
         }
 
         private void MenuItemPolicies_Click(object? sender, EventArgs e) {
-            var d = (Form?)EventManager.Event(new LayoutEvent("query-policies-definition-dialog", this));
+            var d = Dispatch.Call.QueryPoliciesDefinitionDialog();
 
             if (d != null)
                 d.Activate();
@@ -1488,7 +1466,7 @@ namespace LayoutManager {
                 try {
                     manualDispatchRegion.Active = !manualDispatchRegion.Active;
 
-                    EventManager.Event(new LayoutEvent("manual-dispatch-region-status-changed", manualDispatchRegion, manualDispatchRegion.Active));
+                    Dispatch.Notification.OnManualDispatchRegionActivationChanged(manualDispatchRegion, manualDispatchRegion.Active);
                 }
                 catch (LayoutException ex) {
                     MessageBox.Show("Could change manual dispatch mode because: " + ex.Message, "Unable to change Manual Dispatch Mode",
@@ -1613,7 +1591,7 @@ namespace LayoutManager {
         private void MenuItemLearnLayout_Click(object? sender, EventArgs e) {
             try {
                 if (LayoutController.Instance.BeginDesignTimeActivation()) {
-                    var learnLayoutForm = (Form?)EventManager.Event(new LayoutEvent("activate-learn-layout", this));
+                    var learnLayoutForm = Dispatch.Call.ActivateLearnLayout();
 
                     if (learnLayoutForm == null) {
                         var learnLayout = new Dialogs.LearnLayout(Id) {
@@ -1730,7 +1708,7 @@ namespace LayoutManager {
             else
                 LayoutModuleBase.Message(selection, "Components which are not fully wired to control modules");
 
-            EventManager.Event(new LayoutEvent("show-messages", this));
+            Dispatch.Call.ShowMessages();
         }
 
         private void MenuItemSelectUnlinkedSignals_Click(object? sender, EventArgs e) {
@@ -1746,7 +1724,7 @@ namespace LayoutManager {
             else
                 LayoutModuleBase.Message(selection, "Signals which are not linked. You should link block edges to signals");
 
-            EventManager.Event(new LayoutEvent("show-messages", this));
+            Dispatch.Call.ShowMessages();
         }
 
         private void MenuItemSelectUnlinkedTrackLinks_Click(object? sender, EventArgs e) {
@@ -1761,7 +1739,7 @@ namespace LayoutManager {
             else
                 LayoutModuleBase.Message(selection, "Track links which are not yet linked");
 
-            EventManager.Event(new LayoutEvent("show-messages", this));
+            Dispatch.Call.ShowMessages();
         }
 
         private void MenuItemNewComponentDesignPhase_Click(object? sender, EventArgs e) {
@@ -1783,15 +1761,15 @@ namespace LayoutManager {
         }
 
         private void MenuItemSetToDesignPhase_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Planned));
+            Dispatch.Call.ChangePhase(null, LayoutPhase.Planned);
         }
 
         private void MenuItemSetToConstructionPhase_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Construction));
+            Dispatch.Call.ChangePhase(null, LayoutPhase.Construction);
         }
 
         private void MenuItemSetToOperationalPhase_Click(object? sender, EventArgs e) {
-            EventManager.Event(new LayoutEventInfoValueType<LayoutSelection, LayoutPhase>("change-phase", null, LayoutPhase.Operational));
+            Dispatch.Call.ChangePhase(null, LayoutPhase.Operational);
         }
 
         private void NewComponentsPhaseToolStripMenuItem_DropDownOpening(object? sender, EventArgs e) {
