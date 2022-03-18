@@ -51,23 +51,19 @@ namespace LayoutManager.View {
 
         #region Event Handlers
 
-        [LayoutEvent("get-components-image-list")]
-        private void GetComponentsImageList(LayoutEvent e) {
-            e.Info = imageListComponents;
-        }
+        [DispatchTarget]
+        private ImageList GetComponentsImageList() => imageListComponents;
 
         #endregion
 
         #region Track Components
 
-        #region Stright Track
+        #region Straight Track
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutStraightTrackComponent))]
-        private void GetStraightTrackDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionStraightTrack(e.Component, e.View));
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_StraightTrack([DispatchFilter] LayoutStraightTrackComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionStraightTrack(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionStraightTrack : LayoutDrawingRegionGrid {
@@ -116,12 +112,10 @@ namespace LayoutManager.View {
 
         #region Double Track Component
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutDoubleTrackComponent))]
-        private void GetDoubleTrackDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionDoubleTrack(e.Component, e.View));
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_DoubleTrack([DispatchFilter] LayoutDoubleTrackComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionDoubleTrack(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionDoubleTrack : LayoutDrawingRegionGrid {
@@ -158,17 +152,15 @@ namespace LayoutManager.View {
 
         #region Turnout Track Component
 
-        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutTurnoutTrackComponent))]
-        private void GetTurnoutConnectionPointImage(LayoutEvent e) => e.Info = imageListConnectionPointImages.Images[0];
+        [DispatchTarget]
+        private Image? GetConnectionPointComponentImage_Track([DispatchFilter] LayoutTurnoutTrackComponent component, ControlModule module, bool topRow, int index) => imageListConnectionPointImages.Images[0];
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutTurnoutTrackComponent))]
-        private void GetSwitchDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_TurnoutTrack([DispatchFilter] LayoutTurnoutTrackComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionTurnoutTrack(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionTurnoutTrack(e.Component, e.View));
-
-            e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
+            regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionTurnoutTrack : LayoutDrawingRegionGrid {
@@ -199,17 +191,15 @@ namespace LayoutManager.View {
 
         #region Three way Turnout Track Component
 
-        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutThreeWayTurnoutComponent))]
-        private void GetThreeWayTurnoutConnectionPointImage(LayoutEvent e) => e.Info = imageListConnectionPointImages.Images[7];
+        [DispatchTarget]
+        private Image? GetConnectionPointComponentImage_ThreeWayTurnout([DispatchFilter] LayoutThreeWayTurnoutComponent component, ControlModule module, bool topRow, int index) => imageListConnectionPointImages.Images[7];
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutThreeWayTurnoutComponent))]
-        private void GetThreeWaySwitchDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_ThreewayTurnoutTrack([DispatchFilter] LayoutThreeWayTurnoutComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionThreeWayTurnoutTrack(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionThreeWayTurnoutTrack(e.Component, e.View));
-
-            e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
+            regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionThreeWayTurnoutTrack : LayoutDrawingRegionGrid {
@@ -240,17 +230,15 @@ namespace LayoutManager.View {
 
         #region Double slip Track Component
 
-        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutDoubleSlipTrackComponent))]
-        private void GetDoubleSlipConnectionPointImage(LayoutEvent e) => e.Info = imageListConnectionPointImages.Images[6];
+        [DispatchTarget]
+        private Image? GetConnectionPointComponentImage_DoubleSlip([DispatchFilter] LayoutDoubleSlipTrackComponent component, ControlModule module, bool topRow, int index) => imageListConnectionPointImages.Images[6];
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutDoubleSlipTrackComponent))]
-        private void GetDoubleSlipDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_DoubleSlipTrack([DispatchFilter] LayoutDoubleSlipTrackComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionDoubleSlipTrack(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionDoubleSlipTrack(e.Component, e.View));
-
-            e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
+            regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionDoubleSlipTrack : LayoutDrawingRegionGrid {
@@ -293,25 +281,29 @@ namespace LayoutManager.View {
 
         #region TriggerableBlockEdgeComponent (track contact/proximity sensor)
 
-        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutTrackContactComponent))]
-        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutProximitySensorComponent))]
-        private void GetTrackContactConnectionPointImage(LayoutEvent e) => e.Info = imageListConnectionPointImages.Images[1];
+        [DispatchTarget]
+        private Image? GetConnectionPointComponentImage_TrackContact([DispatchFilter] LayoutTrackContactComponent component, ControlModule module, bool topRow, int index) => imageListConnectionPointImages.Images[1];
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutTrackContactComponent))]
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutProximitySensorComponent))]
-        private void GetTriggerableBlockEdgeDrawingRegions(LayoutEvent eBase) {
-            var e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [DispatchTarget]
+        private Image? GetConnectionPointComponentImage_ProximitySeonsor([DispatchFilter] LayoutProximitySensorComponent component, ControlModule module, bool topRow, int index) => imageListConnectionPointImages.Images[1];
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionTriggerableBlockEdge(e.Component, e.View));
+        private void DoGetRegions(LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionTriggerableBlockEdge(regions.Component, regions.View));
 
-            var nameProvider = new LayoutTextInfo(e.Component);
+            var nameProvider = new LayoutTextInfo(regions.Component);
 
             if (nameProvider.OptionalElement != null && nameProvider.Visible)
-                e.AddRegion(new LayoutDrawingRegionText(e, nameProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, nameProvider));
 
-            e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
+            regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View));
         }
+
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_TrackContact([DispatchFilter] LayoutTrackContactComponent component, LayoutGetDrawingRegions regions) => DoGetRegions(regions);
+
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_ProximitySensor([DispatchFilter] LayoutProximitySensorComponent component, LayoutGetDrawingRegions regions) => DoGetRegions(regions);
 
         private class LayoutDrawingRegionTriggerableBlockEdge : LayoutDrawingRegionGrid {
             private readonly LayoutTriggerableBlockEdgeBase component;
@@ -383,12 +375,10 @@ namespace LayoutManager.View {
 
         #region Occupancy Block Edge Component
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutBlockEdgeComponent))]
-        private void GetOccupancyBlockEdgeDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionOccpancyBlockEdge(e.Component, e.View));
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_BlockEdge([DispatchFilter] LayoutBlockEdgeComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionOccpancyBlockEdge(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionOccpancyBlockEdge : LayoutDrawingRegionGrid {
@@ -439,16 +429,15 @@ namespace LayoutManager.View {
 
         #region Block Info Component
 
-        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void GetBlockInfoConnectionPointImage(LayoutEvent e) => e.Info = imageListConnectionPointImages.Images[2];
+        [DispatchTarget]
+        private Image? GetConnectionPointComponentImage_BlockDefinition([DispatchFilter] LayoutBlockDefinitionComponent component, ControlModule module, bool topRow, int index) => imageListConnectionPointImages.Images[2];
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutBlockDefinitionComponent))]
-        private void GetBlockInfoRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-            LayoutBlockDefinitionComponent blockDefinition = Ensure.NotNull<LayoutBlockDefinitionComponent>(e.Component, "blockDefinition");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_BlockDefinition([DispatchFilter] LayoutBlockDefinitionComponent component, LayoutGetDrawingRegions regions) {
+            var blockDefinition = (LayoutBlockDefinitionComponent)regions.Component;
 
             if (LayoutBlockBalloon.IsDisplayed(blockDefinition))
-                e.AddRegion(new LayoutDrawingRegionBalloonInfo(e.Component, e.View, e.Graphics, LayoutBlockBalloon.Get(blockDefinition)));
+                regions.AddRegion(new LayoutDrawingRegionBalloonInfo(regions.Component, regions.View, regions.Graphics, LayoutBlockBalloon.Get(blockDefinition)));
 
             if (LayoutController.IsOperationMode && blockDefinition.OptionalBlock != null && blockDefinition.OptionalBlock.HasTrains) {
                 IList<TrainLocationInfo> trainLocations = blockDefinition.Block.Trains;
@@ -460,7 +449,7 @@ namespace LayoutManager.View {
                 bool vertical = LayoutTrackComponent.IsVertical(trainLocations[0].DisplayFront);
 
                 for (i = 0; i < trainLocations.Count; i++) {
-                    painters[i] = new TrainLocationPainter(trainLocations[i], e.DetailLevel);
+                    painters[i] = new TrainLocationPainter(trainLocations[i], regions.DetailLevel);
 
                     if (trainLocations[i].TrainPart != TrainPart.Locomotive)
                         painters[i].DrawExtensionMark = true;
@@ -503,7 +492,7 @@ namespace LayoutManager.View {
                         painters[i].LabelBrush = Brushes.Yellow;
                     }
 
-                    SizeF locoSize = painters[i].Measure(e.Graphics);
+                    SizeF locoSize = painters[i].Measure(regions.Graphics);
 
                     if (locoSize.Height > totalSize.Height)
                         totalSize.Height = locoSize.Height;
@@ -513,16 +502,16 @@ namespace LayoutManager.View {
                     totalSize.Width += locoSize.Width;
                 }
 
-                PointF gridLocation = e.View.ModelLocationInModelCoordinates(blockDefinition.Location);
+                PointF gridLocation = regions.View.ModelLocationInModelCoordinates(blockDefinition.Location);
 
                 if (vertical) {
-                    PointF origin = new(gridLocation.X + (e.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Height / 2),
-                        gridLocation.Y + (e.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2) - (totalSize.Width / 2));
+                    PointF origin = new(gridLocation.X + (regions.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Height / 2),
+                        gridLocation.Y + (regions.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2) - (totalSize.Width / 2));
 
                     for (i = 0; i < painters.Length; i++) {
-                        SizeF locoSize = painters[i].Measure(e.Graphics);
+                        SizeF locoSize = painters[i].Measure(regions.Graphics);
 
-                        e.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, locoSize, vertical, painters[i]));
+                        regions.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, locoSize, vertical, painters[i]));
                         origin.Y += locoSize.Width;
                         if (i > 0)
                             origin.Y += gap;
@@ -530,12 +519,12 @@ namespace LayoutManager.View {
                 }
                 else {  // Either horizontal or diagonal
                         // Start adding the regions
-                    PointF origin = new(gridLocation.X + (e.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Width / 2), gridLocation.Y + (e.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2));
+                    PointF origin = new(gridLocation.X + (regions.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Width / 2), gridLocation.Y + (regions.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2));
 
                     for (i = 0; i < painters.Length; i++) {
-                        SizeF locoSize = painters[i].Measure(e.Graphics);
+                        SizeF locoSize = painters[i].Measure(regions.Graphics);
 
-                        e.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, locoSize, vertical, painters[i]));
+                        regions.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, locoSize, vertical, painters[i]));
                         origin.X += locoSize.Width;
                         if (i > 0)
                             origin.X += gap;
@@ -553,33 +542,33 @@ namespace LayoutManager.View {
                         Front = blockDefinition.Track.ConnectionPoints[0]
                     };
 
-                    Size totalSize = locoPainter.Measure(e.Graphics);
-                    PointF gridLocation = e.View.ModelLocationInModelCoordinates(blockDefinition.Location);
+                    Size totalSize = locoPainter.Measure(regions.Graphics);
+                    PointF gridLocation = regions.View.ModelLocationInModelCoordinates(blockDefinition.Location);
 
                     if (LayoutTrackComponent.IsVertical(blockDefinition.Track.ConnectionPoints[0])) {
-                        PointF origin = new(gridLocation.X + (e.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Height / 2),
-                            gridLocation.Y + (e.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2) - (totalSize.Width / 2));
+                        PointF origin = new(gridLocation.X + (regions.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Height / 2),
+                            gridLocation.Y + (regions.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2) - (totalSize.Width / 2));
 
-                        e.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, totalSize, true, locoPainter));
+                        regions.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, totalSize, true, locoPainter));
                     }
                     else {
-                        PointF origin = new(gridLocation.X + (e.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Width / 2), gridLocation.Y + (e.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2));
+                        PointF origin = new(gridLocation.X + (regions.View.GridSizeInModelCoordinates.Width / 2) - (totalSize.Width / 2), gridLocation.Y + (regions.View.GridSizeInModelCoordinates.Height / 2) - (totalSize.Height / 2));
 
-                        e.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, totalSize, false, locoPainter));
+                        regions.AddRegion(new LayoutDrawingRegionLocomotive(blockDefinition, origin, totalSize, false, locoPainter));
                     }
                 }
-                else if (LayoutDrawingRegionGrid.IsComponentGridVisible(e)) {
-                    e.AddRegion(new LayoutDrawingRegionBlockInfo(e.Component, e.View));
+                else if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions)) {
+                    regions.AddRegion(new LayoutDrawingRegionBlockInfo(regions.Component, regions.View));
 
                     if (blockDefinition.Info.IsOccupancyDetectionBlock)
-                        e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
+                        regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View));
                 }
             }
 
-            LayoutTextInfo nameProvider = new(e.Component);
+            LayoutTextInfo nameProvider = new(regions.Component);
 
             if (nameProvider.Element != null && nameProvider.Visible)
-                e.AddRegion(new LayoutDrawingRegionText(e, nameProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, nameProvider));
         }
 
         private class LayoutDrawingRegionLocomotive : LayoutDrawingRegion {
@@ -658,34 +647,23 @@ namespace LayoutManager.View {
 
         #region Signal Component
 
-        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutSignalComponent))]
-        private void GetSignalConnectionPointImage(LayoutEvent e) {
-            LayoutSignalComponent component = Ensure.NotNull<LayoutSignalComponent>(e.Sender, "component");
-
-            switch (component.Info.SignalType) {
-                case LayoutSignalType.Lights:
-                    e.Info = imageListConnectionPointImages.Images[3];
-                    break;
-
-                case LayoutSignalType.Semaphore:
-                    e.Info = imageListConnectionPointImages.Images[4];
-                    break;
-
-                case LayoutSignalType.Distance:
-                    e.Info = imageListConnectionPointImages.Images[5];
-                    break;
-            }
+        [DispatchTarget]
+        private Image? GetConnectionPointComponentImage_Signal([DispatchFilter] LayoutSignalComponent component, ControlModule module, bool topRow, int index) {
+            return component.Info.SignalType switch {
+                LayoutSignalType.Lights => imageListConnectionPointImages.Images[3],
+                LayoutSignalType.Semaphore => imageListConnectionPointImages.Images[4],
+                LayoutSignalType.Distance => imageListConnectionPointImages.Images[5],
+                _ => null,
+            };
         }
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutSignalComponent))]
-        private void GetSignalDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e)) {
-                e.AddRegion(new LayoutDrawingRegionSignal(e.Component, e.View, e.DetailLevel, imageListSignals));
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_Signal([DispatchFilter] LayoutSignalComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions)) {
+                regions.AddRegion(new LayoutDrawingRegionSignal(regions.Component, regions.View, regions.DetailLevel, imageListSignals));
             }
 
-            e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View, e.DetailLevel != ViewDetailLevel.High));
+            regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View, regions.DetailLevel != ViewDetailLevel.High));
         }
 
         private class LayoutDrawingRegionSignal : LayoutDrawingRegion {
@@ -787,12 +765,10 @@ namespace LayoutManager.View {
 
         #region Track Isolation component
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutTrackIsolationComponent))]
-        private void GetTrackIsolationDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionTrackIsolation(e.Component, e.View));
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_TrackIsolation([DispatchFilter] LayoutTrackIsolationComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionTrackIsolation(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionTrackIsolation : LayoutDrawingRegionGrid {
@@ -817,12 +793,10 @@ namespace LayoutManager.View {
 
         #region Track reverse loop moduole component
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutTrackReverseLoopModule))]
-        private void GetTrackReverseLoopModuleDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionTrackReverseLoopModule(e.Component, e.View));
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_TrackReverseLoopModule([DispatchFilter] LayoutTrackReverseLoopModule component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionTrackReverseLoopModule(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionTrackReverseLoopModule : LayoutDrawingRegionGrid {
@@ -848,17 +822,15 @@ namespace LayoutManager.View {
 
         #region Track Power connector
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutTrackPowerConnectorComponent))]
-        private void GetTrackPowerConnectorDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_TrackPowerConnector([DispatchFilter] LayoutTrackPowerConnectorComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionTrackPowerConnector(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionTrackPowerConnector(e.Component, e.View));
-
-            LayoutTrackPowerConnectorInfo textProvider = new(e.Component);
+            LayoutTrackPowerConnectorInfo textProvider = new(regions.Component);
 
             if (textProvider.Element != null && textProvider.Visible)
-                e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
         private class LayoutDrawingRegionTrackPowerConnector : LayoutDrawingRegionGrid {
@@ -882,27 +854,25 @@ namespace LayoutManager.View {
 
         #region Power Selector/Switch component
 
-        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutPowerSelectorComponent))]
-        private void GetPowerSelectorConnectionPointImage(LayoutEvent e) {
-            if (e.Sender is LayoutPowerSelectorComponent component && component.IsSwitch)
-                e.Info = imageListConnectionPointImages.Images[9];
+        [DispatchTarget]
+        private Image? GetConnectionPointComponentImage_PowerSelector([DispatchFilter] LayoutPowerSelectorComponent component, ControlModule module, bool topRow, int index) {
+            if (component is LayoutPowerSelectorComponent selector && selector.IsSwitch)
+                return imageListConnectionPointImages.Images[9];
             else
-                e.Info = imageListConnectionPointImages.Images[8];
+                return imageListConnectionPointImages.Images[8];
         }
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutPowerSelectorComponent))]
-        private void GetPowerSelectorDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_TrackPowerSelector([DispatchFilter] LayoutPowerSelectorComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionPowerSelectorConnector(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionPowerSelectorConnector(e.Component, e.View));
-
-            var textProvider = new LayoutPowerSelectorComponent.LayoutPowerSelectorNameInfo(e.Component);
+            var textProvider = new LayoutPowerSelectorComponent.LayoutPowerSelectorNameInfo(regions.Component);
 
             if (textProvider.Element != null && textProvider.Visible)
-                e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
 
-            e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
+            regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionPowerSelectorConnector : LayoutDrawingRegionGrid {
@@ -942,17 +912,15 @@ namespace LayoutManager.View {
 
         #region Track Link Component
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutTrackLinkComponent))]
-        private void GetTrackLinkDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_TrackLink([DispatchFilter] LayoutTrackLinkComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionTrackLink(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionTrackLink(e.Component, e.View));
-
-            LayoutTrackLinkTextInfo textProvider = new(e.Component, "Name");
+            LayoutTrackLinkTextInfo textProvider = new(regions.Component, "Name");
 
             if (textProvider.Element != null && textProvider.Visible)
-                e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
         private class LayoutDrawingRegionTrackLink : LayoutDrawingRegionGrid {
@@ -987,29 +955,26 @@ namespace LayoutManager.View {
 
         #region Text Component
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutTextComponent))]
-        private void GetTextDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-
-            LayoutTextInfo textProvider = new(e.Component, "Text");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_Text([DispatchFilter] LayoutTextComponent component, LayoutGetDrawingRegions regions) {
+            LayoutTextInfo textProvider = new(regions.Component, "Text");
 
             if (textProvider.Element != null)
-                e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
         #endregion
 
         #region Image component
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutImageComponent))]
-        private void GetImageDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-            LayoutImageInfo imageProvider = new(e.Component.Element);
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_Image([DispatchFilter] LayoutImageComponent component, LayoutGetDrawingRegions regions) {
+            LayoutImageInfo imageProvider = new(regions.Component.Element);
             Image? image = null;
 
             try {
                 if (!imageProvider.ImageError)
-                    image = Dispatch.Call.GetImageFromCache(e.Component, imageProvider.ImageFile, imageProvider.RotateFlipEffect);
+                    image = Dispatch.Call.GetImageFromCache(regions.Component, imageProvider.ImageFile, imageProvider.RotateFlipEffect);
             }
             catch (LayoutException lex) {
                 lex.Report();
@@ -1020,7 +985,7 @@ namespace LayoutManager.View {
                 imageProvider.ImageError = true;
             }
 
-            e.AddRegion(new LayoutDrawingRegionImage(e.Component, image, imageProvider, e.View));
+            regions.AddRegion(new LayoutDrawingRegionImage(regions.Component, image, imageProvider, regions.View));
         }
 
         private class LayoutDrawingRegionImage : LayoutDrawingRegion {
@@ -1123,12 +1088,10 @@ namespace LayoutManager.View {
 
         #region Bridge component
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutBridgeComponent))]
-        private void GetBridgeDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionBridge(e.Component, e.View));
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_Bridge([DispatchFilter] LayoutBridgeComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionBridge(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionBridge : LayoutDrawingRegionGrid {
@@ -1161,12 +1124,10 @@ namespace LayoutManager.View {
 
         #region Tunnel component
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutTunnelComponent))]
-        private void GetTunnelDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
-
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionTunnel(e.Component, e.View));
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_Tunnle([DispatchFilter] LayoutTunnelComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionTunnel(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionTunnel : LayoutDrawingRegionGrid {
@@ -1199,25 +1160,22 @@ namespace LayoutManager.View {
 
         #region Gate Component
 
-        [LayoutEvent("get-connection-point-component-image", SenderType = typeof(LayoutGateComponent))]
-        private void GetGateConnectionPointImage(LayoutEvent e) {
-            if (e.Sender is LayoutGateComponent)
-                e.Info = imageListConnectionPointImages.Images[10];
+        [DispatchTarget]
+        private Image? GetConnectionPointComponentImage_Gate([DispatchFilter] LayoutGateComponent component, ControlModule module, bool topRow, int index) {
+            return component is LayoutGateComponent ? imageListConnectionPointImages.Images[10] : null;
         }
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutGateComponent))]
-        private void GetGatelDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_Gate([DispatchFilter] LayoutGateComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionGate(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionGate(e.Component, e.View));
-
-            LayoutTextInfo nameProvider = new(e.Component);
+            LayoutTextInfo nameProvider = new(regions.Component);
 
             if (nameProvider.Element != null && nameProvider.Visible)
-                e.AddRegion(new LayoutDrawingRegionText(e, nameProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, nameProvider));
 
-            e.AddRegion(new LayoutDrawingRegionNotConnected(e.Component, e.View));
+            regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View));
         }
 
         private class LayoutDrawingRegionGate : LayoutDrawingRegionGrid {
@@ -1264,17 +1222,15 @@ namespace LayoutManager.View {
             e.Info = imageListComponents.Images[1];
         }
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(LayoutControlModuleLocationComponent))]
-        private void GetControlModuleLocationDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = Ensure.NotNull<LayoutGetDrawingRegionsEvent>(eBase, "e");
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_ControlModuleLocation([DispatchFilter] LayoutControlModuleLocationComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new LayoutDrawingRegionControlModuleLocation(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new LayoutDrawingRegionControlModuleLocation(e.Component, e.View));
-
-            LayoutTextInfo nameProvider = new(e.Component);
+            LayoutTextInfo nameProvider = new(regions.Component);
 
             if (nameProvider.Element != null && nameProvider.Visible)
-                e.AddRegion(new LayoutDrawingRegionText(e, nameProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, nameProvider));
         }
 
         private class LayoutDrawingRegionControlModuleLocation : LayoutDrawingRegionGrid {

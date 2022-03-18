@@ -18,7 +18,7 @@ namespace LayoutManager.CommonUI.Controls {
             set {
                 xmlInfo = value;
 
-                var positions = Ensure.NotNull<XmlElement>(LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Positions"));
+                var positions = (XmlElement?)LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Positions");
 
                 layoutInfosComboBoxPositions.InfoType = typeof(LayoutPositionInfo);
                 layoutInfosComboBoxPositions.InfoContainer = positions;

@@ -68,17 +68,15 @@ namespace Intellibox {
 
         #region Component view
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(IntelliboxComponent))]
-        private void GetCentralStationDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_Intellibox([DispatchFilter] IntelliboxComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new DrawingRegionIntellibox(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new DrawingRegionIntellibox(e.Component, e.View));
-
-            LayoutTextInfo textProvider = new(e.Component);
+            LayoutTextInfo textProvider = new(regions.Component);
 
             if (textProvider.Element != null)
-                e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
         private class DrawingRegionIntellibox : LayoutDrawingRegionGrid {

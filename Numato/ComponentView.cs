@@ -53,17 +53,15 @@ namespace NumatoController {
 
         #region Component view
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(NumatoController))]
-        private void GetDiMAXcommandStationDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_Numatol([DispatchFilter] NumatoController component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new DrawingRegionNumatoRelayController(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new DrawingRegionNumatoRelayController(e.Component, e.View));
-
-            var textProvider = new LayoutTextInfo(e.Component);
+            var textProvider = new LayoutTextInfo(regions.Component);
 
             if (textProvider.Element != null)
-                e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
         private class DrawingRegionNumatoRelayController : LayoutDrawingRegionGrid {

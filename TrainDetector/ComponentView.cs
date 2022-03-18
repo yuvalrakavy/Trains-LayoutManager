@@ -54,17 +54,15 @@ namespace TrainDetector {
 
         #region Component view
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(TrainDetectorsComponent))]
-        private void GetTrainDetectorDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_TrainDetectorts([DispatchFilter] TrainDetectorsComponent component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new DrawingRegionTrainDetector(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new DrawingRegionTrainDetector(e.Component, e.View));
-
-            LayoutTextInfo textProvider = new LayoutTextInfo(e.Component);
+            LayoutTextInfo textProvider = new LayoutTextInfo(regions.Component);
 
             if (textProvider.Element != null)
-                e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
         private class DrawingRegionTrainDetector : LayoutDrawingRegionGrid {

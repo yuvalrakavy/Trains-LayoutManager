@@ -23,7 +23,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             set {
                 if (value != null) {
-                    XmlElement fonts = Ensure.NotNull<XmlElement>(LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Fonts"));
+                    var fonts = (XmlElement?)LayoutModel.Instance.XmlInfo.DocumentElement.SelectSingleNode("Fonts");
 
                     layoutInfosComboBoxFonts.InfoType = typeof(LayoutFontInfo);
                     layoutInfosComboBoxFonts.InfoContainer = fonts;

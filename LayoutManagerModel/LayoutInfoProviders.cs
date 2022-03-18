@@ -690,7 +690,7 @@ namespace LayoutManager.Model {
         }
 
         public string ImageFile {
-            get => GetAttribute(A_ImageFile);
+            get => GetOptionalAttribute(A_ImageFile) ?? String.Empty;
             set => SetAttributeValue(A_ImageFile, value);
         }
 

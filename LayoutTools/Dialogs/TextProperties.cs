@@ -48,7 +48,7 @@ namespace LayoutManager.Tools.Dialogs {
             }
 
             LayoutTextInfo textProvider = new(XmlInfo.DocumentElement, "Text");
-            if (textProvider.Element == null)
+            if (textProvider.OptionalElement == null)
                 textProvider.Element = LayoutInfo.CreateProviderElement(XmlInfo.DocumentElement, "Text", null);
 
             textProvider.Text = textBoxText.Text;

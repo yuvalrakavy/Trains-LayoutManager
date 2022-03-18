@@ -53,17 +53,15 @@ namespace NCDRelayController {
 
         #region Component view
 
-        [LayoutEvent("get-model-component-drawing-regions", SenderType = typeof(NCDRelayController))]
-        private void GetDiMAXcommandStationDrawingRegions(LayoutEvent eBase) {
-            LayoutGetDrawingRegionsEvent e = (LayoutGetDrawingRegionsEvent)eBase;
+        [DispatchTarget]
+        void GetModelComponentDrawingRegions_NCDrelayl([DispatchFilter] NCDRelayController component, LayoutGetDrawingRegions regions) {
+            if (LayoutDrawingRegionGrid.IsComponentGridVisible(regions))
+                regions.AddRegion(new DrawingRegionNCDRelayController(regions.Component, regions.View));
 
-            if (LayoutDrawingRegionGrid.IsComponentGridVisible(e))
-                e.AddRegion(new DrawingRegionNCDRelayController(e.Component, e.View));
-
-            var textProvider = new LayoutTextInfo(e.Component);
+            var textProvider = new LayoutTextInfo(regions.Component);
 
             if (textProvider.Element != null)
-                e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
+                regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
         private class DrawingRegionNCDRelayController : LayoutDrawingRegionGrid {

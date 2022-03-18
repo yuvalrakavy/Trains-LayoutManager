@@ -279,7 +279,7 @@ namespace LayoutManager.View {
                     SetScrollBars();
                 }
 
-                EventManager.Instance.OptimizeForFilteringBySenderType("get-model-component-drawing-regions");
+               //ventManager.Instance.OptimizeForFilteringBySenderType("get-model-component-drawing-regions");
             }
 
             get => Ensure.NotNull<LayoutModelArea>(area);
@@ -313,7 +313,7 @@ namespace LayoutManager.View {
                         foreach (ModelComponent component in spot) {
                             regions.Clear();
 
-                            EventManager.Event(new LayoutGetDrawingRegionsEvent(component, this, DetailLevel, g, regions));
+                            Dispatch.Call.GetModelComponentDrawingRegions(component, new LayoutGetDrawingRegions(component, this, DetailLevel, g, regions));
 
                             foreach (ILayoutDrawingRegion region in regions) {
                                 if (region.BoundingRegionInModelCoordinates.GetBounds(g).Contains(mpLocation) && region.CanBeClicked) {
@@ -718,7 +718,7 @@ namespace LayoutManager.View {
             using (Graphics g = CreateTransformedGraphics()) {
                 List<ILayoutDrawingRegion> regions = new();
 
-                EventManager.Event(new LayoutGetDrawingRegionsEvent(component, this, DetailLevel, g, regions));
+                Dispatch.Call.GetModelComponentDrawingRegions(component, new LayoutGetDrawingRegions(component, this, DetailLevel, g, regions));
 
                 int nVisibleRegions = 0;
 
@@ -811,7 +811,7 @@ namespace LayoutManager.View {
                     bool selectionChecked = false;
 
                     regions.Clear();
-                    EventManager.Event(new LayoutGetDrawingRegionsEvent(component, this, detailLevel, g, regions));
+                    Dispatch.Call.GetModelComponentDrawingRegions(component, new LayoutGetDrawingRegions(component, this, detailLevel, g, regions));
 
                     foreach (ILayoutDrawingRegion region in regions) {
                         if (g.IsVisible(region.BoundingRegionInModelCoordinates.GetBounds(g))) {
@@ -1093,7 +1093,7 @@ namespace LayoutManager.View {
             using Graphics g = CreateTransformedGraphics();
             List<ILayoutDrawingRegion> regions = new();
 
-            EventManager.Event(new LayoutGetDrawingRegionsEvent(component, this, DetailLevel, g, regions));
+            Dispatch.Call.GetModelComponentDrawingRegions(component, new LayoutGetDrawingRegions(component, this, DetailLevel, g, regions));
 
             foreach (ILayoutDrawingRegion region in regions) {
                 InvalidateComponentDrawingRegion(region);
@@ -1600,9 +1600,9 @@ namespace LayoutManager.View {
         public IList<RoutePreviewAnnotation>? Annotations { get; }
     }
 
-    public class LayoutGetDrawingRegionsEvent : LayoutEvent {
-        public LayoutGetDrawingRegionsEvent(ModelComponent component, ILayoutView view, ViewDetailLevel detailLevel, Graphics g, IList<ILayoutDrawingRegion> drawingRegions) :
-            base("get-model-component-drawing-regions", component, drawingRegions, null) {
+    public class LayoutGetDrawingRegions {
+        public LayoutGetDrawingRegions(ModelComponent component, ILayoutView view, ViewDetailLevel detailLevel, Graphics g, IList<ILayoutDrawingRegion> drawingRegions) {
+            this.Component = component;
             this.View = view;
             this.DetailLevel = detailLevel;
             this.Graphics = g;
@@ -1615,7 +1615,7 @@ namespace LayoutManager.View {
 
         public Graphics Graphics { get; }
 
-        public ModelComponent Component => Ensure.NotNull<ModelComponent>(this.Sender);
+        public ModelComponent Component { get; }
 
         public IList<ILayoutDrawingRegion> Regions { get; }
 

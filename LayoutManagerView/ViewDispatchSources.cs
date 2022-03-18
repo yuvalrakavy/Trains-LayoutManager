@@ -65,5 +65,18 @@ namespace LayoutManager {
             return ds_QueryCanRemoveModelComponent.CallBoolFunctions(invokeUntil: false, invokeAll: false, component);
         }
 
+        static DispatchSource? ds_GetComponentsImageList = null;
+        [DispatchSource]
+        public static ImageList GetComponentsImageList(this Dispatcher d) {
+            ds_GetComponentsImageList ??= d[nameof(GetComponentsImageList)];
+            return ds_GetComponentsImageList.Call<ImageList>();
+        }
+
+        static DispatchSource? ds_GetModelComponentDrawingRegions = null;
+        [DispatchSource]
+        public static void GetModelComponentDrawingRegions(this Dispatcher d, ModelComponent component, LayoutGetDrawingRegions regions) {
+            ds_GetModelComponentDrawingRegions ??= d[nameof(GetModelComponentDrawingRegions)];
+            ds_GetModelComponentDrawingRegions.CallVoid(component, regions);
+        }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using MethodDispatcher;
 
 namespace LayoutManager.View {
     #region Drawing Region interface and helper classes
@@ -95,7 +96,7 @@ namespace LayoutManager.View {
         /// </summary>
         /// <param name="e">LayoutGetDrawingRegion event structure</param>
         /// <returns></returns>
-        public static bool IsComponentGridVisible(LayoutGetDrawingRegionsEvent e) => e.View.DrawingRectangleInModelCoordinates.IntersectsWith(e.View.ModelLocationRectangleInModelCoordinates(e.Component.Location));
+        public static bool IsComponentGridVisible(LayoutGetDrawingRegions e) => e.View.DrawingRectangleInModelCoordinates.IntersectsWith(e.View.ModelLocationRectangleInModelCoordinates(e.Component.Location));
     }
 
     /// <summary>
@@ -349,11 +350,11 @@ namespace LayoutManager.View {
             this.textProvider = textProvider;
         }
 
-        public LayoutDrawingRegionText(LayoutGetDrawingRegionsEvent e, LayoutTextInfo textProvider)
+        public LayoutDrawingRegionText(LayoutGetDrawingRegions e, LayoutTextInfo textProvider)
             : this(e.Component, e.View, e.DetailLevel, e.Graphics, textProvider) {
         }
 
-        public LayoutDrawingRegionText(LayoutGetDrawingRegionsEvent e)
+        public LayoutDrawingRegionText(LayoutGetDrawingRegions e)
             : this(e, new LayoutTextInfo(e.Component)) {
         }
 
@@ -422,7 +423,7 @@ namespace LayoutManager.View {
 
         public LayoutDrawingRegionNotConnected(ModelComponent component, ILayoutView view, bool onTop) : base(component, view) {
             this.component = (IModelComponentHasId)component;
-            imageListComponents = Ensure.NotNull<ImageList>(EventManager.Event(new LayoutEvent("get-components-image-list", this)));
+            imageListComponents = Dispatch.Call.GetComponentsImageList();
             this.onTop = onTop;
         }
 
