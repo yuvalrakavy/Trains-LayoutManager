@@ -615,10 +615,7 @@ namespace LayoutManager.Components {
             }
 
             if (pts[1].Y != pts[2].Y) {
-                Point t = pts[2];
-
-                pts[2] = pts[3];
-                pts[3] = t;
+                (pts[3], pts[2]) = (pts[2], pts[3]);
             }
 
             return pts;
@@ -880,7 +877,7 @@ namespace LayoutManager.Components {
 
         public void Paint(Graphics g) {
             System.Drawing.Imaging.ImageAttributes attributes = new();
-            Image image = Dispatch.Call.GetImage();
+            Image image = Dispatch.Call.GetImage(this);
 
             attributes.SetColorKey(Color.White, Color.White);
 

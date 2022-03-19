@@ -35,19 +35,5 @@ namespace LayoutLGB {
                 Usage = ControlConnectionPointUsage.Input
             };
         }
-
-        [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='DCC']")]
-        private void AddLGBDCCbusToDCCcompatibleModule(LayoutEvent e) {
-            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender);
-
-            moduleType.BusTypeNames.Add("LGBDCC");
-        }
-
-        [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='LGBBUS']")]
-        private void AddLGBBUStoLGBBUScompatibleModule(LayoutEvent e) {
-            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender);
-
-            moduleType.BusTypeNames.Add("LGBBUS");
-        }
     }
 }

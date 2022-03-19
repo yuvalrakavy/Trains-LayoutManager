@@ -82,9 +82,9 @@ namespace LayoutManager {
 
         static DispatchSource? ds_GetImage = null;
         [DispatchSource]
-        public static Image GetImage(this Dispatcher d) {
+        public static Image GetImage(this Dispatcher d, object requestor) {
             ds_GetImage ??= d[nameof(GetImage)];
-            return ds_GetImage.Call<Image>();
+            return ds_GetImage.Call<Image>(requestor);
         }
 
     }

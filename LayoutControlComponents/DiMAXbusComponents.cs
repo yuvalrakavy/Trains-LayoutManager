@@ -66,18 +66,11 @@ namespace LayoutManager.ControlComponents {
             return new ProgramMassothLevelFeedbackDecoderAddress(actionElement, module);
         }
 
-        [LayoutEvent("edit-action-settings", InfoType = typeof(IMassothFeedbackDecoderSetAddress))]
-        private void EditMassothFeedbackSetAddressSettings(LayoutEvent e0) {
-            var e = (LayoutEventResultValueType<object, ILayoutAction, bool>)e0;
-            var action = Ensure.NotNull<IMassothFeedbackDecoderSetAddress>(e.Info, "action");
-            var controlModule = Ensure.NotNull<ControlModule>(e.Sender, "controlModule");
+        [DispatchTarget]
+        private bool EditActionSettings_MassothFeedbackSetAddressSettings(ControlModule module, [DispatchFilter] IMassothFeedbackDecoderSetAddress action) {
+            using var d = new Dialogs.MassothFeedbackDecoderAddressSettings(action, module);
 
-            using var d = new Dialogs.MassothFeedbackDecoderAddressSettings(action, controlModule);
-
-            if (d.ShowDialog() == DialogResult.OK)
-                e.Result = true;
-            else
-                e.Result = false;
+            return d.ShowDialog() == DialogResult.OK;
         }
     }
 

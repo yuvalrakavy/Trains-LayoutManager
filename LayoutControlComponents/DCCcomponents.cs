@@ -189,25 +189,22 @@ namespace LayoutManager.ControlComponents {
             }
         }
 
-        [LayoutEvent("edit-action-settings", InfoType = typeof(IMassothIgnoreFeedback))]
-        private void EditMassothIgnoreFeedback(LayoutEvent e0) {
-            var e = (LayoutEventResultValueType<object, ILayoutAction, bool>)e0;
-            var programmingAction = Ensure.NotNull<ILayoutProgrammingAction>(e.Info, "programmingAction");
+        [DispatchTarget]
+        private bool EditActionSettings_MassothIgnoreFeedback(ControlModule module, [DispatchFilter] IMassothIgnoreFeedback action) {
+            var programmingAction = (ILayoutProgrammingAction)action;
 
             switch (MessageBox.Show(null, "Did you connect load (e.g. turnout) to SW1 output?", "Is load connected", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)) {
+                default:
                 case DialogResult.Cancel:
-                    e.Result = false;
-                    break;
+                    return false;
 
                 case DialogResult.Yes:
                     programmingAction.IgnoreNoResponseResult = false;
-                    e.Result = true;
-                    break;
+                    return true;
 
                 case DialogResult.No:
                     programmingAction.IgnoreNoResponseResult = true;
-                    e.Result = true;
-                    break;
+                    return true;
             }
         }
     }

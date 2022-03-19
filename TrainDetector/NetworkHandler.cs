@@ -16,24 +16,6 @@ namespace TrainDetector {
         void Encode(BinaryWriter w);
     }
 
-    [LayoutModule("Train Detector Network handler")]
-    internal class TrainDetectorNetworkHandler : LayoutModuleBase {
-        [LayoutEvent("set-network-request-exception")]
-        private void SetNetworkRequestException(LayoutEvent e) {
-            (var taskSource, var ex) = Ensure.NotNull<TaskCompletionSource<UdpReceiveResult>, Exception>(e);
-
-            taskSource.SetException(ex);
-        }
-
-        [LayoutEvent("set-network-request-reply")]
-        private void SetNetworkRequestReply(LayoutEvent e) {
-            var taskSource = Ensure.NotNull<TaskCompletionSource<UdpReceiveResult>>(e.Sender);
-            var reply = Ensure.ValueNotNull<UdpReceiveResult>(e.Info);
-
-            taskSource.SetResult(reply);
-        }
-    }
-
     public class NetworkHandler : IDisposable {
         public UdpClient UdpClient { get; private set; }
         readonly Dictionary<int, TaskCompletionSource<UdpReceiveResult>> pendingRequests = new Dictionary<int, TaskCompletionSource<UdpReceiveResult>>();
@@ -127,9 +109,9 @@ namespace TrainDetector {
                     }
 
                     if (!gotReplyTask.IsCompleted)
-                        InterThreadEventInvoker.QueueEvent(new LayoutEvent("set-network-request-exception", resultSource, new TimeoutException($"No reply for request# {pendingRequestNumber}")));
+                        InterThreadEventInvoker.Queue(() => resultSource.SetException(new TimeoutException($"No reply for request# {pendingRequestNumber}")));
                     else
-                        InterThreadEventInvoker.QueueEvent(new LayoutEvent("set-network-request-reply", resultSource, gotReplyTask.Result));
+                        InterThreadEventInvoker.Queue(() => resultSource.SetResult(gotReplyTask.Result));
                 }
                 finally {
                     lock (this.pendingRequests) {

@@ -205,48 +205,43 @@ namespace LayoutLGB {
 
         #region MTS interface input handling
 
-        [LayoutEvent("parse-MTS-message")]
-        private void parseInputMessage(LayoutEvent e) {
-            if (e.Sender == this) {
-                MTSmessage message = (MTSmessage)e.Info;
+        private void parseInputMessage(MTSmessage message) {
+            switch (message.Command) {
+                case MTScommand.TurnoutControl:
+                    if (OperationMode) {
+                        if (message.Address <= 128)
+                            DCCbusNotification(message.Address, message.Value);
+                        LGBbusNotification(message.Address, message.Value);
+                    }
+                    else if (LayoutController.IsDesignTimeActivation)
+                        Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(this, message.Address <= 128 ? DCCbus : LGBbus, message.Address, message.Value));
+                    break;
 
-                switch (message.Command) {
-                    case MTScommand.TurnoutControl:
+                case MTScommand.ResetStation:
+                    if (message.Value == 0x80) {
+                        PowerOff();
+                        MessageBox.Show(LayoutController.ActiveFrameWindow,
+                            "Emergency stop has been engaged. Click on OK to reactivate layout", "Emergency Stop",
+                            MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        Dispatch.Call.ConnectPowerRequest(this);
+                    }
+                    else if (message.Value != 0x81)
+                        Warning("Unexpected reset station message (value " + message.Value + ")");
+                    break;
+
+                case MTScommand.LocomotiveFunction:
+                    if (OperationMode && message.Value == 0x80)
+                        Dispatch.Notification.OnLocomotiveLightsToggled(this, message.Address);
+                    break;
+
+                case MTScommand.LocomotiveMotion: {
                         if (OperationMode) {
-                            if (message.Address <= 128)
-                                DCCbusNotification(message.Address, message.Value);
-                            LGBbusNotification(message.Address, message.Value);
+                            int speed = message.Value >= 0x20 ? message.Value - 0x20 : -(int)message.Value;
+
+                            Dispatch.Notification.OnLocomotiveMotion(this, speed, message.Address);
                         }
-                        else if (LayoutController.IsDesignTimeActivation)
-                            Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(this, message.Address <= 128 ? DCCbus : LGBbus, message.Address, message.Value));
-                        break;
-
-                    case MTScommand.ResetStation:
-                        if (message.Value == 0x80) {
-                            PowerOff();
-                            MessageBox.Show(LayoutController.ActiveFrameWindow,
-                                "Emergency stop has been engaged. Click on OK to reactivate layout", "Emergency Stop",
-                                MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                            Dispatch.Call.ConnectPowerRequest(this);
-                        }
-                        else if (message.Value != 0x81)
-                            Warning("Unexpected reset station message (value " + message.Value + ")");
-                        break;
-
-                    case MTScommand.LocomotiveFunction:
-                        if (OperationMode && message.Value == 0x80)
-                            Dispatch.Notification.OnLocomotiveLightsToggled(this, message.Address);
-                        break;
-
-                    case MTScommand.LocomotiveMotion: {
-                            if (OperationMode) {
-                                int speed = message.Value >= 0x20 ? message.Value - 0x20 : -(int)message.Value;
-
-                                Dispatch.Notification.OnLocomotiveMotion(this, speed, message.Address);
-                            }
-                        }
-                        break;
-                }
+                    }
+                    break;
             }
         }
 
@@ -267,7 +262,7 @@ namespace LayoutLGB {
                     }
 
                     for (int offset = 0; offset < count; offset += 4)
-                        InterThreadEventInvoker.QueueEvent(new LayoutEvent("parse-MTS-message", this, new MTSmessage(inputBuffer, offset)));
+                        InterThreadEventInvoker.Queue(() => parseInputMessage(new MTSmessage(inputBuffer, offset)));
 
                     // Start the next read
                     CommunicationStream.BeginRead(inputBuffer, 0, inputBuffer.Length, new AsyncCallback(this.OnReadDone), null);

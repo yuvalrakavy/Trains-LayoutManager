@@ -260,21 +260,23 @@ namespace DiMAX {
             }
         }
 
+#if OBSOLETE
         [LayoutAsyncEvent("enable-DiMAX-status-update", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private Task EnableDiMAXstatusUpdate(LayoutEvent e) => OutputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, true));
 
         [LayoutAsyncEvent("disable-DiMAX-status-update", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
         private Task DisableDiMAXstatusUpdate(LayoutEvent e) => OutputManager.AddCommand(new DiMAXinterfaceAnnouncement(this, false));
+#endif
 
         [DispatchTarget]
-        private async Task<LayoutActionResult> ProgramCvDirectRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo) {
+        private async Task<LayoutActionResult> ProgramCvDirectRequest([DispatchFilter("IsMyId")] IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo) {
             return await (Task<LayoutActionResult>)OutputManager.AddCommand(new DiMAXprogramCV(this, cv.Number, cv.Value));
         }
 
         private async Task<LayoutActionResult> SetRegister(int register, byte value) => await (Task<LayoutActionResult>)OutputManager.AddCommand(new DiMAXprogramRegister(this, (byte)register, value));
 
         [DispatchTarget]
-        private async Task<LayoutActionResult> ProgramCvRegisterRequest([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo) {
+        private async Task<LayoutActionResult> ProgramCvRegisterRequest([DispatchFilter("IsMyId")] IModelComponentHasNameAndId commandStation, DccProgrammingCV cv, DccDecoderTypeInfo decoderTypeInfo) {
             if (cv.Number < 1)
                 throw new ArgumentException("Invalid CV number: " + cv.Number);
 
@@ -404,9 +406,9 @@ namespace DiMAX {
             return OutputManager.AddCommand(new DiMAXlocomotiveMotion(this, address, speed));
         }
 
-        #endregion
+#endregion
 
-        #region Generate notification events
+#region Generate notification events
 
         private void DiMAXbusNotification(int address, int state) {
             if (OperationMode)
@@ -418,87 +420,82 @@ namespace DiMAX {
                 Dispatch.Notification.OnControlConnectionPointStateChanged(new ControlConnectionPointReference(DCCbus, address), state);
         }
 
-        #endregion
+#endregion
 
-        #region DiMAX input handling
+#region DiMAX input handling
 
-        [LayoutEvent("processes-DiMAX-packet")]
-        private void ProcessDiMAXpacket(LayoutEvent e) {
-            if (e.Sender == this) {
-                var packet = Ensure.NotNull<DiMAXpacket>(e.Info, "packet");
+        private void ProcessDiMAXpacket(DiMAXpacket packet) {
+            if (TraceDiMAX.TraceVerbose)
+                packet.Dump("Processing DiMAX packet");
 
-                if (TraceDiMAX.TraceVerbose)
-                    packet.Dump("Processing DiMAX packet");
+            switch (packet.CommandCode) {
+                case DiMAXcommandCode.TurnoutControl: {
+                        var p = new DiMAXturnoutOrFeedbackControlPacket(packet);
 
-                switch (packet.CommandCode) {
-                    case DiMAXcommandCode.TurnoutControl: {
-                            var p = new DiMAXturnoutOrFeedbackControlPacket(packet);
+                        if (OperationMode)
+                            DCCbusNotification(p.Address, p.State);
+                        else if (LayoutController.IsDesignTimeActivation)
+                            Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(this, DCCbus, p.Address, p.State));
+                    }
+                    break;
 
-                            if (OperationMode)
-                                DCCbusNotification(p.Address, p.State);
-                            else if (LayoutController.IsDesignTimeActivation)
-                                Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(this, DCCbus, p.Address, p.State));
+                case DiMAXcommandCode.FeedbackControl: {
+                        var p = new DiMAXturnoutOrFeedbackControlPacket(packet);
+
+                        if (OperationMode)
+                            DiMAXbusNotification(p.Address, p.State);
+                        else if (LayoutController.IsDesignTimeActivation)
+                            Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(this, DiMAXbus, p.Address, p.State));
+                    }
+                    break;
+
+                case DiMAXcommandCode.LocoSpeedControl: {
+                        if (OperationMode) {
+                            var p = new DiMAXlocoSpeedControlPacket(packet);
+
+                            Dispatch.Notification.OnLocomotiveMotion(this, p.SpeedInSteps, p.Unit);
                         }
-                        break;
+                    }
+                    break;
 
-                    case DiMAXcommandCode.FeedbackControl: {
-                            var p = new DiMAXturnoutOrFeedbackControlPacket(packet);
+                case DiMAXcommandCode.LocoFunctionControl: {
+                        if (OperationMode) {
+                            var p = new DiMAXlocoFunctionControlPacket(packet);
 
-                            if (OperationMode)
-                                DiMAXbusNotification(p.Address, p.State);
-                            else if (LayoutController.IsDesignTimeActivation)
-                                Dispatch.Notification.OnDesignTimeCommandStationEvent(new CommandStationInputEvent(this, DiMAXbus, p.Address, p.State));
+                            if (p.FunctionNumber == 0)
+                                Dispatch.Notification.OnLocomotiveLightsChanged(this, p.Unit, p.Lights);
+                            else
+                                Dispatch.Notification.OnLocomotiveFunctionStateChanged(this, p.Unit, p.FunctionNumber, p.FunctionActive);
                         }
-                        break;
+                    }
+                    break;
 
-                    case DiMAXcommandCode.LocoSpeedControl: {
-                            if (OperationMode) {
-                                var p = new DiMAXlocoSpeedControlPacket(packet);
+                case DiMAXcommandCode.ExtendedSystemStatus:
+                    dimaxStatus.ExtendedStatusUpdate(this, packet);
+                    break;
 
-                                Dispatch.Notification.OnLocomotiveMotion(this, p.SpeedInSteps, p.Unit);
-                            }
-                        }
-                        break;
+                case DiMAXcommandCode.SystemStatus:
+                    dimaxStatus.SystemStatusUpdate(this, packet);
+                    break;
 
-                    case DiMAXcommandCode.LocoFunctionControl: {
-                            if (OperationMode) {
-                                var p = new DiMAXlocoFunctionControlPacket(packet);
+                case DiMAXcommandCode.EmergencyStopBegin:
+                    Dispatch.Call.EmergencyStopRequest("Initiated by external controller", this);
+                    break;
 
-                                if (p.FunctionNumber == 0)
-                                    Dispatch.Notification.OnLocomotiveLightsChanged(this, p.Unit, p.Lights);
-                                else
-                                    Dispatch.Notification.OnLocomotiveFunctionStateChanged(this, p.Unit, p.FunctionNumber, p.FunctionActive);
-                            }
-                        }
-                        break;
+                case DiMAXcommandCode.EmergencyStopFinish:
+                    PowerOn();
+                    break;
 
-                    case DiMAXcommandCode.ExtendedSystemStatus:
-                        dimaxStatus.ExtendedStatusUpdate(this, packet);
-                        break;
+                case DiMAXcommandCode.LocoSelection:
+                    HandleLocomotiveSelection(packet);
+                    break;
 
-                    case DiMAXcommandCode.SystemStatus:
-                        dimaxStatus.SystemStatusUpdate(this, packet);
-                        break;
+                case DiMAXcommandCode.LocoConfig:
+                    break;
 
-                    case DiMAXcommandCode.EmergencyStopBegin:
-                        Dispatch.Call.EmergencyStopRequest("Initiated by external controller", this);
-                        break;
-
-                    case DiMAXcommandCode.EmergencyStopFinish:
-                        PowerOn();
-                        break;
-
-                    case DiMAXcommandCode.LocoSelection:
-                        HandleLocomotiveSelection(packet);
-                        break;
-
-                    case DiMAXcommandCode.LocoConfig:
-                        break;
-
-                    default:
-                        Warning(this, "Unknown command code received from DiMAX: " + packet.CommandCode.ToString());
-                        break;
-                }
+                default:
+                    Warning(this, "Unknown command code received from DiMAX: " + packet.CommandCode.ToString());
+                    break;
             }
         }
 
@@ -614,7 +611,7 @@ namespace DiMAX {
                             Trace.WriteLine("Ignored direct reply - no command requiring direct reply was sent");
                     }
                     else
-                        InterThreadEventInvoker.QueueEvent(new LayoutEvent("processes-DiMAX-packet", this, packet));
+                        InterThreadEventInvoker.Queue(() => ProcessDiMAXpacket(packet));
 
                     CommunicationStream.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, new AsyncCallback(this.OnReadLengthAndCommandDone), null);
                 }
@@ -625,10 +622,10 @@ namespace DiMAX {
             }
         }
 
-        #endregion
+#endregion
     }
 
-    #region DiMAX status
+#region DiMAX status
 
     public class DiMAXstatus {
         public enum DiMAXcondition {
@@ -686,9 +683,9 @@ namespace DiMAX {
         }
     }
 
-    #endregion
+#endregion
 
-    #region DiMAX command codes and command packet definition
+#region DiMAX command codes and command packet definition
 
     public class DiMAXException : Exception {
         public DiMAXException() {
@@ -890,9 +887,9 @@ namespace DiMAX {
         public int FunctionNumber => Packet.Parameters[2] & 0x0f;
     }
 
-    #endregion
+#endregion
 
-    #region DiMAX Command Classes
+#region DiMAX Command Classes
 
     internal class DiMAXcommandBase : OutputCommandBase {
         public DiMAXcommandBase(DiMAXcommandStation commandStation) {
@@ -938,7 +935,7 @@ namespace DiMAX {
             DefaultWaitPeriod = 250;
         }
 
-        #region ICommandStationSynchronousCommand Members
+#region ICommandStationSynchronousCommand Members
 
         public int Timeout => 2000;
 
@@ -954,7 +951,7 @@ namespace DiMAX {
             Completed(null);
         }
 
-        #endregion
+#endregion
     }
 
     internal class DiMAXpowerDisconnect : DiMAXcommandBase {
@@ -1123,5 +1120,5 @@ namespace DiMAX {
         public override string ToString() => description;
     }
 
-    #endregion
+#endregion
 }

@@ -100,16 +100,6 @@ namespace LayoutManager.Logic {
             }
         }
 
-#if NOT_USED
-        [LayoutEvent("train-speed-change-abort")]
-        private void trainSpeedChangeAbort(LayoutEvent e) {
-            var train = Ensure.NotNull<TrainStateInfo>(e.Sender, "train");
-
-            if (trainIDtoSpeedChangeState.TryGetValue(train.Id, out SpeedChangeState speedStateChange))
-                speedStateChange.Dispose();
-        }
-#endif
-
         [DispatchTarget]
         private void RemoveSpeedChangeState(TrainStateInfo train) {
             trainIDtoSpeedChangeState.Remove(train.Id);

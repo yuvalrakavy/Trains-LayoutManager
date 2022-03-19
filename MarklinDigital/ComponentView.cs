@@ -93,61 +93,19 @@ namespace MarklinDigital {
 
         #region Component Painter
 
-        [LayoutEvent("get-image", SenderType = typeof(MarklinDigitalPainter))]
-        private void GetCentralStationImage(LayoutEvent e) {
-            e.Info = imageListComponents.Images[0];
+        [DispatchTarget]
+        private Image GetImage([DispatchFilter] MarklinDigitalPainter requestor) {
+            return imageListComponents.Images[0];
         }
 
         private class MarklinDigitalPainter {
             internal void Paint(Graphics g) {
-                var image = Ensure.NotNull<Image>(EventManager.Event(new LayoutEvent("get-image", this)));
+                var image = Dispatch.Call.GetImage(this);
 
                 g.DrawImage(image, new Rectangle(new Point(1, 1), image.Size));
             }
         }
 
         #endregion
-
-        #region Address Format Handler
-
-        [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='MarklinDigital']")]
-        [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='Any']")]
-        private void GetCommandStationFormat(LayoutEvent e) {
-            if (e.Info == null) {
-                var usage = Ensure.ValueNotNull<AddressUsage>(e.Sender);
-                var addressFormat = new AddressFormatInfo();
-
-                switch (usage) {
-                    case AddressUsage.Locomotive:
-                        addressFormat.Namespace = "Locomotives";
-                        addressFormat.UnitMin = 1;
-                        addressFormat.UnitMax = 80;
-                        break;
-
-                    case AddressUsage.Signal:
-                    case AddressUsage.Turnout:
-                        addressFormat.Namespace = "Accessories";
-                        addressFormat.UnitMin = 0;
-                        addressFormat.UnitMax = 255;
-                        break;
-
-                    case AddressUsage.TrainDetectionBlock:
-                    case AddressUsage.TrackContact:
-                        addressFormat.Namespace = "Feedback";
-                        addressFormat.UnitMin = 1;
-                        addressFormat.UnitMax = 31;
-                        addressFormat.ShowSubunit = true;
-                        addressFormat.SubunitMin = 1;
-                        addressFormat.SubunitMax = 16;
-                        addressFormat.SubunitFormat = AddressFormatInfo.SubunitFormatValue.Number;
-                        break;
-                }
-
-                e.Info = addressFormat;
-            }
-        }
-
-        #endregion
-
     }
 }

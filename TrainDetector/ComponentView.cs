@@ -82,9 +82,9 @@ namespace TrainDetector {
 
         #region Component Painter
 
-        [LayoutEvent("get-image", SenderType = typeof(TrainDetectorPainter))]
-        private void GetTrainDetectorImage(LayoutEvent e) {
-            e.Info = imageListComponents.Images[0];
+        [DispatchTarget]
+        private Image GetImage([DispatchFilter] TrainDetectorPainter requestor) {
+            return imageListComponents.Images[0];
         }
 
         private class TrainDetectorPainter {
@@ -93,7 +93,7 @@ namespace TrainDetector {
             }
 
             internal void Paint(Graphics g) {
-                var image = Ensure.NotNull<Image>(EventManager.Event(new LayoutEvent("get-image", this)));
+                var image = Dispatch.Call.GetImage(this);
 
                 g.DrawImage(image, new Rectangle(new Point(1, 1), image.Size));
             }

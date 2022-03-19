@@ -263,9 +263,8 @@ namespace MarklinDigital {
             commandStationManager.AddCommand(queueLocoCommands, new MarklinLocomotiveMotion(CommunicationStream, loco.AddressProvider.Unit, speed, auxFunction));
         }
 
-        [LayoutEvent("set-locomotive-lights-command", IfEvent = "*[CommandStation/@Name='`string(Name)`']")]
-        private void SetLocomotiveLightsCommand(LayoutEvent e) {
-            var loco = Ensure.NotNull<LocomotiveInfo>(e.Sender);
+        [DispatchTarget]
+        private void SetLocomotiveLightsCommand([DispatchFilter("IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, bool lights) {
             var train = Ensure.NotNull<TrainStateInfo>(LayoutModel.StateManager.Trains[loco.Id]);
 
             Dispatch.Call.LocomotiveMotionCommand(Dispatch.Call.GetCommandStation(train), loco, train.SpeedInSteps);

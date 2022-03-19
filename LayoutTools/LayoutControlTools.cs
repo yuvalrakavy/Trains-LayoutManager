@@ -1284,25 +1284,27 @@ namespace LayoutManager.Tools {
 
                     Debug.Assert(programmingState.ProgrammingActions.Count() == 1);
 
-                    // Note: If there is no edit-action-settings, then the result will not be bool.
-                    object? r = EventManager.Event(new LayoutEventResultValueType<object, ILayoutAction, bool>("edit-action-settings", module, setAddressAction));
+                    if (setAddressAction != null) {
+                        // Note: If there is no edit-action-settings, then the result will not be bool.
+                        var r = Dispatch.Call.EditActionSettings(module, setAddressAction);
 
-                    if (r is not bool || (bool)r) {
-                        programmingState.ProgrammingActions.PrepareForProgramming();
+                        if (!r.HasValue || r.Value) {
+                            programmingState.ProgrammingActions.PrepareForProgramming();
 
-                        var d = new Dialogs.ControlModuleProgrammingProgressDialog(programmingState, doProgramming: async () => {
-                            if (LayoutController.Instance.BeginDesignTimeActivation()) {
-                                await Dispatch.Call.DoCommandStationActions(aProgrammer, programmingState.ProgrammingActions, false);
-                                LayoutController.Instance.EndDesignTimeActivation();
-                                await LayoutController.Instance.EnterDesignModeRequest();
-                            }
-                            else {
-                                foreach (var action in programmingState.ProgrammingActions)
-                                    action.Status = ActionStatus.Failed;
-                            }
-                        });
+                            var d = new Dialogs.ControlModuleProgrammingProgressDialog(programmingState, doProgramming: async () => {
+                                if (LayoutController.Instance.BeginDesignTimeActivation()) {
+                                    await Dispatch.Call.DoCommandStationActions(aProgrammer, programmingState.ProgrammingActions, false);
+                                    LayoutController.Instance.EndDesignTimeActivation();
+                                    await LayoutController.Instance.EnterDesignModeRequest();
+                                }
+                                else {
+                                    foreach (var action in programmingState.ProgrammingActions)
+                                        action.Status = ActionStatus.Failed;
+                                }
+                            });
 
-                        d.ShowDialog();
+                            d.ShowDialog();
+                        }
                     }
                 }));
             }

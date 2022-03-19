@@ -81,9 +81,9 @@ namespace NumatoController {
 
         #region Component Painter
 
-        [LayoutEvent("get-image", SenderType = typeof(NumatoRelayControllerPainter))]
-        private void GetCentralStationImage(LayoutEvent e) {
-            e.Info = imageListComponents.Images[0];
+        [DispatchTarget]
+        private Image GetImage([DispatchFilter] NumatoRelayControllerPainter requestor) {
+            return imageListComponents.Images[0];
         }
 
         private class NumatoRelayControllerPainter {
@@ -91,55 +91,9 @@ namespace NumatoController {
             }
 
             internal void Paint(Graphics g) {
-                var image = Ensure.NotNull<Image>(EventManager.Event(new LayoutEvent("get-image", this)));
+                var image = Dispatch.Call.GetImage(this);
 
                 g.DrawImage(image, new Rectangle(new Point(1, 1), image.Size));
-            }
-        }
-
-        #endregion
-
-        #region Address Format Handler
-
-        [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='DiMAX']")]
-        [LayoutEvent("get-command-station-address-format", IfEvent = "*[CommandStation/@Type='Any']")]
-        private void GetCommandStationFormat(LayoutEvent e) {
-            if (e.Info == null) {
-                var usage = Ensure.ValueNotNull<AddressUsage>(e.Sender);
-                var addressFormat = new AddressFormatInfo();
-
-                switch (usage) {
-                    case AddressUsage.Locomotive:
-                        addressFormat.Namespace = "Locomotives";
-                        addressFormat.UnitMin = 1;
-                        addressFormat.UnitMax = 10239;
-                        break;
-
-                    case AddressUsage.Signal:
-                    case AddressUsage.Turnout:
-                        addressFormat.Namespace = "Accessories";
-                        addressFormat.UnitMin = 0;
-                        addressFormat.UnitMax = 2047;
-                        break;
-
-                    case AddressUsage.TrainDetectionBlock:
-                        addressFormat.Namespace = "Accessories";
-                        addressFormat.UnitMin = 0;
-                        addressFormat.UnitMax = 2047;
-                        break;
-
-                    case AddressUsage.TrackContact:
-                        addressFormat.Namespace = "Accessories";
-                        addressFormat.UnitMin = 0;
-                        addressFormat.UnitMax = 2047;
-                        addressFormat.ShowSubunit = true;
-                        addressFormat.SubunitMin = 0;
-                        addressFormat.SubunitMax = 1;
-                        addressFormat.SubunitFormat = AddressFormatInfo.SubunitFormatValue.Alphabet;
-                        break;
-                }
-
-                e.Info = addressFormat;
             }
         }
 

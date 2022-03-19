@@ -64,8 +64,8 @@ namespace TrainDetector {
         [DispatchTarget]
         private bool EndDesignTimeLayoutActivation() => true;
 
-        [LayoutAsyncEvent("enter-operation-mode-async")]
-        private async Task EnterOperationModeAsync(LayoutEvent e) {
+        [DispatchTarget]
+        private async Task EnterOperationModeAsync() {
             Debug.Assert(OptionalNetworkHandler == null);
             OptionalNetworkHandler = new NetworkHandler(rawPacket => rawPacket.GetPacketHeader());
 

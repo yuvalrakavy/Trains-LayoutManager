@@ -30,10 +30,7 @@ namespace DiMAX {
             traceDiMAXemulator.Level = TraceLevel.Off;      // Until it seems to work
 
             layoutEmulationServices = Dispatch.Call.GetLayoutEmulationServices();
-            EventManager.Event(new LayoutEvent("initialize-layout-emulation", this)
-                .SetOption(LayoutCommandStationComponent.Option_EmulateTrainMotion, commandStation.EmulateTrainMotion)
-                .SetOption(LayoutCommandStationComponent.Option_EmulationTickTime, commandStation.EmulationTickTime)
-            );
+            Dispatch.Call.InitializeLayoutEmulation(commandStation.EmulateTrainMotion, commandStation.EmulationTickTime);
 
             stopInterfaceThrad = new CancellationTokenSource();
 

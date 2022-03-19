@@ -508,6 +508,13 @@ namespace LayoutManager {
             ds_AddLocomotiveCollectionContextMenuEntries.CallVoid(placedElement, m);
         }
 
+        static DispatchSource? ds_EditActionSettings = null;
+        [DispatchSource]
+        public static bool? EditActionSettings(this Dispatcher d, ControlModule module, ILayoutAction action) {
+            ds_EditActionSettings ??= d[nameof(EditActionSettings)];
+            return ds_EditActionSettings.Call<bool?>(module, action);
+        }
+
     }
 }
 

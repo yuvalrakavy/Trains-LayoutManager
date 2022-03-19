@@ -11,12 +11,6 @@ using System.Threading.Tasks;
 using System.Xml;
 
 namespace Intellibox {
-    internal interface ICommandStationServices {
-        void Event(LayoutEvent e);
-
-        void Error(string message);
-    }
-
     public class IntelliboxComponentInfo : LayoutInfo {
         private const string A_PollingPeriod = "PollingPeriod";
         private const string A_AccessorySwitchingTime = "AccessorySwitchingTime";

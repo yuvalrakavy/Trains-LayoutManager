@@ -297,7 +297,8 @@ namespace LayoutManager {
         private void ButtonEdit_Click(object? sender, EventArgs e) {
             var selectedElement = locomotiveList.SelectedXmlElement;
 
-            Dispatch.Call.EditLocomotiveCollectionItem(selectedElement);
+            if(selectedElement != null)
+                Dispatch.Call.EditLocomotiveCollectionItem(selectedElement);
         }
 
         private void ButtonDelete_Click(object? sender, EventArgs e) {

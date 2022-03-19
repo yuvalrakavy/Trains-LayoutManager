@@ -51,26 +51,5 @@ namespace DiMAX {
                 Usage = ControlConnectionPointUsage.Output
             };
         }
-
-        [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='DCC']")]
-        private void AddDiMAXDCCbusToDCCcompatibleModule(LayoutEvent e) {
-            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender, "moduleType");
-
-            moduleType.BusTypeNames.Add("DiMAXDCC");
-        }
-
-        [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='DiMAXBus']")]
-        private void AddDiMAXBUStoLGBBUScompatibleModule(LayoutEvent e) {
-            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender, "moduleType");
-
-            moduleType.BusTypeNames.Add("DiMAXBUS");
-        }
-
-        [LayoutEvent("add-bus-connectable-to-module", IfEvent = "LayoutEvent[Options/@GenericBusType='LocoBus']")]
-        private void AddDiMAXLocoBustoLGBBUScompatibleModule(LayoutEvent e) {
-            var moduleType = Ensure.NotNull<ControlModuleType>(e.Sender, "moduleType");
-
-            moduleType.BusTypeNames.Add("DiMAXLocoBus");
-        }
     }
 }

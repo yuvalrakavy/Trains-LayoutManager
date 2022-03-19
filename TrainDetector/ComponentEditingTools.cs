@@ -70,10 +70,8 @@ namespace TrainDetector {
             });
         }
 
-        [LayoutEvent("click-to-add-train-detector")]
-        private void ClickToAddTrainDetector(LayoutEvent e) {
-            var drawObject = Ensure.NotNull<DrawControlClickToAddModule>(e.Sender);
-
+        [DispatchTarget]
+        private void ClickToAddTrainDetector(DrawControlClickToAddModule drawObject) {
             using var d = new Dialogs.AddTrainDetectorController(name =>
                 string.IsNullOrWhiteSpace(name) ? "You must specify a non-empty name" :
                 drawObject.Bus.Modules.Any(module => module.Label == name) ? $"A module named '{name}' is already defined" : null
@@ -95,10 +93,11 @@ namespace TrainDetector {
             }
         }
 
-        [LayoutEvent("control-module-label-changed", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='TrainDetectorController']")]
-        private async void ModuleNameChanged(LayoutEvent e) {
-            (var module, var name) = Ensure.NotNull<ControlModule, string>(e);
+        [DispatchTarget]
+        private async void OnControlModuleLabelChanged([DispatchFilter("ModuleType", "TrainDetectorController")] ControlModule module, string? name) {
             var controller = new TrainDetectorControllerModule(module);
+
+            name ??= string.Empty;
 
             // If assigned - program the controller with the new name
             if (controller.ControllerIpAddress != null) {

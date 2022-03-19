@@ -1162,7 +1162,7 @@ namespace LayoutManager.View {
 
         [DispatchTarget]
         private Image? GetConnectionPointComponentImage_Gate([DispatchFilter] LayoutGateComponent component, ControlModule module, bool topRow, int index) {
-            return component is LayoutGateComponent ? imageListConnectionPointImages.Images[10] : null;
+            return component is not null ? imageListConnectionPointImages.Images[10] : null;
         }
 
         [DispatchTarget]
@@ -1218,7 +1218,7 @@ namespace LayoutManager.View {
         #region Control Module Location component
 
         [DispatchTarget]
-        private Image GetImage() {
+        private Image GetImage([DispatchFilter] ControlModuleLocationPainter requestor) {
             return imageListComponents.Images[1];
         }
 
