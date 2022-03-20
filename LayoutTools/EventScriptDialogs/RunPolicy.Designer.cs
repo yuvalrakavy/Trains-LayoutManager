@@ -33,9 +33,9 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.comboBoxPolicy.Name = "comboBoxPolicy";
             this.comboBoxPolicy.Size = new System.Drawing.Size(272, 21);
             this.comboBoxPolicy.TabIndex = 0;
-            this.comboBoxPolicy.SelectedIndexChanged += this.ComboBoxPolicy_SelectedIndexChanged;
-            this.comboBoxPolicy.MeasureItem += this.ComboBoxPolicy_MeasureItem;
-            this.comboBoxPolicy.DrawItem += this.ComboBoxPolicy_DrawItem;
+            this.comboBoxPolicy.SelectedIndexChanged += new EventHandler(this.ComboBoxPolicy_SelectedIndexChanged);
+            this.comboBoxPolicy.MeasureItem += new MeasureItemEventHandler(this.ComboBoxPolicy_MeasureItem);
+            this.comboBoxPolicy.DrawItem += new DrawItemEventHandler(this.ComboBoxPolicy_DrawItem);
             // 
             // label1
             // 
@@ -52,7 +52,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

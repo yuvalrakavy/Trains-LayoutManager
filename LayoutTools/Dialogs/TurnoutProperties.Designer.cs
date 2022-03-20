@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -44,7 +45,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // tabControl
             // 
@@ -85,7 +86,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.checkBoxHasBuiltinDecoder.Size = new System.Drawing.Size(221, 24);
             this.checkBoxHasBuiltinDecoder.TabIndex = 2;
             this.checkBoxHasBuiltinDecoder.Text = "COMPONENT has builtin decoder";
-            this.checkBoxHasBuiltinDecoder.CheckedChanged += this.CheckBoxHasBuiltinDecoder_CheckedChanged;
+            this.checkBoxHasBuiltinDecoder.CheckedChanged += new EventHandler(this.CheckBoxHasBuiltinDecoder_CheckedChanged);
             // 
             // checkBoxReverseLogic
             // 

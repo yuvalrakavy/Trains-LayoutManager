@@ -241,7 +241,7 @@ namespace LayoutManager.Model {
         public bool IsCompatibleWith(params string[] connectionTypes) {
             string myConnectionTypes = ConnectionTypes;
 
-            return connectionTypes.Any(connectionType => myConnectionTypes.Contains(connectionType));
+            return connectionTypes.Any(connectionType => connectionType.Contains(myConnectionTypes));
         }
     }
 

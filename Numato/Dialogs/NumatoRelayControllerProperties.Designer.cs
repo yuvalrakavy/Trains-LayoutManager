@@ -69,7 +69,7 @@ namespace NumatoController.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(76, 28);
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -87,7 +87,7 @@ namespace NumatoController.Dialogs {
             this.buttonCOMsettings.Size = new System.Drawing.Size(75, 21);
             this.buttonCOMsettings.TabIndex = 9;
             this.buttonCOMsettings.Text = "Settings...";
-            this.buttonCOMsettings.Click += this.ButtonCOMsettings_Click;
+            this.buttonCOMsettings.Click += new EventHandler(this.ButtonCOMsettings_Click);
             // 
             // nameDefinition
             // 
@@ -125,7 +125,7 @@ namespace NumatoController.Dialogs {
             this.buttonIpSettings.Size = new System.Drawing.Size(75, 21);
             this.buttonIpSettings.TabIndex = 13;
             this.buttonIpSettings.Text = "Settings...";
-            this.buttonIpSettings.Click += this.ButtonIpSettings_Click;
+            this.buttonIpSettings.Click += new EventHandler(this.ButtonIpSettings_Click);
             // 
             // textBoxAddress
             // 
@@ -144,7 +144,7 @@ namespace NumatoController.Dialogs {
             this.radioButtonTCP.TabStop = true;
             this.radioButtonTCP.Text = "TCP/IP";
             this.radioButtonTCP.UseVisualStyleBackColor = true;
-            this.radioButtonTCP.CheckedChanged += this.RadioButtonInterfaceType_CheckedChanged;
+            this.radioButtonTCP.CheckedChanged += new EventHandler(this.RadioButtonInterfaceType_CheckedChanged);
             // 
             // radioButtonSerial
             // 
@@ -156,7 +156,7 @@ namespace NumatoController.Dialogs {
             this.radioButtonSerial.TabStop = true;
             this.radioButtonSerial.Text = "Serial (RS232, USB, Network using RealPort)";
             this.radioButtonSerial.UseVisualStyleBackColor = true;
-            this.radioButtonSerial.CheckedChanged += this.RadioButtonInterfaceType_CheckedChanged;
+            this.radioButtonSerial.CheckedChanged += new EventHandler(this.RadioButtonInterfaceType_CheckedChanged);
             // 
             // label3
             // 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
@@ -50,7 +51,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listViewActions.Size = new System.Drawing.Size(384, 104);
             this.listViewActions.TabIndex = 1;
             this.listViewActions.View = System.Windows.Forms.View.Details;
-            this.listViewActions.SelectedIndexChanged += this.ListViewActions_SelectedIndexChanged;
+            this.listViewActions.SelectedIndexChanged += new EventHandler(this.ListViewActions_SelectedIndexChanged);
             // 
             // columnHeaderWayPointDestination
             // 
@@ -70,7 +71,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonFixTripPlan.Size = new System.Drawing.Size(80, 23);
             this.buttonFixTripPlan.TabIndex = 2;
             this.buttonFixTripPlan.Text = "Fix Trip Plan";
-            this.buttonFixTripPlan.Click += this.ButtonFixTripPlan_Click;
+            this.buttonFixTripPlan.Click += new EventHandler(this.ButtonFixTripPlan_Click);
             // 
             // buttonCancel
             // 
@@ -81,7 +82,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(80, 23);
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // TripPlanRouteValidationResult
             // 

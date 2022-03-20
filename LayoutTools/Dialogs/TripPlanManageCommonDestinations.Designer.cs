@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Linq;
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -35,7 +36,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.treeViewDestinations.ShowLines = false;
             this.treeViewDestinations.Size = new System.Drawing.Size(216, 208);
             this.treeViewDestinations.TabIndex = 0;
-            this.treeViewDestinations.AfterSelect += this.TreeViewDestinations_AfterSelect;
+            this.treeViewDestinations.AfterSelect += new TreeViewEventHandler(this.TreeViewDestinations_AfterSelect);
             // 
             // buttonDelete
             // 
@@ -45,7 +46,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonDelete.Size = new System.Drawing.Size(56, 19);
             this.buttonDelete.TabIndex = 1;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.ButtonDelete_Click;
+            this.buttonDelete.Click += new EventHandler(this.ButtonDelete_Click);
             // 
             // buttonRename
             // 
@@ -55,7 +56,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRename.Size = new System.Drawing.Size(56, 19);
             this.buttonRename.TabIndex = 1;
             this.buttonRename.Text = "&Rename";
-            this.buttonRename.Click += this.ButtonRename_Click;
+            this.buttonRename.Click += new EventHandler(this.ButtonRename_Click);
             // 
             // buttonClose
             // 
@@ -65,12 +66,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(56, 19);
             this.buttonClose.TabIndex = 1;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // TripPlanManageCommonDestinations
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(232, 254);
             this.ControlBox = false;
             this.Controls.Add(this.buttonDelete);

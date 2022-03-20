@@ -105,7 +105,7 @@
             this.buttonDeleteOption.Size = new System.Drawing.Size(75, 20);
             this.buttonDeleteOption.TabIndex = 3;
             this.buttonDeleteOption.Text = "&Delete...";
-            this.buttonDeleteOption.Click += this.ButtonDeleteOption_Click;
+            this.buttonDeleteOption.Click += new System.EventHandler(this.ButtonDeleteOption_Click);
             // 
             // buttonEditOption
             // 
@@ -114,7 +114,7 @@
             this.buttonEditOption.Size = new System.Drawing.Size(75, 20);
             this.buttonEditOption.TabIndex = 2;
             this.buttonEditOption.Text = "&Edit...";
-            this.buttonEditOption.Click += this.ButtonEditOption_Click;
+            this.buttonEditOption.Click += new System.EventHandler(this.ButtonEditOption_Click);
             // 
             // buttonAddOption
             // 
@@ -123,7 +123,7 @@
             this.buttonAddOption.Size = new System.Drawing.Size(75, 20);
             this.buttonAddOption.TabIndex = 1;
             this.buttonAddOption.Text = "&Add...";
-            this.buttonAddOption.Click += this.ButtonAddOption_Click;
+            this.buttonAddOption.Click += new System.EventHandler(this.ButtonAddOption_Click);
             // 
             // listViewOptions
             // 
@@ -137,8 +137,8 @@
             this.listViewOptions.Size = new System.Drawing.Size(456, 104);
             this.listViewOptions.TabIndex = 0;
             this.listViewOptions.View = System.Windows.Forms.View.Details;
-            this.listViewOptions.DoubleClick += this.ListViewOptions_DoubleClick;
-            this.listViewOptions.SelectedIndexChanged += this.ListViewOptions_SelectedIndexChanged;
+            this.listViewOptions.DoubleClick += new System.EventHandler(this.ListViewOptions_DoubleClick);
+            this.listViewOptions.SelectedIndexChanged += new System.EventHandler(this.ListViewOptions_SelectedIndexChanged);
             // 
             // columnHeaderOptionName
             // 
@@ -156,7 +156,7 @@
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

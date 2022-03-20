@@ -43,8 +43,8 @@
             this.comboBoxReferencedObject.Size = new System.Drawing.Size(121, 21);
             this.comboBoxReferencedObject.Sorted = true;
             this.comboBoxReferencedObject.TabIndex = 2;
-            this.comboBoxReferencedObject.TextChanged += this.ComboBoxReferencedObject_TextChanged;
-            this.comboBoxReferencedObject.SelectedIndexChanged += this.ComboBoxReferencedObject_SelectedIndexChanged;
+            this.comboBoxReferencedObject.TextChanged += new EventHandler(this.ComboBoxReferencedObject_TextChanged);
+            this.comboBoxReferencedObject.SelectedIndexChanged += new EventHandler(this.ComboBoxReferencedObject_SelectedIndexChanged);
             // 
             // operandValueOf
             // 
@@ -56,7 +56,7 @@
             this.operandValueOf.Size = new System.Drawing.Size(176, 64);
             this.operandValueOf.Suffix = "";
             this.operandValueOf.TabIndex = 4;
-            this.operandValueOf.ValueChanged += this.OperandValueOf_ValueChanged;
+            this.operandValueOf.ValueChanged += new EventHandler(this.OperandValueOf_ValueChanged);
             // 
             // radioButtonValueOf
             // 
@@ -87,7 +87,7 @@
             this.linkMenuConstantType.TabStop = true;
             this.linkMenuConstantType.Text = "String";
             this.linkMenuConstantType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuConstantType.ValueChanged += this.LinkMenuConstantType_ValueChanged;
+            this.linkMenuConstantType.ValueChanged += new EventHandler(this.LinkMenuConstantType_ValueChanged);
             // 
             // textBoxConstantValue
             // 
@@ -96,7 +96,7 @@
             this.textBoxConstantValue.Size = new System.Drawing.Size(178, 20);
             this.textBoxConstantValue.TabIndex = 7;
             this.textBoxConstantValue.Text = "";
-            this.textBoxConstantValue.TextChanged += this.TextBoxConstantValue_TextChanged;
+            this.textBoxConstantValue.TextChanged += new EventHandler(this.TextBoxConstantValue_TextChanged);
             // 
             // radioButtonContext
             // 

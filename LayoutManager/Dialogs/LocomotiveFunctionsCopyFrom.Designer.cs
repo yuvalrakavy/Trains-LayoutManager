@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -48,7 +49,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

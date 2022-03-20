@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using LayoutManager.Components;
+using System;
 
 namespace LayoutManager.Tools.AutoConnectDialogs {
     /// <summary>
@@ -58,7 +59,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.radioButtonUseModuleLocation.Size = new System.Drawing.Size(256, 32);
             this.radioButtonUseModuleLocation.TabIndex = 1;
             this.radioButtonUseModuleLocation.Text = "Connect the component to a control module in control module location:";
-            this.radioButtonUseModuleLocation.CheckedChanged += this.RadioButtonUseModuleLocation_CheckedChanged;
+            this.radioButtonUseModuleLocation.CheckedChanged += new EventHandler(this.RadioButtonUseModuleLocation_CheckedChanged);
             // 
             // comboBoxModuleLocation
             // 
@@ -75,7 +76,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "Continue";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -92,13 +93,14 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.radioButtonAddNewModule.Size = new System.Drawing.Size(152, 24);
             this.radioButtonAddNewModule.TabIndex = 9;
             this.radioButtonAddNewModule.Text = "Add new control module";
-            this.radioButtonAddNewModule.CheckedChanged += this.RadioButtonAddNewModule_CheckedChanged;
+            this.radioButtonAddNewModule.CheckedChanged += new EventHandler(this.RadioButtonAddNewModule_CheckedChanged);
             // 
             // GetNoSpaceSelection
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(292, 238);
             this.ControlBox = false;

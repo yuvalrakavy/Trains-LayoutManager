@@ -166,8 +166,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.panelLocoImages.Name = "panelLocoImages";
             this.panelLocoImages.Size = new System.Drawing.Size(272, 42);
             this.panelLocoImages.TabIndex = 5;
-            this.panelLocoImages.MouseDown += this.PanelLocoImages_MouseDown;
-            this.panelLocoImages.Paint += this.PanelLocoImages_Paint;
+            this.panelLocoImages.MouseDown += new MouseEventHandler(this.PanelLocoImages_MouseDown);
+            this.panelLocoImages.Paint += new PaintEventHandler(this.PanelLocoImages_Paint);
             // 
             // buttonLocoMoveDown
             // 
@@ -178,7 +178,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoMoveDown.Name = "buttonLocoMoveDown";
             this.buttonLocoMoveDown.Size = new System.Drawing.Size(29, 21);
             this.buttonLocoMoveDown.TabIndex = 4;
-            this.buttonLocoMoveDown.Click += this.ButtonLocoMoveDown_Click;
+            this.buttonLocoMoveDown.Click += new EventHandler(this.ButtonLocoMoveDown_Click);
             // 
             // imageListButttons
             // 
@@ -195,7 +195,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoAdd.Size = new System.Drawing.Size(64, 21);
             this.buttonLocoAdd.TabIndex = 1;
             this.buttonLocoAdd.Text = "&Add...";
-            this.buttonLocoAdd.Click += this.ButtonLocoAdd_Click;
+            this.buttonLocoAdd.Click += new EventHandler(this.ButtonLocoAdd_Click);
             // 
             // listViewLocomotives
             // 
@@ -217,7 +217,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listViewLocomotives.TabIndex = 0;
             this.listViewLocomotives.UseCompatibleStateImageBehavior = false;
             this.listViewLocomotives.View = System.Windows.Forms.View.Details;
-            this.listViewLocomotives.SelectedIndexChanged += this.UpdateControls;
+            this.listViewLocomotives.SelectedIndexChanged += new EventHandler(this.UpdateControls);
             // 
             // columnHeaderLocoName
             // 
@@ -247,7 +247,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoRemove.Size = new System.Drawing.Size(64, 21);
             this.buttonLocoRemove.TabIndex = 2;
             this.buttonLocoRemove.Text = "&Remove";
-            this.buttonLocoRemove.Click += this.ButtonLocoRemove_Click;
+            this.buttonLocoRemove.Click += new EventHandler(this.ButtonLocoRemove_Click);
             // 
             // buttonLocoEdit
             // 
@@ -257,7 +257,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoEdit.Size = new System.Drawing.Size(64, 21);
             this.buttonLocoEdit.TabIndex = 3;
             this.buttonLocoEdit.Text = "&Edit...";
-            this.buttonLocoEdit.Click += this.ButtonLocoEdit_Click;
+            this.buttonLocoEdit.Click += new EventHandler(this.ButtonLocoEdit_Click);
             // 
             // buttonLocoMoveUp
             // 
@@ -268,7 +268,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocoMoveUp.Name = "buttonLocoMoveUp";
             this.buttonLocoMoveUp.Size = new System.Drawing.Size(29, 21);
             this.buttonLocoMoveUp.TabIndex = 4;
-            this.buttonLocoMoveUp.Click += this.ButtonLocoMoveUp_Click;
+            this.buttonLocoMoveUp.Click += new EventHandler(this.ButtonLocoMoveUp_Click);
             // 
             // tabPageDriver
             // 
@@ -296,7 +296,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 21);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -307,7 +307,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(75, 21);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // contextMenuEditLocomotive
             // 
@@ -325,17 +325,17 @@ namespace LayoutManager.Tools.Dialogs {
             // menuItemLocoOrientationForward
             // 
             this.menuItemLocoOrientationForward.Text = "Forward";
-            this.menuItemLocoOrientationForward.Click += this.MenuItemLocoOrientationForward_Click;
+            this.menuItemLocoOrientationForward.Click += new EventHandler(this.MenuItemLocoOrientationForward_Click);
             // 
             // menuItemLocoOrientationBackward
             // 
             this.menuItemLocoOrientationBackward.Text = "Backward";
-            this.menuItemLocoOrientationBackward.Click += this.MenuItemLocoOrientationBackward_Click;
+            this.menuItemLocoOrientationBackward.Click += new EventHandler(this.MenuItemLocoOrientationBackward_Click);
             // 
             // menuItemEditLocoDefinition
             // 
             this.menuItemEditLocoDefinition.Text = "Definition...";
-            this.menuItemEditLocoDefinition.Click += this.MenuItemEditLocoDefinition_Click;
+            this.menuItemEditLocoDefinition.Click += new EventHandler(this.MenuItemEditLocoDefinition_Click);
             // 
             // groupBox1
             // 
@@ -388,6 +388,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(292, 310);
             this.ControlBox = false;
             this.Controls.Add(this.buttonOK);
@@ -397,7 +398,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "TrainProperties";
             this.ShowInTaskbar = false;
             this.Text = "Train Properties";
-            this.Closed += this.TrainProperties_Closed;
+            this.Closed += new EventHandler(this.TrainProperties_Closed);
             this.tabControl1.ResumeLayout(false);
             this.tabPageGeneral.ResumeLayout(false);
             this.tabPageGeneral.PerformLayout();

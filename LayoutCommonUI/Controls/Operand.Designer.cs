@@ -23,7 +23,7 @@
             this.radioButtonValue.Size = new System.Drawing.Size(56, 24);
             this.radioButtonValue.TabIndex = 0;
             this.radioButtonValue.Text = "Value:";
-            this.radioButtonValue.CheckedChanged += this.RadioButtonValue_CheckedChanged;
+            this.radioButtonValue.CheckedChanged += new EventHandler(this.RadioButtonValue_CheckedChanged);
             // 
             // textBoxValue
             // 
@@ -32,7 +32,7 @@
             this.textBoxValue.Size = new System.Drawing.Size(80, 20);
             this.textBoxValue.TabIndex = 4;
             this.textBoxValue.Text = "";
-            this.textBoxValue.TextChanged += this.TextBoxValue_TextChanged;
+            this.textBoxValue.TextChanged += new EventHandler(this.TextBoxValue_TextChanged);
             // 
             // linkMenu1Boolean
             // 
@@ -66,7 +66,7 @@
             this.operandValueOf.Size = new System.Drawing.Size(176, 64);
             this.operandValueOf.Suffix = "";
             this.operandValueOf.TabIndex = 7;
-            this.operandValueOf.ValueChanged += this.OperandValueOf_ValueChanged;
+            this.operandValueOf.ValueChanged += new EventHandler(this.OperandValueOf_ValueChanged);
             // 
             // Operand
             // 
@@ -77,6 +77,9 @@
             this.Controls.Add(this.operandValueOf);
             this.Name = "Operand";
             this.Size = new System.Drawing.Size(200, 96);
+            this.AutoSize = true;
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.ResumeLayout(false);
         }
         #endregion

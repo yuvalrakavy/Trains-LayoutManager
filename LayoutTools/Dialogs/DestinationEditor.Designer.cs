@@ -53,7 +53,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 20);
             this.buttonCancel.TabIndex = 7;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // label1
             // 
@@ -98,7 +98,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCondition.Size = new System.Drawing.Size(73, 20);
             this.buttonCondition.TabIndex = 3;
             this.buttonCondition.Text = "Condition...";
-            this.buttonCondition.Click += this.ButtonCondition_Click;
+            this.buttonCondition.Click += new EventHandler(this.ButtonCondition_Click);
             // 
             // listViewLocations
             // 
@@ -118,7 +118,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listViewLocations.TabIndex = 0;
             this.listViewLocations.UseCompatibleStateImageBehavior = false;
             this.listViewLocations.View = System.Windows.Forms.View.Details;
-            this.listViewLocations.SelectedIndexChanged += this.ListViewLocations_SelectedIndexChanged;
+            this.listViewLocations.SelectedIndexChanged += new EventHandler(this.ListViewLocations_SelectedIndexChanged);
             // 
             // columnHeaderLocation
             // 
@@ -138,7 +138,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAddLocation.Size = new System.Drawing.Size(73, 20);
             this.buttonAddLocation.TabIndex = 1;
             this.buttonAddLocation.Text = "&Add";
-            this.buttonAddLocation.Click += this.ButtonAddLocation_Click;
+            this.buttonAddLocation.Click += new EventHandler(this.ButtonAddLocation_Click);
             // 
             // buttonRemoveLocation
             // 
@@ -148,7 +148,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRemoveLocation.Size = new System.Drawing.Size(73, 20);
             this.buttonRemoveLocation.TabIndex = 2;
             this.buttonRemoveLocation.Text = "&Remove";
-            this.buttonRemoveLocation.Click += this.ButtonRemoveLocation_Click;
+            this.buttonRemoveLocation.Click += new EventHandler(this.ButtonRemoveLocation_Click);
             // 
             // buttonMoveLocationUp
             // 
@@ -159,7 +159,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonMoveLocationUp.Name = "buttonMoveLocationUp";
             this.buttonMoveLocationUp.Size = new System.Drawing.Size(24, 20);
             this.buttonMoveLocationUp.TabIndex = 4;
-            this.buttonMoveLocationUp.Click += this.ButtonMoveLocationUp_Click;
+            this.buttonMoveLocationUp.Click += new EventHandler(this.ButtonMoveLocationUp_Click);
             // 
             // imageListButttons
             // 
@@ -177,7 +177,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonMoveLocationDown.Name = "buttonMoveLocationDown";
             this.buttonMoveLocationDown.Size = new System.Drawing.Size(24, 20);
             this.buttonMoveLocationDown.TabIndex = 5;
-            this.buttonMoveLocationDown.Click += this.ButtonMoveLocationDown_Click;
+            this.buttonMoveLocationDown.Click += new EventHandler(this.ButtonMoveLocationDown_Click);
             // 
             // label2
             // 
@@ -227,7 +227,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(56, 20);
             this.buttonOk.TabIndex = 6;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.ButtonOk_Click;
+            this.buttonOk.Click += new EventHandler(this.ButtonOk_Click);
             // 
             // buttonSave
             // 
@@ -238,7 +238,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSave.Size = new System.Drawing.Size(56, 20);
             this.buttonSave.TabIndex = 5;
             this.buttonSave.Text = "Save...";
-            this.buttonSave.Click += this.ButtonSave_Click;
+            this.buttonSave.Click += new EventHandler(this.ButtonSave_Click);
             // 
             // DestinationEditor
             // 
@@ -247,6 +247,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.ClientSize = new System.Drawing.Size(296, 301);
             this.AutoScaleDimensions = new SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.Controls.Add(this.groupBoxSelection);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBoxLocations);
@@ -257,8 +258,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.Controls.Add(this.buttonSave);
             this.Name = "DestinationEditor";
             this.Text = "DestinationEditor";
-            this.Closed += this.DestinationEditor_Closed;
-            this.Closing += this.DestinationEditor_Closing;
+            this.Closed += new EventHandler(this.DestinationEditor_Closed);
+            this.Closing += new CancelEventHandler(this.DestinationEditor_Closing);
             this.groupBoxLocations.ResumeLayout(false);
             this.groupBoxSelection.ResumeLayout(false);
             this.groupBoxSelection.PerformLayout();

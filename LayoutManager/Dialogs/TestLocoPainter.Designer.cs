@@ -58,7 +58,7 @@ namespace LayoutManager.Dialogs {
             this.radioButtonFrontT.Size = new System.Drawing.Size(104, 16);
             this.radioButtonFrontT.TabIndex = 0;
             this.radioButtonFrontT.Text = "Top";
-            this.radioButtonFrontT.CheckedChanged += this.UpdateLocoPainter;
+            this.radioButtonFrontT.CheckedChanged += new EventHandler(this.UpdateLocoPainter);
             // 
             // radioButtonFrontB
             // 
@@ -67,7 +67,7 @@ namespace LayoutManager.Dialogs {
             this.radioButtonFrontB.Size = new System.Drawing.Size(104, 16);
             this.radioButtonFrontB.TabIndex = 1;
             this.radioButtonFrontB.Text = "Bottom";
-            this.radioButtonFrontB.Click += this.UpdateLocoPainter;
+            this.radioButtonFrontB.Click += new EventHandler(this.UpdateLocoPainter);
             // 
             // radioButtonFrontR
             // 
@@ -76,7 +76,7 @@ namespace LayoutManager.Dialogs {
             this.radioButtonFrontR.Size = new System.Drawing.Size(104, 16);
             this.radioButtonFrontR.TabIndex = 2;
             this.radioButtonFrontR.Text = "Right";
-            this.radioButtonFrontR.Click += this.UpdateLocoPainter;
+            this.radioButtonFrontR.Click += new EventHandler(this.UpdateLocoPainter);
             // 
             // radioButtonFrontL
             // 
@@ -85,7 +85,7 @@ namespace LayoutManager.Dialogs {
             this.radioButtonFrontL.Size = new System.Drawing.Size(104, 16);
             this.radioButtonFrontL.TabIndex = 3;
             this.radioButtonFrontL.Text = "Left";
-            this.radioButtonFrontL.Click += this.UpdateLocoPainter;
+            this.radioButtonFrontL.Click += new EventHandler(this.UpdateLocoPainter);
             // 
             // groupBox2
             // 
@@ -106,7 +106,7 @@ namespace LayoutManager.Dialogs {
             this.radioButtonDirectionForward.Size = new System.Drawing.Size(88, 16);
             this.radioButtonDirectionForward.TabIndex = 0;
             this.radioButtonDirectionForward.Text = "Forward";
-            this.radioButtonDirectionForward.Click += this.UpdateLocoPainter;
+            this.radioButtonDirectionForward.Click += new EventHandler(this.UpdateLocoPainter);
             // 
             // radioButtonDirectionBackward
             // 
@@ -115,7 +115,7 @@ namespace LayoutManager.Dialogs {
             this.radioButtonDirectionBackward.Size = new System.Drawing.Size(88, 16);
             this.radioButtonDirectionBackward.TabIndex = 1;
             this.radioButtonDirectionBackward.Text = "Backward";
-            this.radioButtonDirectionBackward.Click += this.UpdateLocoPainter;
+            this.radioButtonDirectionBackward.Click += new EventHandler(this.UpdateLocoPainter);
             // 
             // groupBox3
             // 
@@ -136,7 +136,7 @@ namespace LayoutManager.Dialogs {
             this.radioButtonOrientationForward.Size = new System.Drawing.Size(88, 16);
             this.radioButtonOrientationForward.TabIndex = 0;
             this.radioButtonOrientationForward.Text = "Normal";
-            this.radioButtonOrientationForward.Click += this.UpdateLocoPainter;
+            this.radioButtonOrientationForward.Click += new EventHandler(this.UpdateLocoPainter);
             // 
             // radioButtonOrientationBackward
             // 
@@ -145,7 +145,7 @@ namespace LayoutManager.Dialogs {
             this.radioButtonOrientationBackward.Size = new System.Drawing.Size(88, 16);
             this.radioButtonOrientationBackward.TabIndex = 1;
             this.radioButtonOrientationBackward.Text = "Reverse";
-            this.radioButtonOrientationBackward.Click += this.UpdateLocoPainter;
+            this.radioButtonOrientationBackward.Click += new EventHandler(this.UpdateLocoPainter);
             // 
             // label1
             // 
@@ -163,7 +163,7 @@ namespace LayoutManager.Dialogs {
             this.textBoxLabel.Size = new System.Drawing.Size(184, 20);
             this.textBoxLabel.TabIndex = 5;
             this.textBoxLabel.Text = "";
-            this.textBoxLabel.TextChanged += this.UpdateLocoPainter;
+            this.textBoxLabel.TextChanged += new EventHandler(this.UpdateLocoPainter);
             // 
             // buttonClose
             // 
@@ -172,7 +172,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 8;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // panel
             // 
@@ -180,7 +180,7 @@ namespace LayoutManager.Dialogs {
             this.panel.Name = "panel";
             this.panel.Size = new System.Drawing.Size(376, 128);
             this.panel.TabIndex = 0;
-            this.panel.Paint += this.Panel_Paint;
+            this.panel.Paint += new PaintEventHandler(this.Panel_Paint);
             // 
             // label2
             // 
@@ -197,13 +197,14 @@ namespace LayoutManager.Dialogs {
             this.numericUpDownSpeed.Name = "numericUpDownSpeed";
             this.numericUpDownSpeed.Size = new System.Drawing.Size(48, 20);
             this.numericUpDownSpeed.TabIndex = 7;
-            this.numericUpDownSpeed.TextChanged += this.UpdateLocoPainter;
+            this.numericUpDownSpeed.TextChanged += new EventHandler(this.UpdateLocoPainter);
             // 
             // TestLocoPainter
             // 
             this.AcceptButton = this.buttonClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonClose;
             this.ClientSize = new System.Drawing.Size(392, 286);
             this.Controls.AddRange(new Control[] {

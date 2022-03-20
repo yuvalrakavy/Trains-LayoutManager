@@ -53,7 +53,7 @@
             this.textBoxSpeedChangeLength.Size = new System.Drawing.Size(48, 20);
             this.textBoxSpeedChangeLength.TabIndex = 1;
             this.textBoxSpeedChangeLength.Text = "";
-            this.textBoxSpeedChangeLength.TextChanged += this.TextBoxSpeedChangeLength_TextChanged;
+            this.textBoxSpeedChangeLength.TextChanged += new EventHandler(this.TextBoxSpeedChangeLength_TextChanged);
             // 
             // radioButtonSpeedChangeLength
             // 
@@ -62,7 +62,7 @@
             this.radioButtonSpeedChangeLength.Size = new System.Drawing.Size(61, 20);
             this.radioButtonSpeedChangeLength.TabIndex = 0;
             this.radioButtonSpeedChangeLength.Text = "Length:";
-            this.radioButtonSpeedChangeLength.CheckedChanged += this.RadioButtonSpeedChangeLength_CheckedChanged;
+            this.radioButtonSpeedChangeLength.CheckedChanged += new EventHandler(RadioButtonSpeedChangeLength_CheckedChanged);
             // 
             // radioButtonSpeedChangeRate
             // 
@@ -71,7 +71,7 @@
             this.radioButtonSpeedChangeRate.Size = new System.Drawing.Size(61, 20);
             this.radioButtonSpeedChangeRate.TabIndex = 3;
             this.radioButtonSpeedChangeRate.Text = "Rate:";
-            this.radioButtonSpeedChangeRate.CheckedChanged += this.RadioButtonSpeedChangeRate_CheckedChanged;
+            this.radioButtonSpeedChangeRate.CheckedChanged += new EventHandler(this.RadioButtonSpeedChangeRate_CheckedChanged);
             // 
             // textBoxSpeedChangeRate
             // 
@@ -80,7 +80,7 @@
             this.textBoxSpeedChangeRate.Size = new System.Drawing.Size(48, 20);
             this.textBoxSpeedChangeRate.TabIndex = 4;
             this.textBoxSpeedChangeRate.Text = "";
-            this.textBoxSpeedChangeRate.TextChanged += this.TextBoxSpeedChangeRate_TextChanged;
+            this.textBoxSpeedChangeRate.TextChanged += new EventHandler(this.TextBoxSpeedChangeRate_TextChanged);
             // 
             // label2
             // 
@@ -98,13 +98,16 @@
             this.radioButtonLocomotiveHardware.Size = new System.Drawing.Size(152, 20);
             this.radioButtonLocomotiveHardware.TabIndex = 6;
             this.radioButtonLocomotiveHardware.Text = "Locomotive own settings";
-            this.radioButtonLocomotiveHardware.CheckedChanged += this.RadioButtonLocomotiveHardware_CheckedChanged;
+            this.radioButtonLocomotiveHardware.CheckedChanged += new EventHandler(this.RadioButtonLocomotiveHardware_CheckedChanged);
             // 
             // MotionRampEditor
             // 
             this.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                           this.groupBox1});
             this.Name = "MotionRampEditor";
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoSize = true;
             this.Size = new System.Drawing.Size(218, 98);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);

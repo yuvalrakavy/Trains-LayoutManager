@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Components;
@@ -83,7 +84,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "Continue";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -98,6 +99,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(296, 246);
             this.ControlBox = false;

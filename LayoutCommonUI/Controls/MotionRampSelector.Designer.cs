@@ -35,7 +35,7 @@
             this.checkBoxOverrideDefault.Name = "checkBoxOverrideDefault";
             this.checkBoxOverrideDefault.Size = new System.Drawing.Size(16, 16);
             this.checkBoxOverrideDefault.TabIndex = 4;
-            this.checkBoxOverrideDefault.Click += this.CheckBoxOverrideDefault_Click;
+            this.checkBoxOverrideDefault.Click += new EventHandler(this.CheckBoxOverrideDefault_Click);
             // 
             // buttonOverrideDefault
             // 
@@ -44,7 +44,7 @@
             this.buttonOverrideDefault.Size = new System.Drawing.Size(97, 20);
             this.buttonOverrideDefault.TabIndex = 3;
             this.buttonOverrideDefault.Text = "&Override Default";
-            this.buttonOverrideDefault.Click += this.ButtonOverrideDefault_Click;
+            this.buttonOverrideDefault.Click += new EventHandler(this.ButtonOverrideDefault_Click);
             // 
             // labelRampDescription
             // 

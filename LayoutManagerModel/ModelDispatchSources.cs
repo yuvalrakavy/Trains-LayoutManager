@@ -1328,7 +1328,7 @@ namespace LayoutManager {
         [DispatchSource]
         public static void RecommendControlModuleTypes(this Dispatcher d, ControlConnectionPointDestination connectionPointDestination, List<string> applicableModuleTypes, string busTypeName, string busFamilyName) {
             ds_RecommendControlModuleTypes ??= d[nameof(RecommendControlModuleTypes)];
-            ds_RecommendControlModuleTypes.CallVoid(connectionPointDestination, applicableModuleTypes, busFamilyName, busTypeName);
+            ds_RecommendControlModuleTypes.CallVoid(connectionPointDestination, applicableModuleTypes, busTypeName, busFamilyName);
         }
 
         static DispatchSource? ds_OnControlBusAdded = null;

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
@@ -45,7 +46,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSave.Size = new System.Drawing.Size(75, 23);
             this.buttonSave.TabIndex = 3;
             this.buttonSave.Text = "&Save...";
-            this.buttonSave.Click += this.ButtonSave_Click;
+            this.buttonSave.Click += new EventHandler(this.ButtonSave_Click);
             // 
             // buttonClose
             // 
@@ -56,12 +57,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 2;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // TripPlanViewing
             // 
             this.ClientSize = new System.Drawing.Size(480, 310);
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ControlBox = false;
             this.Controls.Add(this.buttonSave);
@@ -70,7 +72,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "TripPlanViewing";
             this.ShowInTaskbar = false;
             this.Text = "TripPlanViewing";
-            this.Closed += this.TripPlanViewing_Closed;
+            this.Closed += new EventHandler(this.TripPlanViewing_Closed);
             this.ResumeLayout(false);
         }
         #endregion

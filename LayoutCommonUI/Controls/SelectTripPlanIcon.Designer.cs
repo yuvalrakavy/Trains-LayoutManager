@@ -27,9 +27,9 @@
             this.panelIcons.Name = "panelIcons";
             this.panelIcons.Size = new System.Drawing.Size(244, 60);
             this.panelIcons.TabIndex = 0;
-            this.panelIcons.Resize += this.PanelIcons_Resize;
-            this.panelIcons.Paint += this.PanelIcons_Paint;
-            this.panelIcons.MouseDown += this.PanelIcons_MouseDown;
+            this.panelIcons.Resize += new EventHandler(this.PanelIcons_Resize);
+            this.panelIcons.Paint += new PaintEventHandler(this.PanelIcons_Paint);
+            this.panelIcons.MouseDown += new MouseEventHandler(this.PanelIcons_MouseDown);
             // 
             // hScrollBar
             // 
@@ -38,7 +38,7 @@
             this.hScrollBar.Name = "hScrollBar";
             this.hScrollBar.Size = new System.Drawing.Size(242, 12);
             this.hScrollBar.TabIndex = 0;
-            this.hScrollBar.Scroll += this.HScrollBar_Scroll;
+            this.hScrollBar.Scroll += new ScrollEventHandler(this.HScrollBar_Scroll);
             // 
             // buttonAdd
             // 
@@ -47,7 +47,7 @@
             this.buttonAdd.Size = new System.Drawing.Size(53, 17);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "Add...";
-            this.buttonAdd.Click += this.ButtonAdd_Click;
+            this.buttonAdd.Click += new EventHandler(this.ButtonAdd_Click);
             // 
             // buttonDelete
             // 
@@ -56,7 +56,7 @@
             this.buttonDelete.Size = new System.Drawing.Size(53, 17);
             this.buttonDelete.TabIndex = 1;
             this.buttonDelete.Text = "Delete";
-            this.buttonDelete.Click += this.ButtonDelete_Click;
+            this.buttonDelete.Click += new EventHandler(this.ButtonDelete_Click);
             // 
             // openFileDialog
             // 
@@ -69,6 +69,9 @@
             this.Controls.Add(this.buttonAdd);
             this.Controls.Add(this.panelIcons);
             this.Controls.Add(this.buttonDelete);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.Name = "SelectTripPlanIcon";
             this.Size = new System.Drawing.Size(248, 86);
             this.panelIcons.ResumeLayout(false);

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -92,6 +93,9 @@ namespace Gui.Wizard {
             // 
             // Header
             // 
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CausesValidation = false;
             this.Controls.Add(this.pnl3dDark);
@@ -99,7 +103,7 @@ namespace Gui.Wizard {
             this.Controls.Add(this.pnlDockPadding);
             this.Name = "Header";
             this.Size = new System.Drawing.Size(324, 64);
-            this.SizeChanged += this.Header_SizeChanged;
+            this.SizeChanged += new EventHandler(this.Header_SizeChanged);
             this.pnlDockPadding.ResumeLayout(false);
             this.ResumeLayout(false);
         }

@@ -63,7 +63,7 @@
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 3;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

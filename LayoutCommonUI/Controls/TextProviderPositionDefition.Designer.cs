@@ -55,7 +55,7 @@
             this.radioButtonCustomPosition.Size = new System.Drawing.Size(132, 16);
             this.radioButtonCustomPosition.TabIndex = 3;
             this.radioButtonCustomPosition.Text = "Custom Position:";
-            this.radioButtonCustomPosition.CheckedChanged += this.RadioButtonCustomPosition_CheckedChanged;
+            this.radioButtonCustomPosition.CheckedChanged += new EventHandler(this.RadioButtonCustomPosition_CheckedChanged);
             // 
             // radioButtonStandardPosition
             // 
@@ -64,7 +64,7 @@
             this.radioButtonStandardPosition.Size = new System.Drawing.Size(116, 16);
             this.radioButtonStandardPosition.TabIndex = 3;
             this.radioButtonStandardPosition.Text = "Standard Position:";
-            this.radioButtonStandardPosition.CheckedChanged += this.RadioButtonStandardPosition_CheckedChanged;
+            this.radioButtonStandardPosition.CheckedChanged += new EventHandler(this.RadioButtonStandardPosition_CheckedChanged);
             // 
             // TextProviderPositionDefinition
             // 
@@ -72,6 +72,9 @@
             this.Name = "TextProviderPositionDefinition";
             this.Size = new System.Drawing.Size(320, 171);
             this.groupBoxPosition.ResumeLayout(false);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

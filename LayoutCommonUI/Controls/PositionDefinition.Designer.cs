@@ -48,7 +48,7 @@
             this.numericUpDownWidth.Name = "numericUpDownWidth";
             this.numericUpDownWidth.Size = new System.Drawing.Size(52, 20);
             this.numericUpDownWidth.TabIndex = 5;
-            this.numericUpDownWidth.ValueChanged += this.NumericUpDownWidth_ValueChanged;
+            this.numericUpDownWidth.ValueChanged += new EventHandler(this.NumericUpDownWidth_ValueChanged);
             // 
             // labelPosition
             // 
@@ -68,7 +68,7 @@
             this.enumComboBoxAlignment.Name = "enumComboBoxAlignment";
             this.enumComboBoxAlignment.Size = new System.Drawing.Size(84, 21);
             this.enumComboBoxAlignment.TabIndex = 7;
-            this.enumComboBoxAlignment.SelectedIndexChanged += this.EnumComboBoxAlignment_SelectedIndexChanged;
+            this.enumComboBoxAlignment.SelectedIndexChanged += new EventHandler(this.EnumComboBoxAlignment_SelectedIndexChanged);
             // 
             // enumComboBoxPosition
             // 
@@ -79,7 +79,7 @@
             this.enumComboBoxPosition.Name = "enumComboBoxPosition";
             this.enumComboBoxPosition.Size = new System.Drawing.Size(84, 21);
             this.enumComboBoxPosition.TabIndex = 6;
-            this.enumComboBoxPosition.SelectedIndexChanged += this.EnumComboBoxPosition_SelectedIndexChanged;
+            this.enumComboBoxPosition.SelectedIndexChanged += new EventHandler(this.EnumComboBoxPosition_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -105,7 +105,7 @@
             this.numericUpDownDistance.Name = "numericUpDownDistance";
             this.numericUpDownDistance.Size = new System.Drawing.Size(52, 20);
             this.numericUpDownDistance.TabIndex = 5;
-            this.numericUpDownDistance.ValueChanged += this.NumericUpDownDistance_ValueChanged;
+            this.numericUpDownDistance.ValueChanged += new EventHandler(this.NumericUpDownDistance_ValueChanged);
             // 
             // PositionDefinition
             // 
@@ -118,6 +118,9 @@
             this.Controls.Add(this.labelDistance);
             this.Controls.Add(this.labelAlignment);
             this.Controls.Add(this.labelPosition);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.Name = "PositionDefinition";
             this.Size = new System.Drawing.Size(272, 104);
             ((System.ComponentModel.ISupportInitialize)this.numericUpDownWidth).EndInit();

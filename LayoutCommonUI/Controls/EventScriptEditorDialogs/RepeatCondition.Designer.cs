@@ -39,7 +39,7 @@
                                                                              0,
                                                                              0,
                                                                              0});
-            this.numericUpDownCount.Enter += this.NumericUpDownCount_Enter;
+            this.numericUpDownCount.Enter += new EventHandler(this.NumericUpDownCount_Enter);
             // 
             // label2
             // 
@@ -57,7 +57,7 @@
             this.buttonOk.Size = new System.Drawing.Size(64, 23);
             this.buttonOk.TabIndex = 4;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.ButtonOk_Click;
+            this.buttonOk.Click += new EventHandler(this.ButtonOk_Click);
             // 
             // buttonCancel
             // 

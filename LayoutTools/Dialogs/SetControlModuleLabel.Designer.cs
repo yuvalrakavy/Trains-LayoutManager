@@ -42,7 +42,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -57,6 +57,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(272, 102);
             this.ControlBox = false;

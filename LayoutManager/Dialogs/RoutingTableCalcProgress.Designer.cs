@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace LayoutManager.Dialogs {
@@ -39,12 +40,13 @@ namespace LayoutManager.Dialogs {
             this.buttonAbort.Name = "buttonAbort";
             this.buttonAbort.TabIndex = 2;
             this.buttonAbort.Text = "&Abort";
-            this.buttonAbort.Click += this.ButtonAbort_Click;
+            this.buttonAbort.Click += new EventHandler(this.ButtonAbort_Click);
             // 
             // RoutingTableCalcProgress
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(304, 110);
             this.ControlBox = false;
             this.Controls.Add(this.buttonAbort);
@@ -54,7 +56,7 @@ namespace LayoutManager.Dialogs {
             this.Name = "RoutingTableCalcProgress";
             this.ShowInTaskbar = false;
             this.Text = "Generating Routing Tables...";
-            this.Closed += this.RoutingTableCalcProgress_Closed;
+            this.Closed += new EventHandler(this.RoutingTableCalcProgress_Closed);
             this.ResumeLayout(false);
         }
         #endregion

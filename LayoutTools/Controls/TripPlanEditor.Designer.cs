@@ -67,7 +67,7 @@ namespace LayoutManager.Tools.Controls {
             // menuItemEditDestination
             // 
             this.menuItemEditDestination.Text = "&Destination...";
-            this.menuItemEditDestination.Click += this.MenuItemEditDestination_Click;
+            this.menuItemEditDestination.Click += new EventHandler(this.MenuItemEditDestination_Click);
             // 
             // menuItemEditDirection
             // 
@@ -79,23 +79,23 @@ namespace LayoutManager.Tools.Controls {
             // menuItemEditDirectionForward
             // 
             this.menuItemEditDirectionForward.Text = "&Forward";
-            this.menuItemEditDirectionForward.Click += this.MenuItemEditDirectionForward_Click;
+            this.menuItemEditDirectionForward.Click += new EventHandler(this.MenuItemEditDirectionForward_Click);
             // 
             // menuItemEditDirectionBackward
             // 
             this.menuItemEditDirectionBackward.Text = "&Backward";
-            this.menuItemEditDirectionBackward.Click += this.MenuItemEditDirectionBackward_Click;
+            this.menuItemEditDirectionBackward.Click += new EventHandler(this.MenuItemEditDirectionBackward_Click);
             // 
             // menuItemEditStartCondition
             // 
             this.menuItemEditStartCondition.Text = "Start &Condition";
-            this.menuItemEditStartCondition.Click += this.MenuItemEditStartCondition_Click;
-            this.menuItemEditStartCondition.DropDownOpening += this.MenuItemEditStartCondition_Popup;
+            this.menuItemEditStartCondition.Click += new EventHandler(this.MenuItemEditStartCondition_Click);
+            this.menuItemEditStartCondition.DropDownOpening += new EventHandler(this.MenuItemEditStartCondition_Popup);
             // 
             // menuItemEditDriverInstructions
             // 
             this.menuItemEditDriverInstructions.Text = "Driver &Instructions";
-            this.menuItemEditDriverInstructions.Click += this.MenuItemEditDriverInstructions_Click;
+            this.menuItemEditDriverInstructions.Click += new EventHandler(this.MenuItemEditDriverInstructions_Click);
             // 
             // menuItemGoAutoDriver
             // 
@@ -116,7 +116,7 @@ namespace LayoutManager.Tools.Controls {
             this.checkBoxTripPlanCircular.TabIndex = 2;
             this.checkBoxTripPlanCircular.Text = "Trip plan is circular";
             this.checkBoxTripPlanCircular.ViewOnly = false;
-            this.checkBoxTripPlanCircular.Click += this.UpdateButtons;
+            this.checkBoxTripPlanCircular.Click += new EventHandler(this.UpdateButtons);
             // 
             // groupBoxWayPoints
             // 
@@ -145,7 +145,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonWayPointMoveDown.Name = "buttonWayPointMoveDown";
             this.buttonWayPointMoveDown.Size = new System.Drawing.Size(24, 20);
             this.buttonWayPointMoveDown.TabIndex = 4;
-            this.buttonWayPointMoveDown.Click += this.ButtonWayPointMoveDown_Click;
+            this.buttonWayPointMoveDown.Click += new EventHandler(this.ButtonWayPointMoveDown_Click);
             // 
             // buttonWayPointMoveUp
             // 
@@ -156,7 +156,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonWayPointMoveUp.Name = "buttonWayPointMoveUp";
             this.buttonWayPointMoveUp.Size = new System.Drawing.Size(24, 20);
             this.buttonWayPointMoveUp.TabIndex = 5;
-            this.buttonWayPointMoveUp.Click += this.ButtonWayPointMoveUp_Click;
+            this.buttonWayPointMoveUp.Click += new EventHandler(this.ButtonWayPointMoveUp_Click);
             // 
             // buttonAddWaypoint
             // 
@@ -166,7 +166,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonAddWaypoint.Size = new System.Drawing.Size(56, 20);
             this.buttonAddWaypoint.TabIndex = 1;
             this.buttonAddWaypoint.Text = "&Add";
-            this.buttonAddWaypoint.Click += this.ButtonAddWaypoint_Click;
+            this.buttonAddWaypoint.Click += new EventHandler(this.ButtonAddWaypoint_Click);
             // 
             // buttonEditWaypoint
             // 
@@ -176,7 +176,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonEditWaypoint.Size = new System.Drawing.Size(56, 20);
             this.buttonEditWaypoint.TabIndex = 2;
             this.buttonEditWaypoint.Text = "&Edit";
-            this.buttonEditWaypoint.Click += this.ButtonEditWaypoint_Click;
+            this.buttonEditWaypoint.Click += new EventHandler(this.ButtonEditWaypoint_Click);
             // 
             // buttonRemoveWaypoint
             // 
@@ -186,7 +186,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonRemoveWaypoint.Size = new System.Drawing.Size(56, 20);
             this.buttonRemoveWaypoint.TabIndex = 3;
             this.buttonRemoveWaypoint.Text = "&Remove";
-            this.buttonRemoveWaypoint.Click += this.ButtonRemoveWaypoint_Click;
+            this.buttonRemoveWaypoint.Click += new EventHandler(this.ButtonRemoveWaypoint_Click);
             // 
             // listViewWayPoints
             // 
@@ -210,8 +210,8 @@ namespace LayoutManager.Tools.Controls {
             this.listViewWayPoints.TabIndex = 0;
             this.listViewWayPoints.UseCompatibleStateImageBehavior = false;
             this.listViewWayPoints.View = System.Windows.Forms.View.Details;
-            this.listViewWayPoints.DoubleClick += this.ListViewWayPoints_DoubleClick;
-            this.listViewWayPoints.SelectedIndexChanged += this.ListViewWayPoints_SelectedIndexChanged;
+            this.listViewWayPoints.DoubleClick += new EventHandler(this.ListViewWayPoints_DoubleClick);
+            this.listViewWayPoints.SelectedIndexChanged += new EventHandler(this.ListViewWayPoints_SelectedIndexChanged);
             // 
             // columnHeaderName
             // 

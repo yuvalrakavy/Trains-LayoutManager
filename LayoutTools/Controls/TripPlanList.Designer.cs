@@ -34,7 +34,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonChangeIcon.Size = new System.Drawing.Size(93, 20);
             this.buttonChangeIcon.TabIndex = 8;
             this.buttonChangeIcon.Text = "Change Icon...";
-            this.buttonChangeIcon.Click += this.ButtonChangeIcon_Click;
+            this.buttonChangeIcon.Click += new EventHandler(this.ButtonChangeIcon_Click);
             // 
             // buttonDelete
             // 
@@ -44,7 +44,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonDelete.Size = new System.Drawing.Size(71, 20);
             this.buttonDelete.TabIndex = 6;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.ButtonRemove_Click;
+            this.buttonDelete.Click += new EventHandler(this.ButtonRemove_Click);
             // 
             // listViewTripPlans
             // 
@@ -57,8 +57,8 @@ namespace LayoutManager.CommonUI.Controls {
             this.listViewTripPlans.Name = "listViewTripPlans";
             this.listViewTripPlans.Size = new System.Drawing.Size(527, 160);
             this.listViewTripPlans.TabIndex = 5;
-            this.listViewTripPlans.AfterLabelEdit += this.ListViewTripPlans_AfterLabelEdit;
-            this.listViewTripPlans.SelectedIndexChanged += this.ListViewTripPlans_SelectedIndexChanged;
+            this.listViewTripPlans.AfterLabelEdit += new LabelEditEventHandler(this.ListViewTripPlans_AfterLabelEdit);
+            this.listViewTripPlans.SelectedIndexChanged += new EventHandler(this.ListViewTripPlans_SelectedIndexChanged);
             // 
             // buttonRename
             // 
@@ -68,7 +68,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonRename.Size = new System.Drawing.Size(71, 20);
             this.buttonRename.TabIndex = 7;
             this.buttonRename.Text = "&Rename";
-            this.buttonRename.Click += this.ButtonRename_Click;
+            this.buttonRename.Click += new EventHandler(this.ButtonRename_Click);
             // 
             // buttonDuplicate
             // 
@@ -78,7 +78,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonDuplicate.Size = new System.Drawing.Size(64, 20);
             this.buttonDuplicate.TabIndex = 9;
             this.buttonDuplicate.Text = "D&uplicate";
-            this.buttonDuplicate.Click += this.ButtonDuplicate_Click;
+            this.buttonDuplicate.Click += new EventHandler(this.ButtonDuplicate_Click);
             // 
             // imageListState
             // 
@@ -97,6 +97,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.Size = new System.Drawing.Size(536, 192);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

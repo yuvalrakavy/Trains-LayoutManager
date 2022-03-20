@@ -35,8 +35,8 @@
             this.listViewAttributes.Size = new System.Drawing.Size(240, 160);
             this.listViewAttributes.TabIndex = 0;
             this.listViewAttributes.View = System.Windows.Forms.View.Details;
-            this.listViewAttributes.DoubleClick += this.ButtonEdit_Click;
-            this.listViewAttributes.SelectedIndexChanged += this.UpdateButtons;
+            this.listViewAttributes.DoubleClick += new System.EventHandler(this.ButtonEdit_Click);
+            this.listViewAttributes.SelectedIndexChanged += new System.EventHandler(this.UpdateButtons);
             // 
             // columnHeaderName
             // 
@@ -61,7 +61,7 @@
             this.buttonAdd.Size = new System.Drawing.Size(56, 20);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += this.ButtonAdd_Click;
+            this.buttonAdd.Click += new System.EventHandler(this.ButtonAdd_Click);
             // 
             // buttonEdit
             // 
@@ -71,7 +71,7 @@
             this.buttonEdit.Size = new System.Drawing.Size(56, 20);
             this.buttonEdit.TabIndex = 1;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += this.ButtonEdit_Click;
+            this.buttonEdit.Click += new System.EventHandler(this.ButtonEdit_Click);
             // 
             // buttonRemove
             // 
@@ -81,7 +81,7 @@
             this.buttonRemove.Size = new System.Drawing.Size(56, 20);
             this.buttonRemove.TabIndex = 1;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += this.ButtonRemove_Click;
+            this.buttonRemove.Click += new System.EventHandler(this.ButtonRemove_Click);
             // 
             // AttributesEditor
             // 

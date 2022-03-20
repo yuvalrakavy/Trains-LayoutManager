@@ -135,7 +135,7 @@ namespace LayoutEventDebugger {
             this.buttonSendEvent.Size = new System.Drawing.Size(80, 23);
             this.buttonSendEvent.TabIndex = 13;
             this.buttonSendEvent.Text = "Send &Event";
-            this.buttonSendEvent.Click += this.ButtonSendEvent_Click;
+            this.buttonSendEvent.Click += new EventHandler(this.ButtonSendEvent_Click);
             // 
             // tabPageEvent
             // 
@@ -164,7 +164,7 @@ namespace LayoutEventDebugger {
             this.buttonUnsubscribe.Size = new System.Drawing.Size(80, 23);
             this.buttonUnsubscribe.TabIndex = 11;
             this.buttonUnsubscribe.Text = "&Unsubscribe";
-            this.buttonUnsubscribe.Click += this.ButtonUnsubscribe_Click;
+            this.buttonUnsubscribe.Click += new EventHandler(this.ButtonUnsubscribe_Click);
             // 
             // buttonSubscribe
             // 
@@ -173,7 +173,7 @@ namespace LayoutEventDebugger {
             this.buttonSubscribe.Size = new System.Drawing.Size(80, 23);
             this.buttonSubscribe.TabIndex = 10;
             this.buttonSubscribe.Text = "&Subscribe";
-            this.buttonSubscribe.Click += this.ButtonSubscribe_Click;
+            this.buttonSubscribe.Click += new EventHandler(this.ButtonSubscribe_Click);
             // 
             // labelSubscriptionStatus
             // 

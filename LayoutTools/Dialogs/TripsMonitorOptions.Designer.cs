@@ -29,7 +29,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.checkBoxEnableAutoClear.Size = new System.Drawing.Size(216, 24);
             this.checkBoxEnableAutoClear.TabIndex = 0;
             this.checkBoxEnableAutoClear.Text = "Automatically clear completed trips";
-            this.checkBoxEnableAutoClear.CheckedChanged += this.UpdateButtons;
+            this.checkBoxEnableAutoClear.CheckedChanged += new EventHandler(this.UpdateButtons);
             // 
             // labelAutoClear1
             // 
@@ -67,7 +67,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.TabIndex = 4;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.ButtonOk_Click;
+            this.buttonOk.Click += new EventHandler(this.ButtonOk_Click);
             // 
             // buttonCancel
             // 
@@ -75,7 +75,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // TripsMonitorOptions
             // 

@@ -40,7 +40,7 @@
             this.buttonDeleteElement.Size = new System.Drawing.Size(24, 24);
             this.buttonDeleteElement.TabIndex = 3;
             this.toolTips.SetToolTip(this.buttonDeleteElement, "Delete element");
-            this.buttonDeleteElement.Click += this.ButtonDeleteElement_Click;
+            this.buttonDeleteElement.Click += new EventHandler(this.ButtonDeleteElement_Click);
             // 
             // imageListButtons
             // 
@@ -69,7 +69,7 @@
             this.listViewAttributes.Size = new System.Drawing.Size(110, 136);
             this.listViewAttributes.TabIndex = 5;
             this.listViewAttributes.View = System.Windows.Forms.View.Details;
-            this.listViewAttributes.DoubleClick += this.ButtonEditAttribute_Click;
+            this.listViewAttributes.DoubleClick += new EventHandler(this.ButtonEditAttribute_Click);
             // 
             // columnHeaderAttributeName
             // 
@@ -87,7 +87,7 @@
             this.buttonEditAttribute.Size = new System.Drawing.Size(24, 24);
             this.buttonEditAttribute.TabIndex = 7;
             this.toolTips.SetToolTip(this.buttonEditAttribute, "Edit attribute value");
-            this.buttonEditAttribute.Click += this.ButtonEditAttribute_Click;
+            this.buttonEditAttribute.Click += new EventHandler(this.ButtonEditAttribute_Click);
             // 
             // buttonNewElement
             // 
@@ -100,7 +100,7 @@
             this.buttonNewElement.Size = new System.Drawing.Size(24, 24);
             this.buttonNewElement.TabIndex = 1;
             this.toolTips.SetToolTip(this.buttonNewElement, "Add element");
-            this.buttonNewElement.Click += this.ButtonNewElement_Click;
+            this.buttonNewElement.Click += new EventHandler(this.ButtonNewElement_Click);
             // 
             // buttonEditElement
             // 
@@ -113,7 +113,7 @@
             this.buttonEditElement.Size = new System.Drawing.Size(24, 24);
             this.buttonEditElement.TabIndex = 2;
             this.toolTips.SetToolTip(this.buttonEditElement, "Edit element value");
-            this.buttonEditElement.Click += this.ButtonEditElement_Click;
+            this.buttonEditElement.Click += new EventHandler(this.ButtonEditElement_Click);
             // 
             // buttonNewAttribute
             // 
@@ -126,7 +126,7 @@
             this.buttonNewAttribute.Size = new System.Drawing.Size(24, 24);
             this.buttonNewAttribute.TabIndex = 6;
             this.toolTips.SetToolTip(this.buttonNewAttribute, "Add new attribute");
-            this.buttonNewAttribute.Click += this.ButtonNewAttribute_Click;
+            this.buttonNewAttribute.Click += new EventHandler(this.ButtonNewAttribute_Click);
             // 
             // buttonDeleteAttribute
             // 
@@ -139,7 +139,7 @@
             this.buttonDeleteAttribute.Size = new System.Drawing.Size(24, 24);
             this.buttonDeleteAttribute.TabIndex = 8;
             this.toolTips.SetToolTip(this.buttonDeleteAttribute, "Delete attribute");
-            this.buttonDeleteAttribute.Click += this.ButtonDeleteAttribute_Click;
+            this.buttonDeleteAttribute.Click += new EventHandler(this.ButtonDeleteAttribute_Click);
             // 
             // treeViewElements
             // 
@@ -151,13 +151,13 @@
             this.treeViewElements.SelectedImageIndex = -1;
             this.treeViewElements.Size = new System.Drawing.Size(116, 164);
             this.treeViewElements.TabIndex = 0;
-            this.treeViewElements.DoubleClick += this.ButtonEditElement_Click;
-            this.treeViewElements.AfterSelect += this.TreeViewElements_AfterSelect;
+            this.treeViewElements.DoubleClick += new EventHandler(this.ButtonEditElement_Click);
+            this.treeViewElements.AfterSelect += new TreeViewEventHandler(this.TreeViewElements_AfterSelect);
             // 
             // menuItemText
             // 
             this.menuItemText.Text = "Text";
-            this.menuItemText.Click += this.MenuItemText_Click;
+            this.menuItemText.Click += new EventHandler(this.MenuItemText_Click);
             // 
             // contextMenuAddElement
             // 
@@ -168,7 +168,7 @@
             // menuItemAddElement
             // 
             this.menuItemAddElement.Text = "Element";
-            this.menuItemAddElement.Click += this.MenuItemAddElement_Click;
+            this.menuItemAddElement.Click += new EventHandler(this.MenuItemAddElement_Click);
             // 
             // labelElementAttributes
             // 
@@ -192,6 +192,9 @@
                                                                           this.buttonDeleteElement});
             this.Name = "XmlInfoEditor";
             this.Size = new System.Drawing.Size(248, 212);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

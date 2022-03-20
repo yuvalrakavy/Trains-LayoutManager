@@ -77,7 +77,7 @@
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.TabIndex = 3;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.ButtonOk_Click;
+            this.buttonOk.Click += new System.EventHandler(this.ButtonOk_Click);
             // 
             // buttonCancel
             // 
@@ -86,7 +86,7 @@
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // IfCondition
             // 

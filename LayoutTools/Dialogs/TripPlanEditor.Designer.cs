@@ -30,7 +30,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSaveTripPlan.Size = new System.Drawing.Size(56, 20);
             this.buttonSaveTripPlan.TabIndex = 3;
             this.buttonSaveTripPlan.Text = "&Save";
-            this.buttonSaveTripPlan.Click += this.ButtonSaveTripPlan_Click;
+            this.buttonSaveTripPlan.Click += new EventHandler(this.ButtonSaveTripPlan_Click);
             // 
             // buttonGo
             // 
@@ -40,7 +40,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonGo.Size = new System.Drawing.Size(32, 20);
             this.buttonGo.TabIndex = 4;
             this.buttonGo.Text = "&Go";
-            this.buttonGo.Click += this.ButtonGo_Click;
+            this.buttonGo.Click += new EventHandler(this.ButtonGo_Click);
             // 
             // buttonCancel
             // 
@@ -51,7 +51,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(48, 20);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // tripPlanEditor1
             // 
@@ -69,7 +69,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.tripPlanEditor1.TripPlan = null;
             this.tripPlanEditor1.TripPlanName = null;
             this.tripPlanEditor1.ViewOnly = false;
-            this.tripPlanEditor1.WayPointCountChanged += this.UpdateButtons;
+            this.tripPlanEditor1.WayPointCountChanged += new EventHandler(this.UpdateButtons);
             // 
             // trainDriverComboBox
             // 
@@ -96,6 +96,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.AcceptButton = this.buttonGo;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(480, 246);
             this.Controls.Add(this.label1);
@@ -107,8 +108,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.MinimumSize = new System.Drawing.Size(296, 184);
             this.Name = "TripPlanEditor";
             this.Text = "TripPlanEditor";
-            this.Closed += this.TripPlanEditor_Closed;
-            this.Closing += this.TripPlanEditor_Closing;
+            this.Closed += new EventHandler(this.TripPlanEditor_Closed);
+            this.Closing += new CancelEventHandler(this.TripPlanEditor_Closing);
             this.ResumeLayout(false);
         }
         #endregion

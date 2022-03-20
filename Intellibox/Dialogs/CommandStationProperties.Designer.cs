@@ -96,7 +96,7 @@ namespace Intellibox.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 8;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -114,7 +114,7 @@ namespace Intellibox.Dialogs {
             this.buttonSettings.Size = new System.Drawing.Size(75, 21);
             this.buttonSettings.TabIndex = 3;
             this.buttonSettings.Text = "Settings...";
-            this.buttonSettings.Click += this.ButtonSettings_Click;
+            this.buttonSettings.Click += new System.EventHandler(this.ButtonSettings_Click);
             // 
             // tabControl1
             // 
@@ -209,8 +209,8 @@ namespace Intellibox.Dialogs {
             this.listViewSO.TabIndex = 3;
             this.listViewSO.UseCompatibleStateImageBehavior = false;
             this.listViewSO.View = System.Windows.Forms.View.Details;
-            this.listViewSO.DoubleClick += this.ListViewSO_DoubleClick;
-            this.listViewSO.SelectedIndexChanged += this.ListViewSO_SelectedIndexChanged;
+            this.listViewSO.DoubleClick += new System.EventHandler(this.ListViewSO_DoubleClick);
+            this.listViewSO.SelectedIndexChanged += new System.EventHandler(this.ListViewSO_SelectedIndexChanged);
             // 
             // buttonSOdelete
             // 
@@ -221,7 +221,7 @@ namespace Intellibox.Dialogs {
             this.buttonSOdelete.TabIndex = 2;
             this.buttonSOdelete.Text = "&Delete";
             this.buttonSOdelete.UseVisualStyleBackColor = true;
-            this.buttonSOdelete.Click += this.ButtonSOdelete_Click;
+            this.buttonSOdelete.Click += new System.EventHandler(this.ButtonSOdelete_Click);
             // 
             // buttonSOedit
             // 
@@ -232,7 +232,7 @@ namespace Intellibox.Dialogs {
             this.buttonSOedit.TabIndex = 1;
             this.buttonSOedit.Text = "&Edit...";
             this.buttonSOedit.UseVisualStyleBackColor = true;
-            this.buttonSOedit.Click += this.ButtonSOedit_Click;
+            this.buttonSOedit.Click += new System.EventHandler(this.ButtonSOedit_Click);
             // 
             // buttonSOadd
             // 
@@ -243,7 +243,7 @@ namespace Intellibox.Dialogs {
             this.buttonSOadd.TabIndex = 0;
             this.buttonSOadd.Text = "&Add...";
             this.buttonSOadd.UseVisualStyleBackColor = true;
-            this.buttonSOadd.Click += this.ButtonSOadd_Click;
+            this.buttonSOadd.Click += new System.EventHandler(this.ButtonSOadd_Click);
             // 
             // label5
             // 
@@ -312,7 +312,7 @@ namespace Intellibox.Dialogs {
             this.groupBox2.Size = new System.Drawing.Size(341, 51);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Feedback Debounce:";
+            this.groupBox2.Text = "Feedback De-bounce:";
             // 
             // label6
             // 
@@ -352,6 +352,7 @@ namespace Intellibox.Dialogs {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(382, 346);
             this.ControlBox = false;
             this.Controls.Add(this.tabControl1);

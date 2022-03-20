@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -46,7 +47,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonConditionEdit.Name = "buttonConditionEdit";
             this.buttonConditionEdit.TabIndex = 4;
             this.buttonConditionEdit.Text = "&Edit...";
-            this.buttonConditionEdit.Click += this.ButtonConditionEdit_Click;
+            this.buttonConditionEdit.Click += new EventHandler(this.ButtonConditionEdit_Click);
             // 
             // label1
             // 
@@ -116,7 +117,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // label2
             // 

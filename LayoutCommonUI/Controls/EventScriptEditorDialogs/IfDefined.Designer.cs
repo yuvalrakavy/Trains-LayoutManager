@@ -55,7 +55,7 @@
             this.checkBoxAttribute.Size = new System.Drawing.Size(72, 16);
             this.checkBoxAttribute.TabIndex = 2;
             this.checkBoxAttribute.Text = "Attribute:";
-            this.checkBoxAttribute.CheckedChanged += this.CheckBoxAttribute_CheckedChanged;
+            this.checkBoxAttribute.CheckedChanged += new System.EventHandler(this.CheckBoxAttribute_CheckedChanged);
             // 
             // comboBoxAttribute
             // 
@@ -63,7 +63,7 @@
             this.comboBoxAttribute.Name = "comboBoxAttribute";
             this.comboBoxAttribute.Size = new System.Drawing.Size(118, 21);
             this.comboBoxAttribute.TabIndex = 3;
-            this.comboBoxAttribute.DropDown += this.ComboBoxAttribute_DropDown;
+            this.comboBoxAttribute.DropDown += new System.EventHandler(this.ComboBoxAttribute_DropDown);
             // 
             // buttonOK
             // 
@@ -71,7 +71,7 @@
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

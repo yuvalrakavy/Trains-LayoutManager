@@ -73,7 +73,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // tabControl
             // 
@@ -121,7 +121,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOpenLeft.Size = new System.Drawing.Size(62, 24);
             this.radioButtonOpenLeft.TabIndex = 6;
             this.radioButtonOpenLeft.Text = "&Left";
-            this.radioButtonOpenLeft.CheckedChanged += this.GateOpenDirectionChanged;
+            this.radioButtonOpenLeft.CheckedChanged += new EventHandler(this.GateOpenDirectionChanged);
             // 
             // radioButtonOpenRight
             // 
@@ -131,7 +131,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOpenRight.Size = new System.Drawing.Size(72, 24);
             this.radioButtonOpenRight.TabIndex = 5;
             this.radioButtonOpenRight.Text = "&Right";
-            this.radioButtonOpenRight.CheckedChanged += this.GateOpenDirectionChanged;
+            this.radioButtonOpenRight.CheckedChanged += new EventHandler(this.GateOpenDirectionChanged);
             // 
             // radioButtonOpenDown
             // 
@@ -141,7 +141,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOpenDown.Size = new System.Drawing.Size(75, 24);
             this.radioButtonOpenDown.TabIndex = 4;
             this.radioButtonOpenDown.Text = "&Down";
-            this.radioButtonOpenDown.CheckedChanged += this.GateOpenDirectionChanged;
+            this.radioButtonOpenDown.CheckedChanged += new EventHandler(this.GateOpenDirectionChanged);
             // 
             // panelGatePreview
             // 
@@ -149,7 +149,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.panelGatePreview.Name = "panelGatePreview";
             this.panelGatePreview.Size = new System.Drawing.Size(70, 70);
             this.panelGatePreview.TabIndex = 3;
-            this.panelGatePreview.Paint += this.PanelGatePreview_Paint;
+            this.panelGatePreview.Paint += new PaintEventHandler(this.PanelGatePreview_Paint);
             // 
             // radioButtonOpenUp
             // 
@@ -159,7 +159,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOpenUp.Size = new System.Drawing.Size(55, 24);
             this.radioButtonOpenUp.TabIndex = 2;
             this.radioButtonOpenUp.Text = "&Up";
-            this.radioButtonOpenUp.CheckedChanged += this.GateOpenDirectionChanged;
+            this.radioButtonOpenUp.CheckedChanged += new EventHandler(this.GateOpenDirectionChanged);
             // 
             // nameDefinition
             // 
@@ -236,7 +236,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonTwoRelays.TabStop = true;
             this.radioButtonTwoRelays.Text = "Two relays";
             this.radioButtonTwoRelays.UseVisualStyleBackColor = true;
-            this.radioButtonTwoRelays.CheckedChanged += this.DirectionControlChanged;
+            this.radioButtonTwoRelays.CheckedChanged += new EventHandler(this.DirectionControlChanged);
             // 
             // radioButtonSingleRelay
             // 
@@ -248,7 +248,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonSingleRelay.TabStop = true;
             this.radioButtonSingleRelay.Text = "Single relay";
             this.radioButtonSingleRelay.UseVisualStyleBackColor = true;
-            this.radioButtonSingleRelay.CheckedChanged += this.DirectionControlChanged;
+            this.radioButtonSingleRelay.CheckedChanged += new EventHandler(this.DirectionControlChanged);
             // 
             // tabPageFeedback
             // 
@@ -312,7 +312,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonNoFeedback.TabStop = true;
             this.radioButtonNoFeedback.Text = "No feedback";
             this.radioButtonNoFeedback.UseVisualStyleBackColor = true;
-            this.radioButtonNoFeedback.CheckedChanged += this.RadioButtonFeedback_CheckedChanged;
+            this.radioButtonNoFeedback.CheckedChanged += new EventHandler(this.RadioButtonFeedback_CheckedChanged);
             // 
             // radioButtonOneSensor
             // 
@@ -324,7 +324,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOneSensor.TabStop = true;
             this.radioButtonOneSensor.Text = "One sensor (gate motion done)";
             this.radioButtonOneSensor.UseVisualStyleBackColor = true;
-            this.radioButtonOneSensor.CheckedChanged += this.RadioButtonFeedback_CheckedChanged;
+            this.radioButtonOneSensor.CheckedChanged += new EventHandler(this.RadioButtonFeedback_CheckedChanged);
             // 
             // radioButtonTwoSensors
             // 
@@ -336,7 +336,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonTwoSensors.TabStop = true;
             this.radioButtonTwoSensors.Text = "Separate Opened/Closed sensors";
             this.radioButtonTwoSensors.UseVisualStyleBackColor = true;
-            this.radioButtonTwoSensors.CheckedChanged += this.RadioButtonFeedback_CheckedChanged;
+            this.radioButtonTwoSensors.CheckedChanged += new EventHandler(this.RadioButtonFeedback_CheckedChanged);
             // 
             // label3
             // 

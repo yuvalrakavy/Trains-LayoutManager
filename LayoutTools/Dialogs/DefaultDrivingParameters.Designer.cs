@@ -151,7 +151,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -160,7 +160,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // groupBox4
             // 

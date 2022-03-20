@@ -22,7 +22,7 @@
             this.checkBoxVisible.Size = new System.Drawing.Size(64, 24);
             this.checkBoxVisible.TabIndex = 2;
             this.checkBoxVisible.Text = "Visible";
-            this.checkBoxVisible.CheckedChanged += this.CheckBoxVisible_CheckedChanged;
+            this.checkBoxVisible.CheckedChanged += new EventHandler(this.CheckBoxVisible_CheckedChanged);
             // 
             // textBoxName
             // 
@@ -40,7 +40,7 @@
             this.buttonSettings.Name = "buttonSettings";
             this.buttonSettings.TabIndex = 3;
             this.buttonSettings.Text = "Settings...";
-            this.buttonSettings.Click += this.ButtonSettings_Click;
+            this.buttonSettings.Click += new EventHandler(this.ButtonSettings_Click);
             // 
             // labelName
             // 

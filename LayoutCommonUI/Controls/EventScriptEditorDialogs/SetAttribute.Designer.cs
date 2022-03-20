@@ -73,7 +73,7 @@
             this.comboBoxAttribute.Name = "comboBoxAttribute";
             this.comboBoxAttribute.Size = new System.Drawing.Size(139, 21);
             this.comboBoxAttribute.TabIndex = 0;
-            this.comboBoxAttribute.DropDown += this.ComboBoxAttribute_DropDown;
+            this.comboBoxAttribute.DropDown += new EventHandler(this.ComboBoxAttribute_DropDown);
             // 
             // groupBox2
             // 
@@ -148,7 +148,7 @@
             this.linkMenuType.TabStop = true;
             this.linkMenuType.Text = "Text";
             this.linkMenuType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuType.ValueChanged += this.LinkMenuType_ValueChanged;
+            this.linkMenuType.ValueChanged += new EventHandler(this.LinkMenuType_ValueChanged);
             // 
             // buttonOK
             // 
@@ -156,7 +156,7 @@
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

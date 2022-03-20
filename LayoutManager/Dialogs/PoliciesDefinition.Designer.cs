@@ -45,7 +45,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 2;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // tabControlStartCondition
             // 
@@ -123,7 +123,7 @@ namespace LayoutManager.Dialogs {
             this.buttonExport.TabIndex = 1;
             this.buttonExport.Text = "Export...";
             this.buttonExport.UseVisualStyleBackColor = true;
-            this.buttonExport.Click += this.ButtonExport_Click;
+            this.buttonExport.Click += new EventHandler(this.ButtonExport_Click);
             // 
             // globalPolicyListGlobal
             // 
@@ -203,12 +203,13 @@ namespace LayoutManager.Dialogs {
             this.buttonImport.TabIndex = 3;
             this.buttonImport.Text = "Import...";
             this.buttonImport.UseVisualStyleBackColor = true;
-            this.buttonImport.Click += this.ButtonImport_Click;
+            this.buttonImport.Click += new EventHandler(this.ButtonImport_Click);
             // 
             // PoliciesDefinition
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(400, 270);
             this.ControlBox = false;
             this.Controls.Add(this.buttonImport);
@@ -218,8 +219,8 @@ namespace LayoutManager.Dialogs {
             this.Name = "PoliciesDefinition";
             this.ShowInTaskbar = false;
             this.Text = "Script Definitions";
-            this.Closed += this.PoliciesDefinition_Closed;
-            this.Closing += this.PoliciesDefinition_Closing;
+            this.Closed += new EventHandler(this.PoliciesDefinition_Closed);
+            this.Closing += new CancelEventHandler(this.PoliciesDefinition_Closing);
             this.tabControlStartCondition.ResumeLayout(false);
             this.tabPageGlobal.ResumeLayout(false);
             this.tabPageBlock.ResumeLayout(false);

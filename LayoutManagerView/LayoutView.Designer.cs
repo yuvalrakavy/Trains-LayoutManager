@@ -1,4 +1,6 @@
-﻿namespace LayoutManager.View {
+﻿using System;
+
+namespace LayoutManager.View {
     partial class LayoutView {
         private System.ComponentModel.IContainer components;
 
@@ -36,7 +38,7 @@
             this.vScrollBar.Name = "vScrollBar";
             this.vScrollBar.Size = new System.Drawing.Size(16, 134);
             this.vScrollBar.TabIndex = 1;
-            this.vScrollBar.Scroll += this.VScrollBar_Scroll;
+            this.vScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.VScrollBar_Scroll);
             // 
             // hScrollBar
             // 
@@ -45,12 +47,12 @@
             this.hScrollBar.Name = "hScrollBar";
             this.hScrollBar.Size = new System.Drawing.Size(150, 16);
             this.hScrollBar.TabIndex = 0;
-            this.hScrollBar.Scroll += this.HScrollBar_Scroll;
+            this.hScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.HScrollBar_Scroll);
             // 
             // timerScrollForDrop
             // 
             this.timerScrollForDrop.Interval = 250;
-            this.timerScrollForDrop.Tick += this.TimerScrollForDrop_Tick;
+            this.timerScrollForDrop.Tick += new EventHandler(this.TimerScrollForDrop_Tick);
             // 
             // LayoutView
             // 
@@ -58,9 +60,9 @@
             this.Controls.Add(this.vScrollBar);
             this.Controls.Add(this.hScrollBar);
             this.Name = E_LayoutView;
-            this.Resize += this.LayoutView_Resize;
-            this.MouseEnter += this.LayoutView_MouseEnter;
-            this.KeyDown += this.LayoutView_KeyDown;
+            this.Resize += new EventHandler(this.LayoutView_Resize);
+            this.MouseEnter += new EventHandler(this.LayoutView_MouseEnter);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LayoutView_KeyDown);
             this.ResumeLayout(false);
         }
         #endregion

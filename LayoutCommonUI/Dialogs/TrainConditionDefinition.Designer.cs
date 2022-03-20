@@ -37,7 +37,7 @@
             this.buttonOK.Size = new System.Drawing.Size(56, 23);
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -48,7 +48,7 @@
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // radioButtonNoCondition
             // 
@@ -56,7 +56,7 @@
             this.radioButtonNoCondition.Name = "radioButtonNoCondition";
             this.radioButtonNoCondition.TabIndex = 6;
             this.radioButtonNoCondition.Text = "No condition";
-            this.radioButtonNoCondition.CheckedChanged += this.RadioButtonNoCondition_CheckedChanged;
+            this.radioButtonNoCondition.CheckedChanged += new EventHandler(this.RadioButtonNoCondition_CheckedChanged);
             // 
             // radioButtonCondition
             // 
@@ -64,7 +64,7 @@
             this.radioButtonCondition.Name = "radioButtonCondition";
             this.radioButtonCondition.Size = new System.Drawing.Size(16, 24);
             this.radioButtonCondition.TabIndex = 7;
-            this.radioButtonCondition.CheckedChanged += this.RadioButtonCondition_CheckedChanged;
+            this.radioButtonCondition.CheckedChanged += new EventHandler(this.RadioButtonCondition_CheckedChanged);
             // 
             // linkMenuConditionScope
             // 

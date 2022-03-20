@@ -42,7 +42,7 @@ namespace LayoutManager.Dialogs {
             this.buttonDelete.Size = new Size(72, 23);
             this.buttonDelete.TabIndex = 4;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.ButtonDelete_Click;
+            this.buttonDelete.Click += new EventHandler(this.ButtonDelete_Click);
             // 
             // buttonEdit
             // 
@@ -51,7 +51,7 @@ namespace LayoutManager.Dialogs {
             this.buttonEdit.Size = new Size(72, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += this.ButtonEdit_Click;
+            this.buttonEdit.Click += new EventHandler(this.ButtonEdit_Click);
             // 
             // buttonClose
             // 
@@ -60,7 +60,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Size = new Size(72, 23);
             this.buttonClose.TabIndex = 5;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // buttonAdd
             // 
@@ -69,7 +69,7 @@ namespace LayoutManager.Dialogs {
             this.buttonAdd.Size = new Size(72, 23);
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&New";
-            this.buttonAdd.Click += this.ButtonAdd_Click;
+            this.buttonAdd.Click += new EventHandler(this.ButtonAdd_Click);
             // 
             // listViewFonts
             // 
@@ -83,8 +83,8 @@ namespace LayoutManager.Dialogs {
             this.listViewFonts.Size = new Size(240, 200);
             this.listViewFonts.TabIndex = 0;
             this.listViewFonts.View = System.Windows.Forms.View.Details;
-            this.listViewFonts.DoubleClick += this.ButtonEdit_Click;
-            this.listViewFonts.AfterLabelEdit += this.ListViewFonts_AfterLabelEdit;
+            this.listViewFonts.DoubleClick += new EventHandler(this.ButtonEdit_Click);
+            this.listViewFonts.AfterLabelEdit += new LabelEditEventHandler(this.ListViewFonts_AfterLabelEdit);
             // 
             // columnHeaderDescription
             // 
@@ -101,22 +101,23 @@ namespace LayoutManager.Dialogs {
             // menuItemEditSettings
             // 
             this.menuItemEditSettings.Text = "Settings...";
-            this.menuItemEditSettings.Click += this.MenuItemEditSettings_Click;
+            this.menuItemEditSettings.Click += new EventHandler(this.MenuItemEditSettings_Click);
             // 
             // menuItemEditTitle
             // 
             this.menuItemEditTitle.Text = "Title...";
-            this.menuItemEditTitle.Click += this.MenuItemEditTitle_Click;
+            this.menuItemEditTitle.Click += new EventHandler(this.MenuItemEditTitle_Click);
             // 
             // menuItemFontID
             // 
             this.menuItemFontID.Text = "Font Ref...";
-            this.menuItemFontID.Click += this.MenuItemFontID_Click;
+            this.menuItemFontID.Click += new EventHandler(this.MenuItemFontID_Click);
             // 
             // StadardFonts
             // 
             this.AutoScaleDimensions = new SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.AcceptButton = this.buttonClose;
             this.ClientSize = new Size(258, 288);
             this.ControlBox = false;

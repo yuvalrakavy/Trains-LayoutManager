@@ -33,9 +33,9 @@
             this.listViewPolicies.Size = new System.Drawing.Size(368, 112);
             this.listViewPolicies.TabIndex = 0;
             this.listViewPolicies.View = System.Windows.Forms.View.Details;
-            this.listViewPolicies.MouseUp += this.ListViewPolicies_MouseUp;
-            this.listViewPolicies.SelectedIndexChanged += this.UpdateButtons;
-            this.listViewPolicies.ItemCheck += this.ListViewPolicies_ItemCheck;
+            this.listViewPolicies.MouseUp += new MouseEventHandler(this.ListViewPolicies_MouseUp);
+            this.listViewPolicies.SelectedIndexChanged += new EventHandler(this.UpdateButtons);
+            this.listViewPolicies.ItemCheck += new ItemCheckEventHandler(this.ListViewPolicies_ItemCheck);
             // 
             // columnHeaderName
             // 
@@ -50,7 +50,7 @@
             this.buttonNew.Size = new System.Drawing.Size(72, 23);
             this.buttonNew.TabIndex = 1;
             this.buttonNew.Text = "&New...";
-            this.buttonNew.Click += this.ButtonNew_Click;
+            this.buttonNew.Click += new EventHandler(this.ButtonNew_Click);
             // 
             // buttonRemove
             // 
@@ -60,7 +60,7 @@
             this.buttonRemove.Size = new System.Drawing.Size(72, 23);
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += this.ButtonRemove_Click;
+            this.buttonRemove.Click += new EventHandler(this.ButtonRemove_Click);
             // 
             // buttonEdit
             // 
@@ -70,7 +70,7 @@
             this.buttonEdit.Size = new System.Drawing.Size(72, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += this.ButtonEdit_Click;
+            this.buttonEdit.Click += new EventHandler(this.ButtonEdit_Click);
             // 
             // PolicyList
             // 
@@ -80,6 +80,9 @@
             this.Controls.Add(this.buttonEdit);
             this.Name = "PolicyList";
             this.Size = new System.Drawing.Size(384, 160);
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager;
@@ -40,7 +41,7 @@ namespace LayoutEventDebugger {
             this.buttonTraceState.Size = new System.Drawing.Size(72, 24);
             this.buttonTraceState.TabIndex = 1;
             this.buttonTraceState.Text = "Start trace";
-            this.buttonTraceState.Click += this.ButtonTraceState_Click;
+            this.buttonTraceState.Click += new EventHandler(this.ButtonTraceState_Click);
             // 
             // buttonClose
             // 
@@ -49,7 +50,7 @@ namespace LayoutEventDebugger {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 3;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // buttonClear
             // 
@@ -59,7 +60,7 @@ namespace LayoutEventDebugger {
             this.buttonClear.Size = new System.Drawing.Size(75, 24);
             this.buttonClear.TabIndex = 2;
             this.buttonClear.Text = "Clear";
-            this.buttonClear.Click += this.ButtonClear_Click;
+            this.buttonClear.Click += new EventHandler(this.ButtonClear_Click);
             // 
             // EventTrace
             // 
@@ -74,7 +75,8 @@ namespace LayoutEventDebugger {
             this.Text = "Event Trace";
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.Closed += this.EventTrace_Closed;
+            this.AutoSize = true;
+            this.Closed += new EventHandler(this.EventTrace_Closed);
             this.ResumeLayout(false);
         }
         #endregion

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -47,7 +48,7 @@ namespace Gui.Wizard {
             this.Controls.Add(this.picImage);
             this.Name = "InfoContainer";
             this.Size = new System.Drawing.Size(480, 388);
-            this.Load += this.InfoContainer_Load;
+            this.Load += new EventHandler(this.InfoContainer_Load);
             this.ResumeLayout(false);
         }
         #endregion

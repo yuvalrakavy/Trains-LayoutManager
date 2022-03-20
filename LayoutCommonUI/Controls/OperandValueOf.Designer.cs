@@ -23,7 +23,7 @@
             this.comboBoxTag.Name = "comboBoxTag";
             this.comboBoxTag.Size = new System.Drawing.Size(100, 21);
             this.comboBoxTag.TabIndex = 6;
-            this.comboBoxTag.DropDown += this.ComboBoxTag_DropDown;
+            this.comboBoxTag.DropDown += new EventHandler(this.ComboBoxTag_DropDown);
             // 
             // comboBoxSymbol
             // 
@@ -33,7 +33,7 @@
             this.comboBoxSymbol.Name = "comboBoxSymbol";
             this.comboBoxSymbol.Size = new System.Drawing.Size(100, 21);
             this.comboBoxSymbol.TabIndex = 5;
-            this.comboBoxSymbol.SelectedIndexChanged += this.ComboBoxSymbol_SelectedIndexChanged;
+            this.comboBoxSymbol.SelectedIndexChanged += new EventHandler(this.ComboBoxSymbol_SelectedIndexChanged);
             // 
             // linkMenuPropertyOrAttribute
             // 
@@ -48,7 +48,7 @@
             this.linkMenuPropertyOrAttribute.TabStop = true;
             this.linkMenuPropertyOrAttribute.Text = "property";
             this.linkMenuPropertyOrAttribute.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuPropertyOrAttribute.ValueChanged += this.LinkMenuPropertyOrAttribute_ValueChanged;
+            this.linkMenuPropertyOrAttribute.ValueChanged += new EventHandler(this.LinkMenuPropertyOrAttribute_ValueChanged);
             // 
             // label1
             // 
@@ -67,6 +67,9 @@
             this.Controls.Add(this.linkMenuPropertyOrAttribute);
             this.Name = "OperandValueOf";
             this.Size = new System.Drawing.Size(176, 64);
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

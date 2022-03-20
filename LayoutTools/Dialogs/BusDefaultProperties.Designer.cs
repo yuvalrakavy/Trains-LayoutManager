@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Windows.Forms;
 
 namespace LayoutManager.Tools.Dialogs {
@@ -96,7 +97,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 8;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -109,6 +110,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // BusDefaultProperties
             // 
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.AcceptButton = this.buttonOK;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(373, 135);

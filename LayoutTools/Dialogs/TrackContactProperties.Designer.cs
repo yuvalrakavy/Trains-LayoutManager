@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.Components;
 using System.Xml;
+using System;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -46,7 +47,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // tabControl
             // 

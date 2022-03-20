@@ -61,7 +61,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 8;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.ButtonOk_Click;
+            this.buttonOk.Click += new EventHandler(this.ButtonOk_Click);
             // 
             // buttonCancel
             // 
@@ -78,7 +78,7 @@ namespace LayoutManager.Dialogs {
             this.comboBoxFunctionName.Name = "comboBoxFunctionName";
             this.comboBoxFunctionName.Size = new System.Drawing.Size(160, 21);
             this.comboBoxFunctionName.TabIndex = 5;
-            this.comboBoxFunctionName.SelectionChangeCommitted += this.ComboBoxFunctionName_SelectionChangeCommitted;
+            this.comboBoxFunctionName.SelectionChangeCommitted += new EventHandler(this.ComboBoxFunctionName_SelectionChangeCommitted);
             // 
             // label3
             // 
@@ -99,7 +99,7 @@ namespace LayoutManager.Dialogs {
             this.comboBoxFunctionType.Name = "comboBoxFunctionType";
             this.comboBoxFunctionType.Size = new System.Drawing.Size(78, 21);
             this.comboBoxFunctionType.TabIndex = 3;
-            this.comboBoxFunctionType.SelectedIndexChanged += this.ComboBoxFunctionType_SelectedIndexChanged;
+            this.comboBoxFunctionType.SelectedIndexChanged += new EventHandler(this.ComboBoxFunctionType_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -116,12 +116,13 @@ namespace LayoutManager.Dialogs {
             this.textBoxFunctionDescription.Name = "textBoxFunctionDescription";
             this.textBoxFunctionDescription.Size = new System.Drawing.Size(192, 20);
             this.textBoxFunctionDescription.TabIndex = 7;
-            this.textBoxFunctionDescription.TextChanged += this.TextBoxFunctionDescription_TextChanged;
+            this.textBoxFunctionDescription.TextChanged += new EventHandler(this.TextBoxFunctionDescription_TextChanged);
             // 
             // LocomotiveFunction
             // 
             this.AutoScaleMode = AutoScaleMode.Font;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.AcceptButton = this.buttonOk;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(288, 144);

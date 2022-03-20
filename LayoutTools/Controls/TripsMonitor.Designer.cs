@@ -58,8 +58,8 @@ namespace LayoutManager.Tools.Controls {
             this.listViewTrips.SmallImageList = this.imageListTripState;
             this.listViewTrips.TabIndex = 0;
             this.listViewTrips.View = System.Windows.Forms.View.Details;
-            this.listViewTrips.Click += this.ListViewTrips_Click;
-            this.listViewTrips.SelectedIndexChanged += this.UpdateButtons;
+            this.listViewTrips.Click += new EventHandler(this.ListViewTrips_Click);
+            this.listViewTrips.SelectedIndexChanged += new EventHandler(this.UpdateButtons);
             // 
             // columnHeaderTrain
             // 
@@ -101,7 +101,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonAbort.Size = new System.Drawing.Size(75, 19);
             this.buttonAbort.TabIndex = 1;
             this.buttonAbort.Text = "&Abort";
-            this.buttonAbort.Click += this.ButtonAbort_Click;
+            this.buttonAbort.Click += new EventHandler(this.ButtonAbort_Click);
             // 
             // buttonClose
             // 
@@ -111,7 +111,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonClose.Size = new System.Drawing.Size(75, 19);
             this.buttonClose.TabIndex = 8;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // buttonView
             // 
@@ -121,7 +121,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonView.Size = new System.Drawing.Size(75, 19);
             this.buttonView.TabIndex = 3;
             this.buttonView.Text = "&View...";
-            this.buttonView.Click += this.ButtonView_Click;
+            this.buttonView.Click += new EventHandler(this.ButtonView_Click);
             // 
             // buttonSave
             // 
@@ -131,7 +131,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonSave.Size = new System.Drawing.Size(75, 19);
             this.buttonSave.TabIndex = 4;
             this.buttonSave.Text = "&Save...";
-            this.buttonSave.Click += this.ButtonSave_Click;
+            this.buttonSave.Click += new EventHandler(this.ButtonSave_Click);
             // 
             // buttonTalk
             // 
@@ -150,7 +150,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonOptions.Size = new System.Drawing.Size(75, 19);
             this.buttonOptions.TabIndex = 7;
             this.buttonOptions.Text = "&Options...";
-            this.buttonOptions.Click += this.ButtonOptions_Click;
+            this.buttonOptions.Click += new EventHandler(this.ButtonOptions_Click);
             // 
             // buttonSpeed
             // 
@@ -160,7 +160,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonSpeed.Size = new System.Drawing.Size(75, 19);
             this.buttonSpeed.TabIndex = 6;
             this.buttonSpeed.Text = "S&peed...";
-            this.buttonSpeed.Click += this.ButtonSpeed_Click;
+            this.buttonSpeed.Click += new EventHandler(this.ButtonSpeed_Click);
             // 
             // buttonSuspend
             // 
@@ -170,7 +170,7 @@ namespace LayoutManager.Tools.Controls {
             this.buttonSuspend.Size = new System.Drawing.Size(75, 19);
             this.buttonSuspend.TabIndex = 2;
             this.buttonSuspend.Text = "&Suspend";
-            this.buttonSuspend.Click += this.ButtonSuspend_Click;
+            this.buttonSuspend.Click += new EventHandler(this.ButtonSuspend_Click);
             // 
             // TripsMonitor
             // 
@@ -188,6 +188,7 @@ namespace LayoutManager.Tools.Controls {
             this.Size = new System.Drawing.Size(672, 160);
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

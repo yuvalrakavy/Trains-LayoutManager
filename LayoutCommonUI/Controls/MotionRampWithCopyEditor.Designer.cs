@@ -23,7 +23,7 @@ namespace LayoutManager.CommonUI.Controls {
             this.buttonUsrExistingRamp.Size = new System.Drawing.Size(112, 22);
             this.buttonUsrExistingRamp.TabIndex = 1;
             this.buttonUsrExistingRamp.Text = "Use existing profile";
-            this.buttonUsrExistingRamp.Click += this.ButtonUsrExistingRamp_Click;
+            this.buttonUsrExistingRamp.Click += new EventHandler(this.ButtonUsrExistingRamp_Click);
             // 
             // MotionRampWithCopyEditor
             // 
@@ -31,6 +31,9 @@ namespace LayoutManager.CommonUI.Controls {
                                                                           this.buttonUsrExistingRamp});
             this.Name = "MotionRampWithCopyEditor";
             this.Size = new System.Drawing.Size(232, 128);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

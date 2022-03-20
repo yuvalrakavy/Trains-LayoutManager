@@ -54,7 +54,7 @@
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(16, 16);
             this.buttonClose.TabIndex = 0;
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // layoutControlBusViewer
             // 
@@ -89,7 +89,7 @@
             this.comboBoxBusProvider.Name = "comboBoxBusProvider";
             this.comboBoxBusProvider.Size = new System.Drawing.Size(144, 21);
             this.comboBoxBusProvider.TabIndex = 1;
-            this.comboBoxBusProvider.SelectedIndexChanged += this.ComboBoxBusProvider_SelectedIndexChanged;
+            this.comboBoxBusProvider.SelectedIndexChanged += new EventHandler(this.ComboBoxBusProvider_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -107,7 +107,7 @@
             this.comboBoxBus.Name = "comboBoxBus";
             this.comboBoxBus.Size = new System.Drawing.Size(144, 21);
             this.comboBoxBus.TabIndex = 3;
-            this.comboBoxBus.SelectedIndexChanged += this.ComboBoxBus_SelectedIndexChanged;
+            this.comboBoxBus.SelectedIndexChanged += new EventHandler(this.ComboBoxBus_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -124,7 +124,7 @@
             this.comboBoxLocation.Name = "comboBoxLocation";
             this.comboBoxLocation.Size = new System.Drawing.Size(144, 21);
             this.comboBoxLocation.TabIndex = 5;
-            this.comboBoxLocation.SelectedIndexChanged += this.ComboBoxLocation_SelectedIndexChanged;
+            this.comboBoxLocation.SelectedIndexChanged += new EventHandler(this.ComboBoxLocation_SelectedIndexChanged);
             // 
             // buttonZoomIn
             // 
@@ -136,7 +136,7 @@
             this.buttonZoomIn.Size = new System.Drawing.Size(16, 16);
             this.buttonZoomIn.TabIndex = 7;
             this.buttonZoomIn.UseVisualStyleBackColor = false;
-            this.buttonZoomIn.Click += this.ButtonZoomIn_Click;
+            this.buttonZoomIn.Click += new EventHandler(this.ButtonZoomIn_Click);
             // 
             // buttonZoomOut
             // 
@@ -148,7 +148,7 @@
             this.buttonZoomOut.Size = new System.Drawing.Size(16, 16);
             this.buttonZoomOut.TabIndex = 6;
             this.buttonZoomOut.UseVisualStyleBackColor = false;
-            this.buttonZoomOut.Click += this.ButtonZoomOut_Click;
+            this.buttonZoomOut.Click += new EventHandler(this.ButtonZoomOut_Click);
             // 
             // LayoutControlViewer
             // 
@@ -164,6 +164,7 @@
             this.Controls.Add(this.panel1);
             this.AutoScaleDimensions = new SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.Name = "LayoutControlViewer";
             this.Size = new System.Drawing.Size(200, 688);
             this.panel1.ResumeLayout(false);

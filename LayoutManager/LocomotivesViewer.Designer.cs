@@ -48,12 +48,12 @@ namespace LayoutManager {
             // menuItemAddLocomotive
             // 
             this.menuItemAddLocomotive.Text = "&Locomotive...";
-            this.menuItemAddLocomotive.Click += this.MenuItemAddLocomotive_Click;
+            this.menuItemAddLocomotive.Click += new EventHandler(this.MenuItemAddLocomotive_Click);
             // 
             // menuItemAddTrain
             // 
             this.menuItemAddTrain.Text = "&Train...";
-            this.menuItemAddTrain.Click += this.MenuItemAddTrain_Click;
+            this.menuItemAddTrain.Click += new EventHandler(this.MenuItemAddTrain_Click);
             // 
             // contextMenuOptions
             // 
@@ -68,7 +68,7 @@ namespace LayoutManager {
             // menuItemStorage
             // 
             this.menuItemStorage.Text = "Storage...";
-            this.menuItemStorage.Click += this.MenuItemStorage_Click;
+            this.menuItemStorage.Click += new EventHandler(this.MenuItemStorage_Click);
             // 
             // buttonAdd
             // 
@@ -78,7 +78,7 @@ namespace LayoutManager {
             this.buttonAdd.Size = new Size(56, 20);
             this.buttonAdd.TabIndex = 5;
             this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += this.ButtonAdd_Click;
+            this.buttonAdd.Click += new EventHandler(this.ButtonAdd_Click);
             // 
             // buttonEdit
             // 
@@ -88,7 +88,7 @@ namespace LayoutManager {
             this.buttonEdit.Size = new Size(56, 20);
             this.buttonEdit.TabIndex = 6;
             this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += this.ButtonEdit_Click;
+            this.buttonEdit.Click += new EventHandler(this.ButtonEdit_Click);
             // 
             // buttonDelete
             // 
@@ -98,7 +98,7 @@ namespace LayoutManager {
             this.buttonDelete.Size = new Size(56, 20);
             this.buttonDelete.TabIndex = 3;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.ButtonDelete_Click;
+            this.buttonDelete.Click += new EventHandler(this.ButtonDelete_Click);
             // 
             // buttonOptions
             // 
@@ -108,7 +108,7 @@ namespace LayoutManager {
             this.buttonOptions.Size = new Size(62, 20);
             this.buttonOptions.TabIndex = 4;
             this.buttonOptions.Text = "&Options...";
-            this.buttonOptions.Click += this.ButtonOptions_Click;
+            this.buttonOptions.Click += new EventHandler(this.ButtonOptions_Click);
             // 
             // panel1
             // 
@@ -132,7 +132,7 @@ namespace LayoutManager {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new Size(16, 16);
             this.buttonClose.TabIndex = 0;
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // imageListCloseButton
             // 
@@ -156,8 +156,8 @@ namespace LayoutManager {
             this.locomotiveList.ShowOnlyLocomotives = false;
             this.locomotiveList.Size = new Size(196, 432);
             this.locomotiveList.TabIndex = 8;
-            this.locomotiveList.MouseDown += this.LocomotiveList_MouseDown;
-            this.locomotiveList.SelectedIndexChanged += this.LocomotiveList_SelectedIndexChanged;
+            this.locomotiveList.MouseDown += new MouseEventHandler(this.LocomotiveList_MouseDown);
+            this.locomotiveList.SelectedIndexChanged += new EventHandler(this.LocomotiveList_SelectedIndexChanged);
             // 
             // LocomotivesViewer
             // 
@@ -172,6 +172,7 @@ namespace LayoutManager {
             this.Size = new Size(208, 512);
             this.AutoScaleDimensions = new SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
         }

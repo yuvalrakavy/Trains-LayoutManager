@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -58,7 +59,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.checkBoxOverrideWaitable.Size = new System.Drawing.Size(225, 24);
             this.checkBoxOverrideWaitable.TabIndex = 0;
             this.checkBoxOverrideWaitable.Text = "Override default value";
-            this.checkBoxOverrideWaitable.CheckedChanged += this.CheckBoxOverrideWaitable_CheckedChanged;
+            this.checkBoxOverrideWaitable.CheckedChanged += new EventHandler(this.CheckBoxOverrideWaitable_CheckedChanged);
             // 
             // buttonCancel
             // 
@@ -68,7 +69,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // buttonOK
             // 
@@ -77,7 +78,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // checkBoxSlowDownRegion
             // 
@@ -139,10 +140,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.panelTripSectonBoundry.Name = "panelTripSectonBoundry";
             this.panelTripSectonBoundry.Size = new System.Drawing.Size(70, 70);
             this.panelTripSectonBoundry.TabIndex = 0;
-            this.panelTripSectonBoundry.Paint += this.PanelTripSectonBoundry_Paint;
+            this.panelTripSectonBoundry.Paint += new PaintEventHandler(this.PanelTripSectonBoundry_Paint);
             // 
             // AdvancedBlockInfoProperties
             // 
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.AcceptButton = this.buttonOK;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(319, 307);

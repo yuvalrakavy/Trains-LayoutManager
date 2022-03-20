@@ -48,7 +48,7 @@ namespace Gui.Wizard {
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "Cancel";
-            this.btnCancel.Click += this.BtnCancel_Click;
+            this.btnCancel.Click += new EventHandler(this.BtnCancel_Click);
             // 
             // btnNext
             // 
@@ -58,8 +58,8 @@ namespace Gui.Wizard {
             this.btnNext.Name = "btnNext";
             this.btnNext.TabIndex = 4;
             this.btnNext.Text = "&Next >";
-            this.btnNext.Click += this.BtnNext_Click;
-            this.btnNext.MouseDown += this.BtnNext_MouseDown;
+            this.btnNext.Click += new EventHandler(this.BtnNext_Click);
+            this.btnNext.MouseDown +=new MouseEventHandler(this.BtnNext_MouseDown);
             // 
             // btnBack
             // 
@@ -69,8 +69,8 @@ namespace Gui.Wizard {
             this.btnBack.Name = "btnBack";
             this.btnBack.TabIndex = 3;
             this.btnBack.Text = "< &Back";
-            this.btnBack.Click += this.BtnBack_Click;
-            this.btnBack.MouseDown += this.BtnBack_MouseDown;
+            this.btnBack.Click += new EventHandler(this.BtnBack_Click);
+            this.btnBack.MouseDown += new MouseEventHandler(this.BtnBack_MouseDown);
             // 
             // pnlButtonBright3d
             // 
@@ -96,7 +96,7 @@ namespace Gui.Wizard {
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (System.Byte)0);
             this.Name = "Wizard";
             this.Size = new System.Drawing.Size(444, 272);
-            this.Load += this.Wizard_Load;
+            this.Load += new EventHandler(this.Wizard_Load);
             this.pnlButtons.ResumeLayout(false);
             this.ResumeLayout(false);
         }

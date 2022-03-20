@@ -40,8 +40,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.listBoxLocomotives.Name = "listBoxLocomotives";
             this.listBoxLocomotives.Size = new System.Drawing.Size(152, 234);
             this.listBoxLocomotives.TabIndex = 0;
-            this.listBoxLocomotives.DrawItem += this.ListBoxLocomotives_DrawItem;
-            this.listBoxLocomotives.SelectedIndexChanged += this.UpdateButtons;
+            this.listBoxLocomotives.DrawItem += new DrawItemEventHandler(this.ListBoxLocomotives_DrawItem);
+            this.listBoxLocomotives.SelectedIndexChanged += new EventHandler(this.UpdateButtons);
             // 
             // groupBox1
             // 
@@ -63,7 +63,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOrientationForward.Size = new System.Drawing.Size(80, 16);
             this.radioButtonOrientationForward.TabIndex = 0;
             this.radioButtonOrientationForward.Text = "Forward";
-            this.radioButtonOrientationForward.CheckedChanged += this.UpdateLocomotiveList;
+            this.radioButtonOrientationForward.CheckedChanged += new EventHandler(this.UpdateLocomotiveList);
             // 
             // radioButtonOrientationBackward
             // 
@@ -72,7 +72,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonOrientationBackward.Size = new System.Drawing.Size(80, 16);
             this.radioButtonOrientationBackward.TabIndex = 1;
             this.radioButtonOrientationBackward.Text = "Backward";
-            this.radioButtonOrientationBackward.CheckedChanged += this.UpdateLocomotiveList;
+            this.radioButtonOrientationBackward.CheckedChanged += new EventHandler(this.UpdateLocomotiveList);
             // 
             // buttonAdd
             // 
@@ -81,7 +81,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.TabIndex = 2;
             this.buttonAdd.Text = "&Add";
-            this.buttonAdd.Click += this.ButtonAdd_Click;
+            this.buttonAdd.Click += new EventHandler(this.ButtonAdd_Click);
             // 
             // buttonCancel
             // 

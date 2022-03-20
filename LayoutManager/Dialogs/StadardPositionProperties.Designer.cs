@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
@@ -29,7 +30,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 3;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // label1
             // 

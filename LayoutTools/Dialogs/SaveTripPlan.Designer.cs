@@ -67,7 +67,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.TabIndex = 4;
             this.buttonSave.Text = "Save";
-            this.buttonSave.Click += this.ButtonSave_Click;
+            this.buttonSave.Click += new EventHandler(this.ButtonSave_Click);
             // 
             // buttonCancel
             // 
@@ -77,13 +77,14 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 5;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // SaveTripPlan
             // 
             this.AcceptButton = this.buttonSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(292, 190);
             this.ControlBox = false;

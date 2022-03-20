@@ -20,7 +20,7 @@
             this.buttonStartStop.Size = new System.Drawing.Size(72, 23);
             this.buttonStartStop.TabIndex = 4;
             this.buttonStartStop.Text = "&Deactivate";
-            this.buttonStartStop.Click += this.ButtonStartStop_Click;
+            this.buttonStartStop.Click += new EventHandler(this.ButtonStartStop_Click);
             // 
             // GlobalPolicyList
             // 

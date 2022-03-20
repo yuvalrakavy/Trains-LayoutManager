@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 using LayoutManager.CommonUI;
+using System;
 
 namespace LayoutManager.Dialogs {
     /// <summary>
@@ -35,7 +36,7 @@ namespace LayoutManager.Dialogs {
             this.locomotiveTypeList.Name = "locomotiveTypeList";
             this.locomotiveTypeList.Size = new Size(376, 376);
             this.locomotiveTypeList.TabIndex = 0;
-            this.locomotiveTypeList.SelectedIndexChanged += this.LocomotiveTypeList_SelectedIndexChanged;
+            this.locomotiveTypeList.SelectedIndexChanged += new EventHandler(this.LocomotiveTypeList_SelectedIndexChanged);
             // 
             // buttonSelect
             // 
@@ -45,7 +46,7 @@ namespace LayoutManager.Dialogs {
             this.buttonSelect.Size = new Size(64, 23);
             this.buttonSelect.TabIndex = 2;
             this.buttonSelect.Text = "&Select";
-            this.buttonSelect.Click += this.ButtonSelect_Click;
+            this.buttonSelect.Click += new EventHandler(this.ButtonSelect_Click);
             // 
             // buttonCancel
             // 
@@ -56,7 +57,7 @@ namespace LayoutManager.Dialogs {
             this.buttonCancel.Size = new Size(64, 23);
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // buttonArrangeBy
             // 
@@ -65,12 +66,13 @@ namespace LayoutManager.Dialogs {
             this.buttonArrangeBy.Name = "buttonArrangeBy";
             this.buttonArrangeBy.TabIndex = 1;
             this.buttonArrangeBy.Text = "&Arrange by";
-            this.buttonArrangeBy.Click += this.ButtonArrangeBy_Click;
+            this.buttonArrangeBy.Click += new EventHandler(this.ButtonArrangeBy_Click);
             // 
             // SelectLocomotiveType
             // 
             this.AcceptButton = this.buttonSelect;
             this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoSize = true;
             this.AutoScaleMode = AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new Size(392, 422);

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
@@ -59,7 +60,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.ButtonOK.Size = new System.Drawing.Size(64, 24);
             this.ButtonOK.TabIndex = 3;
             this.ButtonOK.Text = "OK";
-            this.ButtonOK.Click += this.ButtonOK_Click;
+            this.ButtonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -69,12 +70,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(64, 24);
             this.buttonCancel.TabIndex = 3;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // TripPlanChangeIcon
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(292, 198);
             this.ControlBox = false;
             this.Controls.Add(this.ButtonOK);

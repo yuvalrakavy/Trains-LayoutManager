@@ -36,8 +36,8 @@
             this.numericUpDownValue.Name = "numericUpDownValue";
             this.numericUpDownValue.Size = new System.Drawing.Size(48, 20);
             this.numericUpDownValue.TabIndex = 1;
-            this.numericUpDownValue.KeyDown += this.NumericUpDownValue_KeyDown;
-            this.numericUpDownValue.ValueChanged += this.NumericUpDownValue_ValueChanged;
+            this.numericUpDownValue.KeyDown += new KeyEventHandler(this.NumericUpDownValue_KeyDown);
+            this.numericUpDownValue.ValueChanged += new System.EventHandler(this.NumericUpDownValue_ValueChanged);
             // 
             // radioButtonRange
             // 
@@ -53,8 +53,8 @@
             this.numericUpDownFrom.Name = "numericUpDownFrom";
             this.numericUpDownFrom.Size = new System.Drawing.Size(48, 20);
             this.numericUpDownFrom.TabIndex = 3;
-            this.numericUpDownFrom.KeyDown += this.NumericUpDownFromOrTo_KeyDown;
-            this.numericUpDownFrom.ValueChanged += this.NumericUpDownFromOrTo_ValueChanged;
+            this.numericUpDownFrom.KeyDown += new KeyEventHandler(this.NumericUpDownFromOrTo_KeyDown);
+            this.numericUpDownFrom.ValueChanged += new EventHandler(this.NumericUpDownFromOrTo_ValueChanged);
             // 
             // label1
             // 
@@ -71,8 +71,8 @@
             this.numericUpDownTo.Name = "numericUpDownTo";
             this.numericUpDownTo.Size = new System.Drawing.Size(48, 20);
             this.numericUpDownTo.TabIndex = 5;
-            this.numericUpDownTo.KeyDown += this.NumericUpDownFromOrTo_KeyDown;
-            this.numericUpDownTo.ValueChanged += this.NumericUpDownFromOrTo_ValueChanged;
+            this.numericUpDownTo.KeyDown += new KeyEventHandler(this.NumericUpDownFromOrTo_KeyDown);
+            this.numericUpDownTo.ValueChanged += new EventHandler(this.NumericUpDownFromOrTo_ValueChanged);
             // 
             // buttonOK
             // 
@@ -80,7 +80,7 @@
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -89,12 +89,14 @@
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 7;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // IfTimeNumericNode
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(216, 110);
             this.ControlBox = false;

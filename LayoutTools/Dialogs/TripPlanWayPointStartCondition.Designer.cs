@@ -43,7 +43,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(56, 21);
             this.buttonOk.TabIndex = 3;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.ButtonOk_Click;
+            this.buttonOk.Click += new EventHandler(this.ButtonOk_Click);
             // 
             // buttonCancel
             // 
@@ -54,7 +54,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 21);
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // buttonSave
             // 
@@ -65,7 +65,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSave.TabIndex = 5;
             this.buttonSave.Text = "Save...";
             this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += this.ButtonSave_Click;
+            this.buttonSave.Click += new EventHandler(this.ButtonSave_Click);
             // 
             // TripPlanWaypointStartCondition
             // 
@@ -73,6 +73,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.CancelButton = this.buttonCancel;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(360, 262);
             this.ControlBox = false;
             this.Controls.Add(this.buttonSave);
@@ -82,7 +83,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "TripPlanWaypointStartCondition";
             this.ShowInTaskbar = false;
             this.Text = "Waypoint Start Condition";
-            this.Click += this.RadioButtonStartOnCondition_Click;
+            this.Click += new EventHandler(this.RadioButtonStartOnCondition_Click);
             this.ResumeLayout(false);
         }
         #endregion

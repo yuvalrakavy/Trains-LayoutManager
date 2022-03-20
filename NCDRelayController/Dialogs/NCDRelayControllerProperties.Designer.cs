@@ -60,7 +60,7 @@ namespace NCDRelayController.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -78,7 +78,7 @@ namespace NCDRelayController.Dialogs {
             this.buttonCOMsettings.Size = new System.Drawing.Size(75, 21);
             this.buttonCOMsettings.TabIndex = 9;
             this.buttonCOMsettings.Text = "Settings...";
-            this.buttonCOMsettings.Click += this.ButtonCOMsettings_Click;
+            this.buttonCOMsettings.Click += new EventHandler(this.ButtonCOMsettings_Click);
             // 
             // nameDefinition
             // 
@@ -144,7 +144,7 @@ namespace NCDRelayController.Dialogs {
             this.radioButtonTCP.TabStop = true;
             this.radioButtonTCP.Text = "TCP/IP";
             this.radioButtonTCP.UseVisualStyleBackColor = true;
-            this.radioButtonTCP.CheckedChanged += this.RadioButtonInterfaceType_CheckedChanged;
+            this.radioButtonTCP.CheckedChanged += new EventHandler(this.RadioButtonInterfaceType_CheckedChanged);
             // 
             // radioButtonSerial
             // 
@@ -156,7 +156,7 @@ namespace NCDRelayController.Dialogs {
             this.radioButtonSerial.TabStop = true;
             this.radioButtonSerial.Text = "Serial (RS232, USB, Network using RealPort)l";
             this.radioButtonSerial.UseVisualStyleBackColor = true;
-            this.radioButtonSerial.CheckedChanged += this.RadioButtonInterfaceType_CheckedChanged;
+            this.radioButtonSerial.CheckedChanged += new EventHandler(this.RadioButtonInterfaceType_CheckedChanged);
             // 
             // label3
             // 
@@ -175,7 +175,7 @@ namespace NCDRelayController.Dialogs {
             this.buttonBrowseForDigiDevices.TabIndex = 12;
             this.buttonBrowseForDigiDevices.Text = "...";
             this.buttonBrowseForDigiDevices.UseVisualStyleBackColor = true;
-            this.buttonBrowseForDigiDevices.Click += this.ButtonBrowseForDigiDevices_Click;
+            this.buttonBrowseForDigiDevices.Click += new EventHandler(this.ButtonBrowseForDigiDevices_Click);
             // 
             // buttonIpSettings
             // 
@@ -184,12 +184,13 @@ namespace NCDRelayController.Dialogs {
             this.buttonIpSettings.Size = new System.Drawing.Size(75, 21);
             this.buttonIpSettings.TabIndex = 13;
             this.buttonIpSettings.Text = "Settings...";
-            this.buttonIpSettings.Click += this.ButtonIpSettings_Click;
+            this.buttonIpSettings.Click += new EventHandler(this.ButtonIpSettings_Click);
             // 
             // NCDRelayControllerProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.AcceptButton = this.buttonOK;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(392, 280);

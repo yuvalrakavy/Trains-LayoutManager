@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.Model;
+using System;
 
 namespace LayoutManager.Dialogs {
     /// <summary>
@@ -36,7 +37,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 6;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // buttonAdd
             // 
@@ -45,7 +46,7 @@ namespace LayoutManager.Dialogs {
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.TabIndex = 1;
             this.buttonAdd.Text = "&Add...";
-            this.buttonAdd.Click += this.ButtonAdd_Click;
+            this.buttonAdd.Click += new EventHandler(this.ButtonAdd_Click);
             // 
             // buttonEdit
             // 
@@ -54,7 +55,7 @@ namespace LayoutManager.Dialogs {
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += this.ButtonEdit_Click;
+            this.buttonEdit.Click += new EventHandler(this.ButtonEdit_Click);
             // 
             // buttonRemove
             // 
@@ -63,7 +64,7 @@ namespace LayoutManager.Dialogs {
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += this.ButtonRemove_Click;
+            this.buttonRemove.Click += new EventHandler(this.ButtonRemove_Click);
             // 
             // locomotiveTypeList
             // 
@@ -79,8 +80,8 @@ namespace LayoutManager.Dialogs {
             this.locomotiveTypeList.Name = "locomotiveTypeList";
             this.locomotiveTypeList.Size = new Size(464, 408);
             this.locomotiveTypeList.TabIndex = 0;
-            this.locomotiveTypeList.DoubleClick += this.LocomotiveTypeList_DoubleClick;
-            this.locomotiveTypeList.SelectedIndexChanged += this.LocomotiveTypeList_SelectedIndexChanged;
+            this.locomotiveTypeList.DoubleClick += new EventHandler(this.LocomotiveTypeList_DoubleClick);
+            this.locomotiveTypeList.SelectedIndexChanged += new EventHandler(this.LocomotiveTypeList_SelectedIndexChanged);
             // 
             // contextMenuOptions
             // 
@@ -97,12 +98,12 @@ namespace LayoutManager.Dialogs {
             // menuItemStorage
             // 
             this.menuItemStorage.Text = "Storage...";
-            this.menuItemStorage.Click += this.MenuItemStorage_Click;
+            this.menuItemStorage.Click += new EventHandler(this.MenuItemStorage_Click);
             // 
             // menuItemStandardImages
             // 
             this.menuItemStandardImages.Text = "Standard images...";
-            this.menuItemStandardImages.Click += this.MenuItemStandardImages_Click;
+            this.menuItemStandardImages.Click += new EventHandler(this.MenuItemStandardImages_Click);
             // 
             // buttonOptions
             // 
@@ -110,17 +111,18 @@ namespace LayoutManager.Dialogs {
             this.buttonOptions.Name = "buttonOptions";
             this.buttonOptions.TabIndex = 7;
             this.buttonOptions.Text = "&Options";
-            this.buttonOptions.Click += this.ButtonOptions_Click;
+            this.buttonOptions.Click += new EventHandler(this.ButtonOptions_Click);
             // 
             // menuItemStandardLocomotiveFunctions
             // 
             this.menuItemStandardLocomotiveFunctions.Text = "Standard Locomotive Functions...";
-            this.menuItemStandardLocomotiveFunctions.Click += this.MenuItemStandardLocomotiveFunctions_Click;
+            this.menuItemStandardLocomotiveFunctions.Click += new EventHandler(this.MenuItemStandardLocomotiveFunctions_Click);
             // 
             // LocomotiveCatalog
             // 
             this.AutoScaleDimensions = new SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.AcceptButton = this.buttonClose;
             this.AutoScaleDimensions = new SizeF(5, 13);
             this.ClientSize = new Size(480, 494);

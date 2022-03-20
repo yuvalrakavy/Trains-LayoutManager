@@ -31,7 +31,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listBoxBlockInfo.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxBlockInfo.Size = new System.Drawing.Size(144, 173);
             this.listBoxBlockInfo.TabIndex = 0;
-            this.listBoxBlockInfo.SelectedIndexChanged += this.ListBoxBlockInfo_SelectedIndexChanged;
+            this.listBoxBlockInfo.SelectedIndexChanged += new EventHandler(this.ListBoxBlockInfo_SelectedIndexChanged);
             // 
             // buttonLock
             // 
@@ -40,7 +40,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLock.Size = new System.Drawing.Size(64, 24);
             this.buttonLock.TabIndex = 3;
             this.buttonLock.Text = "Lock";
-            this.buttonLock.Click += this.ButtonLock_Click;
+            this.buttonLock.Click += new EventHandler(this.ButtonLock_Click);
             // 
             // buttonClose
             // 
@@ -50,7 +50,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(64, 24);
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // buttonUnlock
             // 
@@ -59,7 +59,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonUnlock.Size = new System.Drawing.Size(64, 24);
             this.buttonUnlock.TabIndex = 2;
             this.buttonUnlock.Text = "Unlock";
-            this.buttonUnlock.Click += this.ButtonUnlock_Click;
+            this.buttonUnlock.Click += new EventHandler(this.ButtonUnlock_Click);
             // 
             // buttonRemove
             // 
@@ -68,11 +68,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRemove.Size = new System.Drawing.Size(64, 24);
             this.buttonRemove.TabIndex = 1;
             this.buttonRemove.Text = "Remove";
-            this.buttonRemove.Click += this.ButtonRemove_Click;
+            this.buttonRemove.Click += new EventHandler(this.ButtonRemove_Click);
             // 
             // BlockLockTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonClose;
             this.ClientSize = new System.Drawing.Size(160, 273);
             this.Controls.AddRange(new System.Windows.Forms.Control[] {

@@ -37,7 +37,7 @@
             this.checkBoxEmulateTrainMotion.Size = new System.Drawing.Size(144, 16);
             this.checkBoxEmulateTrainMotion.TabIndex = 4;
             this.checkBoxEmulateTrainMotion.Text = "Emulate train motion";
-            this.checkBoxEmulateTrainMotion.CheckedChanged += this.CheckBoxEmulateTrainMotion_CheckedChanged;
+            this.checkBoxEmulateTrainMotion.CheckedChanged += new EventHandler(this.CheckBoxEmulateTrainMotion_CheckedChanged);
             // 
             // checkBoxAnimateTrainMotion
             // 

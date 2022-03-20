@@ -32,7 +32,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 5;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // listViewStores
             // 
@@ -50,7 +50,7 @@ namespace LayoutManager.Dialogs {
             this.listViewStores.Size = new Size(560, 192);
             this.listViewStores.TabIndex = 0;
             this.listViewStores.View = System.Windows.Forms.View.Details;
-            this.listViewStores.SelectedIndexChanged += this.ListViewStores_SelectedIndexChanged;
+            this.listViewStores.SelectedIndexChanged += new EventHandler(this.ListViewStores_SelectedIndexChanged);
             // 
             // columnHeaderName
             // 
@@ -70,7 +70,7 @@ namespace LayoutManager.Dialogs {
             this.buttonNew.Size = new Size(88, 23);
             this.buttonNew.TabIndex = 1;
             this.buttonNew.Text = "&New...";
-            this.buttonNew.Click += this.ButtonNew_Click;
+            this.buttonNew.Click += new EventHandler(this.ButtonNew_Click);
             // 
             // buttonEdit
             // 
@@ -80,7 +80,7 @@ namespace LayoutManager.Dialogs {
             this.buttonEdit.Size = new Size(88, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit...";
-            this.buttonEdit.Click += this.ButtonEdit_Click;
+            this.buttonEdit.Click += new EventHandler(this.ButtonEdit_Click);
             // 
             // buttonRemove
             // 
@@ -90,7 +90,7 @@ namespace LayoutManager.Dialogs {
             this.buttonRemove.Size = new Size(88, 23);
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "&Delete";
-            this.buttonRemove.Click += this.ButtonRemove_Click;
+            this.buttonRemove.Click += new EventHandler(this.ButtonRemove_Click);
             // 
             // buttonSetAsDefault
             // 
@@ -99,13 +99,14 @@ namespace LayoutManager.Dialogs {
             this.buttonSetAsDefault.Size = new Size(88, 23);
             this.buttonSetAsDefault.TabIndex = 4;
             this.buttonSetAsDefault.Text = "Set as default";
-            this.buttonSetAsDefault.Click += this.ButtonSetAsDefault_Click;
+            this.buttonSetAsDefault.Click += new EventHandler(this.ButtonSetAsDefault_Click);
             // 
             // LocomotiveCollectionStores
             // 
             this.AcceptButton = this.buttonClose;
             this.AutoScaleDimensions = new SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new Size(576, 262);
             this.ControlBox = false;
             this.Controls.AddRange(new Control[] {

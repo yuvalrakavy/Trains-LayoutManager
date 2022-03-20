@@ -26,7 +26,7 @@
             this.buttonCustomFontSettings.Size = new System.Drawing.Size(88, 23);
             this.buttonCustomFontSettings.TabIndex = 2;
             this.buttonCustomFontSettings.Text = "Font setting...";
-            this.buttonCustomFontSettings.Click += this.ButtonCustomFontSettings_Click;
+            this.buttonCustomFontSettings.Click += new EventHandler(this.ButtonCustomFontSettings_Click);
             // 
             // groupBoxFont
             // 
@@ -61,7 +61,7 @@
             this.radioButtonCustomFont.Size = new System.Drawing.Size(96, 17);
             this.radioButtonCustomFont.TabIndex = 1;
             this.radioButtonCustomFont.Text = "Custom font:";
-            this.radioButtonCustomFont.CheckedChanged += this.RadioButtonCustomFont_CheckedChanged;
+            this.radioButtonCustomFont.CheckedChanged += new EventHandler(this.RadioButtonCustomFont_CheckedChanged);
             // 
             // radioButtonStandardFont
             // 
@@ -70,7 +70,7 @@
             this.radioButtonStandardFont.Size = new System.Drawing.Size(96, 24);
             this.radioButtonStandardFont.TabIndex = 0;
             this.radioButtonStandardFont.Text = "Standard font:";
-            this.radioButtonStandardFont.CheckedChanged += this.RadioButtonStandardFont_CheckedChanged;
+            this.radioButtonStandardFont.CheckedChanged += new EventHandler(this.RadioButtonStandardFont_CheckedChanged);
             // 
             // labelFontDescription
             // 

@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.ComponentModel;
+using System.Windows.Forms;
 using System.Xml;
 using LayoutManager.Model;
 
@@ -58,7 +60,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.tripPlanList.SelectedTripPlan = null;
             this.tripPlanList.Size = new System.Drawing.Size(504, 192);
             this.tripPlanList.TabIndex = 0;
-            this.tripPlanList.SelectedTripPlanChanged += this.TripPlanList_SelectedTripPlanChanged;
+            this.tripPlanList.SelectedTripPlanChanged += new EventHandler(this.TripPlanList_SelectedTripPlanChanged);
             // 
             // splitter
             // 
@@ -111,7 +113,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(64, 22);
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // groupBoxTripPlanPreview
             // 
@@ -152,7 +154,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonGo.Size = new System.Drawing.Size(64, 22);
             this.buttonGo.TabIndex = 3;
             this.buttonGo.Text = "Go!";
-            this.buttonGo.Click += this.ButtonGo_Click;
+            this.buttonGo.Click += new EventHandler(this.ButtonGo_Click);
             // 
             // buttonEdit
             // 
@@ -162,12 +164,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEdit.Size = new System.Drawing.Size(64, 22);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "Edit..";
-            this.buttonEdit.Click += this.ButtonEdit_Click;
+            this.buttonEdit.Click += new EventHandler(this.ButtonEdit_Click);
             // 
             // TripPlanCatalog
             // 
             this.AutoScaleMode = AutoScaleMode.Font;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.AcceptButton = this.buttonGo;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(504, 462);
@@ -176,9 +179,9 @@ namespace LayoutManager.Tools.Dialogs {
             this.Controls.Add(this.panelTripPlans);
             this.Name = "TripPlanCatalog";
             this.Text = "Saved Trip-plans";
-            this.Closed += this.TripPlanCatalog_Closed;
-            this.Closing += this.TripPlanCatalog_Closing;
-            this.FormClosing += this.TripPlanCatalog_FormClosing;
+            this.Closed += new EventHandler(this.TripPlanCatalog_Closed);
+            this.Closing += new CancelEventHandler(this.TripPlanCatalog_Closing);
+            this.FormClosing += new FormClosingEventHandler(this.TripPlanCatalog_FormClosing);
             this.panelTripPlans.ResumeLayout(false);
             this.panelTripPlanPreview.ResumeLayout(false);
             this.groupBoxTripPlanPreview.ResumeLayout(false);

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -29,7 +30,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonNotLinked.Name = "radioButtonNotLinked";
             this.radioButtonNotLinked.TabIndex = 4;
             this.radioButtonNotLinked.Text = "Not linked";
-            this.radioButtonNotLinked.CheckedChanged += this.RadioButtonNotLinked_CheckedChanged;
+            this.radioButtonNotLinked.CheckedChanged += new EventHandler(this.RadioButtonNotLinked_CheckedChanged);
             // 
             // radioButtonLinked
             // 
@@ -37,7 +38,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.radioButtonLinked.Name = "radioButtonLinked";
             this.radioButtonLinked.TabIndex = 5;
             this.radioButtonLinked.Text = "Linked to:";
-            this.radioButtonLinked.CheckedChanged += this.RadioButtonLinked_CheckedChanged;
+            this.radioButtonLinked.CheckedChanged += new EventHandler(this.RadioButtonLinked_CheckedChanged);
             // 
             // buttonCancel
             // 
@@ -53,7 +54,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 7;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // trackLinkTree
             // 
@@ -78,6 +79,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(308, 310);
             this.ControlBox = false;

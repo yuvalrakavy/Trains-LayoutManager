@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -28,7 +29,7 @@ namespace LayoutManager.Dialogs {
             this.listBoxPositions.Name = "listBoxPositions";
             this.listBoxPositions.Size = new System.Drawing.Size(248, 238);
             this.listBoxPositions.TabIndex = 0;
-            this.listBoxPositions.DoubleClick += this.ButtonEdit_Click;
+            this.listBoxPositions.DoubleClick += new EventHandler(this.ButtonEdit_Click);
             // 
             // buttonNew
             // 
@@ -36,7 +37,7 @@ namespace LayoutManager.Dialogs {
             this.buttonNew.Name = "buttonNew";
             this.buttonNew.TabIndex = 1;
             this.buttonNew.Text = "&New";
-            this.buttonNew.Click += this.ButtonNew_Click;
+            this.buttonNew.Click += new EventHandler(this.ButtonNew_Click);
             // 
             // buttonDelete
             // 
@@ -44,7 +45,7 @@ namespace LayoutManager.Dialogs {
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.TabIndex = 3;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.ButtonDelete_Click;
+            this.buttonDelete.Click += new EventHandler(this.ButtonDelete_Click);
             // 
             // buttonEdit
             // 
@@ -52,7 +53,7 @@ namespace LayoutManager.Dialogs {
             this.buttonEdit.Name = "buttonEdit";
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += this.ButtonEdit_Click;
+            this.buttonEdit.Click += new EventHandler(this.ButtonEdit_Click);
             // 
             // buttonClose
             // 
@@ -60,12 +61,13 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "&Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // StandardPositions
             // 
             this.AcceptButton = this.buttonClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(270, 346);
             this.ControlBox = false;

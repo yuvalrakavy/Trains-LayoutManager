@@ -57,7 +57,7 @@ namespace LayoutEventDebugger {
             this.radioButtonByEventHandlerObject.Size = new System.Drawing.Size(128, 17);
             this.radioButtonByEventHandlerObject.TabIndex = 1;
             this.radioButtonByEventHandlerObject.Text = "Event handler object";
-            this.radioButtonByEventHandlerObject.CheckedChanged += this.RadioButtonByEventHandlerObject_CheckedChanged;
+            this.radioButtonByEventHandlerObject.CheckedChanged += new EventHandler(this.RadioButtonByEventHandlerObject_CheckedChanged);
             // 
             // radioButtonViewByEventName
             // 
@@ -65,7 +65,7 @@ namespace LayoutEventDebugger {
             this.radioButtonViewByEventName.Name = "radioButtonViewByEventName";
             this.radioButtonViewByEventName.TabIndex = 0;
             this.radioButtonViewByEventName.Text = "Event name";
-            this.radioButtonViewByEventName.CheckedChanged += this.RadioButtonViewByEventName_CheckedChanged;
+            this.radioButtonViewByEventName.CheckedChanged += new EventHandler(this.RadioButtonViewByEventName_CheckedChanged);
             // 
             // buttonClose
             // 
@@ -76,7 +76,7 @@ namespace LayoutEventDebugger {
             this.buttonClose.Size = new System.Drawing.Size(80, 24);
             this.buttonClose.TabIndex = 3;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // buttonRefresh
             // 
@@ -86,7 +86,7 @@ namespace LayoutEventDebugger {
             this.buttonRefresh.Size = new System.Drawing.Size(80, 24);
             this.buttonRefresh.TabIndex = 2;
             this.buttonRefresh.Text = "Refresh";
-            this.buttonRefresh.Click += this.ButtonRefresh_Click;
+            this.buttonRefresh.Click += new EventHandler(this.ButtonRefresh_Click);
             // 
             // SubscriptionView
             // 
@@ -101,9 +101,10 @@ namespace LayoutEventDebugger {
             this.MinimumSize = new System.Drawing.Size(370, 0);
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize =true;
             this.Name = "SubscriptionView";
             this.Text = "Event Subscription View";
-            this.Closed += this.SubscriptionView_Closed;
+            this.Closed += new EventHandler(this.SubscriptionView_Closed);
             this.groupBoxViewBy.ResumeLayout(false);
             this.ResumeLayout(false);
         }

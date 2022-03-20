@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
@@ -24,7 +25,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.TabIndex = 1;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // selectTripPlanIcon1
             // 

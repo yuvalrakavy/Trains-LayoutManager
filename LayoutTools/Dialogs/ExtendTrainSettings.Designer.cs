@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using LayoutManager.Model;
 
@@ -70,7 +71,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.numericUpDownFrom.Name = "numericUpDownFrom";
             this.numericUpDownFrom.Size = new System.Drawing.Size(56, 20);
             this.numericUpDownFrom.TabIndex = 3;
-            this.numericUpDownFrom.ValueChanged += this.NumericUpDownFrom_ValueChanged;
+            this.numericUpDownFrom.ValueChanged += new EventHandler(this.NumericUpDownFrom_ValueChanged);
             // 
             // panel1
             // 
@@ -86,7 +87,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.numericUpDownTo.Name = "numericUpDownTo";
             this.numericUpDownTo.Size = new System.Drawing.Size(56, 20);
             this.numericUpDownTo.TabIndex = 3;
-            this.numericUpDownTo.ValueChanged += this.NumericUpDownTo_ValueChanged;
+            this.numericUpDownTo.ValueChanged += new EventHandler(this.NumericUpDownTo_ValueChanged);
             // 
             // panel2
             // 
@@ -103,7 +104,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(64, 23);
             this.buttonOK.TabIndex = 5;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -119,6 +120,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(292, 266);
             this.ControlBox = false;

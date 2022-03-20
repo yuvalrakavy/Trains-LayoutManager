@@ -23,7 +23,7 @@
             this.hScrollBar.Name = "hScrollBar";
             this.hScrollBar.Size = new System.Drawing.Size(80, 17);
             this.hScrollBar.TabIndex = 0;
-            this.hScrollBar.Scroll += this.HScrollBar_Scroll;
+            this.hScrollBar.Scroll += new ScrollEventHandler(this.HScrollBar_Scroll);
             // 
             // vScrollBar
             // 
@@ -32,7 +32,7 @@
             this.vScrollBar.Name = "vScrollBar";
             this.vScrollBar.Size = new System.Drawing.Size(17, 80);
             this.vScrollBar.TabIndex = 0;
-            this.vScrollBar.Scroll += this.VScrollBar_Scroll;
+            this.vScrollBar.Scroll += new ScrollEventHandler(this.VScrollBar_Scroll);
             // 
             // imageListConnectionPointTypes
             // 
@@ -48,14 +48,14 @@
             this.Controls.Add(hScrollBar);
             this.Controls.Add(vScrollBar);
 
-            this.SizeChanged += this.LayoutControlBusViewer_SizeChanged;
-            this.Click += this.LayoutControlBusViewer_Click;
-            this.DoubleClick += this.LayoutControlBusViewer_DoubleClick;
-            this.KeyDown += this.LayoutControlBusViewer_KeyDown;
-            this.MouseDown += this.LayoutControlBusViewer_MouseDown;
-            this.MouseEnter += this.LayoutControlBusViewer_MouseEnter;
-            this.MouseLeave += this.LayoutControlBusViewer_MouseLeave;
-            this.MouseMove += this.LayoutControlBusViewer_MouseMove;
+            this.SizeChanged += new EventHandler(this.LayoutControlBusViewer_SizeChanged);
+            this.Click += new EventHandler(this.LayoutControlBusViewer_Click);
+            this.DoubleClick += new EventHandler(this.LayoutControlBusViewer_DoubleClick);
+            this.KeyDown += new KeyEventHandler(this.LayoutControlBusViewer_KeyDown);
+            this.MouseDown += new MouseEventHandler(this.LayoutControlBusViewer_MouseDown);
+            this.MouseEnter += new EventHandler(this.LayoutControlBusViewer_MouseEnter);
+            this.MouseLeave += new EventHandler(this.LayoutControlBusViewer_MouseLeave);
+            this.MouseMove += new MouseEventHandler(this.LayoutControlBusViewer_MouseMove);
             this.ResumeLayout(false);
         }
         #endregion

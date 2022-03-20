@@ -46,7 +46,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.listBoxSignals.Name = "listBoxSignals";
             this.listBoxSignals.Size = new System.Drawing.Size(170, 108);
             this.listBoxSignals.TabIndex = 1;
-            this.listBoxSignals.SelectedIndexChanged += this.UpdateButtons;
+            this.listBoxSignals.SelectedIndexChanged += new EventHandler(this.UpdateButtons);
             // 
             // buttonRemove
             // 
@@ -56,7 +56,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonRemove.Size = new System.Drawing.Size(56, 21);
             this.buttonRemove.TabIndex = 2;
             this.buttonRemove.Text = "&Remove";
-            this.buttonRemove.Click += this.ButtonRemove_Click;
+            this.buttonRemove.Click += new EventHandler(this.ButtonRemove_Click);
             // 
             // buttonCancel
             // 
@@ -66,7 +66,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // buttonOk
             // 
@@ -76,11 +76,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(56, 23);
             this.buttonOk.TabIndex = 2;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.ButtonOk_Click;
+            this.buttonOk.Click += new EventHandler(this.ButtonOk_Click);
             // 
             // BindBlockEdgeToSignals
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(192, 246);
             this.ControlBox = false;
             this.Controls.AddRange(new System.Windows.Forms.Control[] {
@@ -92,8 +94,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.Name = "BindBlockEdgeToSignals";
             this.ShowInTaskbar = false;
             this.Text = "Link Signals to Track Contact";
-            this.Closing += this.BindBlockEdgeToSignals_Closing;
-            this.Closed += this.BindBlockEdgeToSignals_Closed;
+            this.Closing += new CancelEventHandler(this.BindBlockEdgeToSignals_Closing);
+            this.Closed += new EventHandler(this.BindBlockEdgeToSignals_Closed);
             this.ResumeLayout(false);
         }
         #endregion

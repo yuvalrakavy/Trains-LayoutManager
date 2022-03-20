@@ -38,8 +38,8 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.tripPlanList.SelectedTripPlan = null;
             this.tripPlanList.Size = new System.Drawing.Size(632, 216);
             this.tripPlanList.TabIndex = 0;
-            this.tripPlanList.Load += this.TripPlanList_Load;
-            this.tripPlanList.SelectedTripPlanChanged += this.TripPlanList_SelectedTripPlanChanged;
+            this.tripPlanList.Load += new EventHandler(this.TripPlanList_Load);
+            this.tripPlanList.SelectedTripPlanChanged += new EventHandler(this.TripPlanList_SelectedTripPlanChanged);
             // 
             // splitter1
             // 
@@ -98,7 +98,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 3;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // comboBoxTrainSymbol
             // 
@@ -130,13 +130,14 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // ExecuteTripPlan
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(632, 521);
             this.Controls.Add(this.panel1);
@@ -144,7 +145,7 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             this.Controls.Add(this.tripPlanList);
             this.Name = "ExecuteTripPlan";
             this.Text = "Execute Trip-plan";
-            this.Closing += this.ExecuteTripPlan_Closing;
+            this.Closing += new CancelEventHandler(this.ExecuteTripPlan_Closing);
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);

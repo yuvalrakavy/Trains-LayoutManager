@@ -44,7 +44,7 @@ namespace LayoutManager.Dialogs {
             this.listViewFunctionInfo.Size = new System.Drawing.Size(312, 176);
             this.listViewFunctionInfo.TabIndex = 0;
             this.listViewFunctionInfo.View = System.Windows.Forms.View.Details;
-            this.listViewFunctionInfo.SelectedIndexChanged += this.ListViewFunctionInfo_SelectedIndexChanged;
+            this.listViewFunctionInfo.SelectedIndexChanged += new EventHandler(this.ListViewFunctionInfo_SelectedIndexChanged);
             // 
             // buttonNew
             // 
@@ -54,7 +54,7 @@ namespace LayoutManager.Dialogs {
             this.buttonNew.Size = new System.Drawing.Size(70, 23);
             this.buttonNew.TabIndex = 1;
             this.buttonNew.Text = "&New";
-            this.buttonNew.Click += this.ButtonNew_Click;
+            this.buttonNew.Click += new EventHandler(this.ButtonNew_Click);
             // 
             // buttonEdit
             // 
@@ -64,7 +64,7 @@ namespace LayoutManager.Dialogs {
             this.buttonEdit.Size = new System.Drawing.Size(70, 23);
             this.buttonEdit.TabIndex = 2;
             this.buttonEdit.Text = "&Edit";
-            this.buttonEdit.Click += this.ButtonEdit_Click;
+            this.buttonEdit.Click += new EventHandler(this.ButtonEdit_Click);
             // 
             // buttonDelete
             // 
@@ -74,7 +74,7 @@ namespace LayoutManager.Dialogs {
             this.buttonDelete.Size = new System.Drawing.Size(70, 23);
             this.buttonDelete.TabIndex = 3;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.ButtonDelete_Click;
+            this.buttonDelete.Click += new EventHandler(this.ButtonDelete_Click);
             // 
             // buttonClose
             // 
@@ -84,7 +84,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(70, 23);
             this.buttonClose.TabIndex = 4;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // columnHeaderType
             // 

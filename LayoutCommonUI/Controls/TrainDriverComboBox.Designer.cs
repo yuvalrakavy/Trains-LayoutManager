@@ -22,7 +22,7 @@
             this.comboBoxDrivers.Name = "comboBoxDrivers";
             this.comboBoxDrivers.Size = new System.Drawing.Size(121, 21);
             this.comboBoxDrivers.TabIndex = 0;
-            this.comboBoxDrivers.SelectedIndexChanged += this.ComboBoxDrivers_SelectedIndexChanged;
+            this.comboBoxDrivers.SelectedIndexChanged += new EventHandler(this.ComboBoxDrivers_SelectedIndexChanged);
             // 
             // buttonDriverSettings
             // 
@@ -33,7 +33,7 @@
             this.buttonDriverSettings.Size = new System.Drawing.Size(24, 21);
             this.buttonDriverSettings.TabIndex = 1;
             this.buttonDriverSettings.Text = "...";
-            this.buttonDriverSettings.Click += this.ButtonDriverSettings_Click;
+            this.buttonDriverSettings.Click += new EventHandler(this.ButtonDriverSettings_Click);
             // 
             // TrainDriverComboBox
             // 
@@ -41,6 +41,9 @@
             this.Controls.Add(this.comboBoxDrivers);
             this.Name = "TrainDriverComboBox";
             this.Size = new System.Drawing.Size(144, 24);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

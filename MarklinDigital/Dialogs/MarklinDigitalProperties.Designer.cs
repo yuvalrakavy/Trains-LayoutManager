@@ -78,7 +78,7 @@ namespace MarklinDigital.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -144,12 +144,13 @@ namespace MarklinDigital.Dialogs {
             this.buttonCOMsettings.Size = new System.Drawing.Size(75, 21);
             this.buttonCOMsettings.TabIndex = 11;
             this.buttonCOMsettings.Text = "Settings...";
-            this.buttonCOMsettings.Click += this.ButtonCOMsettings_Click;
+            this.buttonCOMsettings.Click += new EventHandler(this.ButtonCOMsettings_Click);
             // 
             // MarklinDigitalProperties
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.AcceptButton = this.buttonOK;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(354, 280);

@@ -99,7 +99,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.lengthInput.Size = new System.Drawing.Size(104, 24);
             this.lengthInput.TabIndex = 6;
             this.lengthInput.UnitValue = 0;
-            this.lengthInput.Enter += this.LengthInput_Enter;
+            this.lengthInput.Enter += new EventHandler(this.LengthInput_Enter);
             // 
             // radioButtonLength_65
             // 
@@ -152,7 +152,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.ButtonOK.Name = "ButtonOK";
             this.ButtonOK.TabIndex = 5;
             this.ButtonOK.Text = "OK";
-            this.ButtonOK.Click += this.ButtonOK_Click;
+            this.ButtonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System;
 
 namespace LayoutManager.Tools.AutoConnectDialogs {
     /// <summary>
@@ -43,7 +44,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 2;
             this.buttonOK.Text = "Continue";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 

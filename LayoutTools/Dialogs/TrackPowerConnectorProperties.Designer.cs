@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using LayoutManager.Model;
 using LayoutManager.Components;
+using System;
 
 namespace LayoutManager.Tools.Dialogs {
     /// <summary>
@@ -50,7 +51,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 4;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -68,7 +69,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.checkBoxDisplayPowerSourceName.Size = new System.Drawing.Size(168, 24);
             this.checkBoxDisplayPowerSourceName.TabIndex = 2;
             this.checkBoxDisplayPowerSourceName.Text = "Display power source name";
-            this.checkBoxDisplayPowerSourceName.CheckedChanged += this.CheckBoxDisplayPowerSourceName_CheckedChanged;
+            this.checkBoxDisplayPowerSourceName.CheckedChanged += new EventHandler(this.CheckBoxDisplayPowerSourceName_CheckedChanged);
             // 
             // buttonSettings
             // 
@@ -77,7 +78,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonSettings.Size = new System.Drawing.Size(75, 23);
             this.buttonSettings.TabIndex = 3;
             this.buttonSettings.Text = "Settings...";
-            this.buttonSettings.Click += this.ButtonSettings_Click;
+            this.buttonSettings.Click += new EventHandler(this.ButtonSettings_Click);
             // 
             // trackGaugeSelector
             // 

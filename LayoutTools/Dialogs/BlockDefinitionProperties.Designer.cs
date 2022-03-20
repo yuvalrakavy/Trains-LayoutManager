@@ -149,7 +149,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonResources.TabIndex = 5;
             this.buttonResources.Text = "&Resources...";
             this.buttonResources.UseVisualStyleBackColor = true;
-            this.buttonResources.Click += this.ButtonResources_Click;
+            this.buttonResources.Click += new EventHandler(this.ButtonResources_Click);
             // 
             // checkBoxOccupancyDetectionBlock
             // 
@@ -166,7 +166,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonAdvanced.Size = new System.Drawing.Size(75, 23);
             this.buttonAdvanced.TabIndex = 4;
             this.buttonAdvanced.Text = "&Advanced...";
-            this.buttonAdvanced.Click += this.ButtonAdvanced_Click;
+            this.buttonAdvanced.Click += new EventHandler(this.ButtonAdvanced_Click);
             // 
             // nameDefinition
             // 
@@ -246,7 +246,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEditingTrainStopCondition.Size = new System.Drawing.Size(75, 20);
             this.buttonEditingTrainStopCondition.TabIndex = 2;
             this.buttonEditingTrainStopCondition.Text = "&Edit...";
-            this.buttonEditingTrainStopCondition.Click += this.ButtonEditTrainStopCondition_Click;
+            this.buttonEditingTrainStopCondition.Click += new EventHandler(this.ButtonEditTrainStopCondition_Click);
             // 
             // textBoxTrainStopCondition
             // 
@@ -284,7 +284,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonEditingTrainPassCondition.Size = new System.Drawing.Size(75, 20);
             this.buttonEditingTrainPassCondition.TabIndex = 2;
             this.buttonEditingTrainPassCondition.Text = "&Edit...";
-            this.buttonEditingTrainPassCondition.Click += this.ButtonEditTrainPassCondition_Click;
+            this.buttonEditingTrainPassCondition.Click += new EventHandler(this.ButtonEditTrainPassCondition_Click);
             // 
             // textBoxTrainPassCondition
             // 
@@ -342,10 +342,13 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // BlockInfoProperties
             // 
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.AcceptButton = this.buttonOK;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(288, 327);

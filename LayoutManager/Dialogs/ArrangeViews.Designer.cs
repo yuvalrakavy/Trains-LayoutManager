@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 using LayoutManager.View;
@@ -36,7 +37,7 @@ namespace LayoutManager.Dialogs {
             this.listBoxViews.Name = "listBoxViews";
             this.listBoxViews.Size = new System.Drawing.Size(216, 212);
             this.listBoxViews.TabIndex = 0;
-            this.listBoxViews.SelectedIndexChanged += this.ListBoxViews_SelectedIndexChanged;
+            this.listBoxViews.SelectedIndexChanged += new EventHandler(this.ListBoxViews_SelectedIndexChanged);
             // 
             // buttonMoveDown
             // 
@@ -48,7 +49,7 @@ namespace LayoutManager.Dialogs {
             this.buttonMoveDown.Name = "buttonMoveDown";
             this.buttonMoveDown.Size = new System.Drawing.Size(32, 23);
             this.buttonMoveDown.TabIndex = 2;
-            this.buttonMoveDown.Click += this.ButtonMoveDown_Click;
+            this.buttonMoveDown.Click += new EventHandler(this.ButtonMoveDown_Click);
             // 
             // imageListButtons
             // 
@@ -67,7 +68,7 @@ namespace LayoutManager.Dialogs {
             this.buttonMoveUp.Name = "buttonMoveUp";
             this.buttonMoveUp.Size = new System.Drawing.Size(32, 23);
             this.buttonMoveUp.TabIndex = 1;
-            this.buttonMoveUp.Click += this.ButtonMoveUp_Click;
+            this.buttonMoveUp.Click += new EventHandler(this.ButtonMoveUp_Click);
             // 
             // buttonClose
             // 
@@ -77,7 +78,7 @@ namespace LayoutManager.Dialogs {
             this.buttonClose.Size = new System.Drawing.Size(72, 23);
             this.buttonClose.TabIndex = 6;
             this.buttonClose.Text = "Close";
-            this.buttonClose.Click += this.ButtonClose_Click;
+            this.buttonClose.Click += new EventHandler(this.ButtonClose_Click);
             // 
             // buttonNew
             // 
@@ -87,7 +88,7 @@ namespace LayoutManager.Dialogs {
             this.buttonNew.Size = new System.Drawing.Size(72, 24);
             this.buttonNew.TabIndex = 3;
             this.buttonNew.Text = "New...";
-            this.buttonNew.Click += this.ButtonNew_Click;
+            this.buttonNew.Click += new EventHandler(this.ButtonNew_Click);
             // 
             // buttonDelete
             // 
@@ -97,7 +98,7 @@ namespace LayoutManager.Dialogs {
             this.buttonDelete.Size = new System.Drawing.Size(72, 24);
             this.buttonDelete.TabIndex = 4;
             this.buttonDelete.Text = "&Delete";
-            this.buttonDelete.Click += this.ButtonDelete_Click;
+            this.buttonDelete.Click += new EventHandler(this.ButtonDelete_Click);
             // 
             // buttonRename
             // 
@@ -107,13 +108,14 @@ namespace LayoutManager.Dialogs {
             this.buttonRename.Size = new System.Drawing.Size(72, 24);
             this.buttonRename.TabIndex = 5;
             this.buttonRename.Text = "Rename...";
-            this.buttonRename.Click += this.ButtonRename_Click;
+            this.buttonRename.Click += new EventHandler(this.ButtonRename_Click);
             // 
             // ArrangeViews
             // 
             this.AcceptButton = this.buttonClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(264, 302);
             this.ControlBox = false;
             this.Controls.AddRange(new Control[] {

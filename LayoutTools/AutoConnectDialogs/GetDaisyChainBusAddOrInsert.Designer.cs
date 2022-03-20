@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using LayoutManager.Components;
+using System;
 
 namespace LayoutManager.Tools.AutoConnectDialogs {
     /// <summary>
@@ -58,7 +59,7 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 3;
             this.buttonOK.Text = "Continue";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -72,6 +73,8 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(288, 206);
             this.ControlBox = false;

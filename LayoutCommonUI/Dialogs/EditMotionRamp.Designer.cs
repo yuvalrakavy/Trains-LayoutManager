@@ -29,7 +29,7 @@
             this.buttonOK.Size = new System.Drawing.Size(56, 23);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -39,7 +39,7 @@
             this.buttonCancel.Size = new System.Drawing.Size(56, 23);
             this.buttonCancel.TabIndex = 2;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new EventHandler(this.ButtonCancel_Click);
             // 
             // EditMotionRamp
             // 

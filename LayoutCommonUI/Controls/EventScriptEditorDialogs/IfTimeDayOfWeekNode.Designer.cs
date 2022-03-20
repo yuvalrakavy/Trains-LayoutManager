@@ -50,7 +50,7 @@
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabIndex = 6;
             this.buttonOK.Text = "OK";
-            this.buttonOK.Click += this.ButtonOK_Click;
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -59,7 +59,7 @@
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.TabIndex = 7;
             this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.Click += this.ButtonCancel_Click;
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // comboBoxValue
             // 
@@ -76,8 +76,8 @@
             this.comboBoxValue.Name = "comboBoxValue";
             this.comboBoxValue.Size = new System.Drawing.Size(64, 21);
             this.comboBoxValue.TabIndex = 8;
-            this.comboBoxValue.DropDown += this.ComboBoxValue_Changed;
-            this.comboBoxValue.SelectedIndexChanged += this.ComboBoxValue_Changed;
+            this.comboBoxValue.DropDown += new System.EventHandler(this.ComboBoxValue_Changed);
+            this.comboBoxValue.SelectedIndexChanged += new System.EventHandler(this.ComboBoxValue_Changed);
             // 
             // comboBoxFrom
             // 
@@ -94,7 +94,7 @@
             this.comboBoxFrom.Name = "comboBoxFrom";
             this.comboBoxFrom.Size = new System.Drawing.Size(64, 21);
             this.comboBoxFrom.TabIndex = 8;
-            this.comboBoxFrom.SelectedIndexChanged += this.ComboBoxFromOrTo_Changed;
+            this.comboBoxFrom.SelectedIndexChanged += new System.EventHandler(this.ComboBoxFromOrTo_Changed);
             // 
             // comboBoxTo
             // 
@@ -111,12 +111,14 @@
             this.comboBoxTo.Name = "comboBoxTo";
             this.comboBoxTo.Size = new System.Drawing.Size(64, 21);
             this.comboBoxTo.TabIndex = 8;
-            this.comboBoxTo.SelectedIndexChanged += this.ComboBoxFromOrTo_Changed;
+            this.comboBoxTo.SelectedIndexChanged += new System.EventHandler(this.ComboBoxFromOrTo_Changed);
+
             // 
             // IfTimeDayOfWeekNode
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(226, 110);
             this.ControlBox = false;

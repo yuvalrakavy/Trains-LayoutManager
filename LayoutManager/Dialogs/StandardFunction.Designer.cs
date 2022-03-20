@@ -85,7 +85,7 @@ namespace LayoutManager.Dialogs {
             this.buttonOk.Size = new System.Drawing.Size(64, 23);
             this.buttonOk.TabIndex = 3;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.ButtonOk_Click;
+            this.buttonOk.Click += new EventHandler(this.ButtonOk_Click);
             // 
             // buttonCancel
             // 

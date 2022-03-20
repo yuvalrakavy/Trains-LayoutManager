@@ -35,7 +35,7 @@
             this.linkMenuUnits.Size = new System.Drawing.Size(40, 20);
             this.linkMenuUnits.TabIndex = 1;
             this.linkMenuUnits.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkMenuUnits.ValueChanged += this.LinkMenuUnits_ValueChanged;
+            this.linkMenuUnits.ValueChanged += new EventHandler(this.LinkMenuUnits_ValueChanged);
             // 
             // UnitInput
             // 
@@ -44,6 +44,9 @@
                                                                           this.textBoxValue});
             this.Name = "UnitInput";
             this.Size = new System.Drawing.Size(104, 24);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

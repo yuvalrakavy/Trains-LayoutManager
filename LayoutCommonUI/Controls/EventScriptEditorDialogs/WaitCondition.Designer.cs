@@ -104,14 +104,14 @@
             this.numericUpDownRandomSeconds.Name = "numericUpDownRandomSeconds";
             this.numericUpDownRandomSeconds.Size = new System.Drawing.Size(43, 20);
             this.numericUpDownRandomSeconds.TabIndex = 6;
-            this.numericUpDownRandomSeconds.Enter += this.NumericUpDownRandomSeconds_ValueChanged;
+            this.numericUpDownRandomSeconds.Enter += new EventHandler(this.NumericUpDownRandomSeconds_ValueChanged);
             // 
             // checkBoxErrorState
             // 
             this.checkBoxErrorState.Location = new System.Drawing.Point(15, 75);
             this.checkBoxErrorState.Name = "checkBoxErrorState";
             this.checkBoxErrorState.TabIndex = 8;
-            this.checkBoxErrorState.Text = "Occurence of this event indicates an error";
+            this.checkBoxErrorState.Text = "Occurrence of this event indicates an error";
             // 
             // buttonOk
             // 
@@ -121,7 +121,7 @@
             this.buttonOk.Size = new System.Drawing.Size(64, 23);
             this.buttonOk.TabIndex = 9;
             this.buttonOk.Text = "OK";
-            this.buttonOk.Click += this.ButtonOk_Click;
+            this.buttonOk.Click += new EventHandler(this.ButtonOk_Click);
             // 
             // buttonCancel
             // 
