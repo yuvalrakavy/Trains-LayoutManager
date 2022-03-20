@@ -67,9 +67,11 @@ namespace LayoutManager.CommonUI.Controls {
             if (!ValidateInput())
                 return false;
 
-            Element?.SetAttributeValue(LayoutCommandStationComponent.A_EmulationTickTime, int.Parse(textBoxEmulationTickTime.Text));
             Element?.SetAttributeValue(LayoutCommandStationComponent.A_EmulateTrainMotion, checkBoxEmulateTrainMotion.Checked);
-            Element?.SetAttributeValue(LayoutCommandStationComponent.A_AnimateTrainMotion, checkBoxAnimateTrainMotion.Checked);
+            if (checkBoxEmulateTrainMotion.Checked) {
+                Element?.SetAttributeValue(LayoutCommandStationComponent.A_EmulationTickTime, int.Parse(textBoxEmulationTickTime.Text));
+                Element?.SetAttributeValue(LayoutCommandStationComponent.A_AnimateTrainMotion, checkBoxAnimateTrainMotion.Checked);
+            }
 
             return true;
         }

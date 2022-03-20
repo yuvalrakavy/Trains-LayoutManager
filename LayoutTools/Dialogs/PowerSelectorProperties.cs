@@ -20,7 +20,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             textBoxName.Text = powerSelectorNameInfo.Name;
 
-            if (powerSelectorNameInfo.Element != null)
+            if (powerSelectorNameInfo.OptionalElement != null)
                 checkBoxDisplayPowerSelectorName.Checked = powerSelectorNameInfo.Visible;
             else
                 checkBoxDisplayPowerSelectorName.Checked = true;

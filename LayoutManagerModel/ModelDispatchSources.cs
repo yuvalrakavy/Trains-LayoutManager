@@ -760,9 +760,9 @@ namespace LayoutManager {
 
         static DispatchSource? ds_OnTripAborted = null;
         [DispatchSource]
-        public static void OnTripAborted(this Dispatcher d, TrainStateInfo train, TripPlanInfo trip) {
+        public static void OnTripAborted(this Dispatcher d, TripPlanAssignmentInfo trip) {
             ds_OnTripAborted ??= d[nameof(OnTripAborted)];
-            ds_OnTripAborted.CallVoid(train, trip);
+            ds_OnTripAborted.CallVoid(trip);
         }
 
         static DispatchSource? ds_SuspendTrip = null;
@@ -1326,7 +1326,7 @@ namespace LayoutManager {
 
         static DispatchSource? ds_RecommendControlModuleTypes = null;
         [DispatchSource]
-        public static void RecommendControlModuleTypes(this Dispatcher d, ControlConnectionPointDestination connectionPointDestination, List<string> applicableModuleTypes, string busFamilyName, string busTypeName) {
+        public static void RecommendControlModuleTypes(this Dispatcher d, ControlConnectionPointDestination connectionPointDestination, List<string> applicableModuleTypes, string busTypeName, string busFamilyName) {
             ds_RecommendControlModuleTypes ??= d[nameof(RecommendControlModuleTypes)];
             ds_RecommendControlModuleTypes.CallVoid(connectionPointDestination, applicableModuleTypes, busFamilyName, busTypeName);
         }

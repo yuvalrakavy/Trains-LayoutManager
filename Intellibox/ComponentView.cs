@@ -75,7 +75,7 @@ namespace Intellibox {
 
             LayoutTextInfo textProvider = new(regions.Component);
 
-            if (textProvider.Element != null)
+            if (textProvider.OptionalElement != null)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 

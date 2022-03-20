@@ -722,10 +722,7 @@ namespace LayoutManager.Logic {
 
                             if (otherBlock.LockRequest != null && trainLockingDestination != null && otherBlock.LockRequest.OwnerId == trainLockingDestination.Id) {
                                 // This block is the most probable candidate, so make sure it is the first in the list
-                                var temp = otherBlocks[0];
-
-                                otherBlocks[0] = otherBlocks[^1];
-                                otherBlocks[^1] = temp;
+                                (otherBlocks[^1], otherBlocks[0]) = (otherBlocks[0], otherBlocks[^1]);
                             }
                         }
                         else

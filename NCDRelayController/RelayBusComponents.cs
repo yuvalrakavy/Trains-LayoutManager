@@ -39,7 +39,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private void RecommendControlModuleTypes_NCDRelayBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "NCDRelayBus") {
+        private void RecommendControlModuleTypes_NCDRelayBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyName = "NCDRelayBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Relay")) {
                 moduleTypeNames.Add("8_NCDRelays");
                 moduleTypeNames.Add("16_NCDRelays");
@@ -49,7 +49,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private void RecommendControlModuleTypes_NCDInputBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "NCDInputBus") {
+        private void RecommendControlModuleTypes_NCDInputBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyName = "NCDInputBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", ControlConnectionPointTypes.InputDryTrigger)) {
                 moduleTypeNames.Add("16_NCDContactsClosure");
                 moduleTypeNames.Add("32_NCDContactsClosure");

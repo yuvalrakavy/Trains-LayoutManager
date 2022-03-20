@@ -74,6 +74,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // SetControlModuleAddress
             // 
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.CancelButton = this.buttonCancel;

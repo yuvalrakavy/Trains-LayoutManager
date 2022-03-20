@@ -320,7 +320,7 @@ namespace LayoutManager.View {
                 return loco.DisplayName;
             else if (!string.IsNullOrEmpty(loco.CollectionId))
                 return loco.CollectionId;
-            else return loco.AddressProvider.Element != null ? loco.AddressProvider.Unit.ToString() : loco.DisplayName;
+            else return loco.AddressProvider.OptionalElement != null ? loco.AddressProvider.Unit.ToString() : loco.DisplayName;
         }
 
         private string GetTrainLabel(TrainStateInfo train) {

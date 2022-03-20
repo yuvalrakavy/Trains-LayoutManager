@@ -60,7 +60,7 @@ namespace NumatoController {
 
             var textProvider = new LayoutTextInfo(regions.Component);
 
-            if (textProvider.Element != null)
+            if (textProvider.OptionalElement != null)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 

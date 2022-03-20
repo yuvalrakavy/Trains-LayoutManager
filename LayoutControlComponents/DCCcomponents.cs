@@ -174,7 +174,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private void RecommendControlModuleTypes_DCC(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "DCC") {
+        private void RecommendControlModuleTypes_DCC(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyName = "DCC") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", ControlConnectionPointTypes.OutputSolenoid)) {
                 moduleTypeNames.Add("Massoth8156001");          // 4 switch decoders
                 moduleTypeNames.Add("Massoth8156501");          // single switch decoder
@@ -183,7 +183,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private void RecommendControlModuleTypes_LocoBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "LocoBus") {
+        private void RecommendControlModuleTypes_LocoBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyTypeName = "LocoBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", ControlConnectionPointTypes.OutputSolenoid)) {
                 moduleTypeNames.Add("Massoth8156001_AsFunctionDecoder");
             }

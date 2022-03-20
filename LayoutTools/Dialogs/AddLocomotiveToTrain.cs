@@ -54,7 +54,7 @@ namespace LayoutManager.Tools.Dialogs {
                 if (loco.Kind == LocomotiveKind.SoundUnit)
                     continue;
 
-                if (loco.AddressProvider.Element != null && trainLocomotive.Locomotive.AddressProvider.Element != null &&
+                if (loco.AddressProvider.OptionalElement != null && trainLocomotive.Locomotive.AddressProvider.OptionalElement != null &&
                     loco.AddressProvider.Unit == trainLocomotive.Locomotive.AddressProvider.Unit && trainLocomotive.Orientation != orientation)
                     return false;
             }

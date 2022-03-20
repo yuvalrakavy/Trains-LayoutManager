@@ -336,7 +336,7 @@ namespace LayoutManager.View
 
 			LayoutTextInfo	nameProvider = new LayoutTextInfo(e.Component);
 			
-			if(nameProvider.Element != null && nameProvider.Visible)
+			if(nameProvider.OptionalElement != null && nameProvider.Visible)
 				e.AddRegion(new LayoutDrawingRegionText(e, nameProvider));
 
 			e.AddRegion(new LayoutDrawingRegionNotConnected(EventManager, e.Component, e.View));
@@ -604,7 +604,7 @@ namespace LayoutManager.View
 
 			LayoutTextInfo	nameProvider = new LayoutTextInfo(e.Component);
 			
-			if(nameProvider.Element != null && nameProvider.Visible)
+			if(nameProvider.OptionalElement != null && nameProvider.Visible)
 				e.AddRegion(new LayoutDrawingRegionText(e, nameProvider));
 		}
 
@@ -866,7 +866,7 @@ namespace LayoutManager.View
 
 			LayoutPowerSourceNameInfo	textProvider = new LayoutPowerSourceNameInfo(e.Component);
 
-			if(textProvider.Element != null && textProvider.Visible)
+			if(textProvider.OptionalElement != null && textProvider.Visible)
 				e.AddRegion(new LayoutDrawingRegionText(e, textProvider));
 		}
 

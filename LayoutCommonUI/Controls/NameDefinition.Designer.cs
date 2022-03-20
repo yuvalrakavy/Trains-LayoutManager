@@ -60,6 +60,8 @@
                                                                           this.labelName});
             this.Name = "NameDefinition";
             this.Size = new System.Drawing.Size(280, 53);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.ResumeLayout(false);
         }
         #endregion

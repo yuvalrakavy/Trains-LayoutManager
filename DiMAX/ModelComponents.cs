@@ -197,13 +197,12 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private void SetLocomotiveLightsCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, bool lights) {
+        private void SetLocomotiveLightCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo loco, bool lights) {
             OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 0, false, lights));
             if (loco.DecoderType is DccDecoderTypeInfo decoder && !decoder.ParallelFunctionSupport)
                 OutputManager.AddCommand(new DiMAXlocomotiveFunction(this, loco.AddressProvider.Unit, 9, false, false));
         }
 
-        [DispatchTarget(Name = "TriggerLocomotiveFunctionStateCommand")]
         [DispatchTarget]
         void SetLocomotiveFunctionStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
             var function = locomotive.GetFunctionByName(functionName);
@@ -217,6 +216,11 @@ namespace DiMAX {
                         GenerateSerialFunctionCommands(train, locomotive, function.Number);
                 }
             }
+        }
+
+        [DispatchTarget]
+        void TriggerLocomotiveFunctionStateCommand([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveInfo locomotive, string functionName, bool functionState) {
+            SetLocomotiveFunctionStateCommand(commandStation, locomotive, functionName, functionState);
         }
 
         [DispatchTarget]
@@ -249,7 +253,7 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private void AddCommandStationLocoBusToAddressMap([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveAddressMap addressMap) {
+        private void AddCommandStationLocomotiveBusToAddressMap([DispatchFilter(Type = "IsMyId")] IModelComponentHasNameAndId commandStation, LocomotiveAddressMap addressMap) {
             foreach (ControlModule module in LocoBus.Modules) {
                 for (int i = 0; i < module.ModuleType.NumberOfAddresses; i++) {
                     int address = module.Address + i;
@@ -385,7 +389,9 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private void OnTripDone(TrainStateInfo train, TripPlanInfo trip) {
+        private void OnTripDone(TripPlanAssignmentInfo trip) {
+            var train = trip.Train;
+
             if (train.Driver.ComputerDriven) {
                 // The train is driven by computer (either automatic, or by train controller)
                 foreach (var trainLoco in train.Locomotives)
@@ -394,7 +400,7 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private void OnTripAborted(TrainStateInfo train, TripPlanInfo trip) => OnTripDone(train, trip);
+        private void OnTripAborted(TripPlanAssignmentInfo trip) => OnTripDone(trip);
 
         [DispatchTarget]
         private Task DiMAXtestLocoSelect([DispatchFilter(Type = "MyId")] IModelComponentHasNameAndId commandStation, int address, bool select, bool active, bool unconditional) {

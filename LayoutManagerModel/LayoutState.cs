@@ -694,7 +694,7 @@ namespace LayoutManager.Model {
                     string location = "in layout";
 
                     if (LocomotiveBlock?.BlockDefinintion != null) {
-                        if (LocomotiveBlock.BlockDefinintion.NameProvider.Element != null)
+                        if (LocomotiveBlock.BlockDefinintion.NameProvider.OptionalElement != null)
                             location = "in " + LocomotiveBlock.BlockDefinintion.NameProvider.Name;
                     }
 
@@ -712,7 +712,7 @@ namespace LayoutManager.Model {
                         motion = "Backward at " + -Speed;
 
                     if (LocomotiveBlock != null && LocomotiveBlock.BlockDefinintion != null) {
-                        if (LocomotiveBlock.BlockDefinintion.NameProvider.Element != null)
+                        if (LocomotiveBlock.BlockDefinintion.NameProvider.OptionalElement != null)
                             location = " in " + LocomotiveBlock.BlockDefinintion.NameProvider.Name;
                     }
 

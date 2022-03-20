@@ -645,7 +645,7 @@ namespace LayoutManager.Components {
 
         public LayoutTextInfo NameProvider => new(this);
 
-        public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible;
+        public override bool DrawOutOfGrid => NameProvider.OptionalElement != null && NameProvider.Visible;
 
         public string Name => NameProvider.Name;
 
@@ -1019,7 +1019,7 @@ namespace LayoutManager.Components {
 
         public string Name => NameProvider.Name;
 
-        public override bool DrawOutOfGrid => NameProvider.Element != null;
+        public override bool DrawOutOfGrid => NameProvider.OptionalElement != null;
 
         public LayoutControlModuleLocationComponentInfo Info => _info ??= new LayoutControlModuleLocationComponentInfo(this, Element);
     }

@@ -29,7 +29,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private void RecommendControlModuleTypes_TrainDetectorsBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "TrainDetectorsBus") {
+        private void RecommendControlModuleTypes_TrainDetectorsBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyName = "TrainDetectorsBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "Level"))
                 moduleTypeNames.Add("TrainDetectorController");
         }

@@ -532,7 +532,7 @@ namespace LayoutManager.Logic {
                     }
                 }
 
-                Dispatch.Notification.OnTripAborted(trip.Train, trip.TripPlan);
+                Dispatch.Notification.OnTripAborted(trip);
             }
             else
                 throw new LayoutException(train, "Trip plan execution was aborted for train that was not assigned to one");

@@ -24,7 +24,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private void RecommendControlModuleTypes_RelayBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "RelayBus") {
+        private void RecommendControlModuleTypes_RelayBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyName = "RelayBus") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Relay")) {
                 moduleTypeNames.Add("2_NumatoRelays");
                 moduleTypeNames.Add("4_NumatoRelays");

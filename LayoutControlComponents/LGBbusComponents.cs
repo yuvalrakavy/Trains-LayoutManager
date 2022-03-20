@@ -43,7 +43,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private void RecommendControlModuleTypes_LGBBUS(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "LGBBUS") {
+        private void RecommendControlModuleTypes_LGBBUS(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyName = "LGBBUS") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("CurrentSensor"))
                 moduleTypeNames.Add("LGB55075");
             else if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact"))

@@ -46,7 +46,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private void RecommendControlModuleTypes_Motorola(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "Motorola") {
+        private void RecommendControlModuleTypes_Motorola(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyName = "Motorola") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Control", "Solenoid")) {
                 moduleTypeNames.Add("K83");
                 moduleTypeNames.Add("K73");
@@ -55,7 +55,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private void RecommendControlModuleTypes_S88BUS(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busFamilyName, [DispatchFilter] string busTypeName = "S88BUS") {
+        private void RecommendControlModuleTypes_S88BUS(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyName = "S88BUS") {
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact"))
                 moduleTypeNames.Add("S88");
         }

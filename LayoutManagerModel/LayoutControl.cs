@@ -1076,7 +1076,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// The control module is connected using those buses (e.g. DCC, Motorola, LGBBUS, MarklinDigital etc.
         /// </summary>
-        public List<string> BusTypeNames => new();
+        public List<string> BusTypeNames {get; } = new();
 
         /// <summary>
         /// Return minimum address allowed for this module (if any or -1 if use the default bus addressing limits)
@@ -1619,7 +1619,7 @@ namespace LayoutManager.Model {
         /// <summary>
         /// Return an array of all module types that can be attached to this bus
         /// </summary>
-        public IEnumerable<ControlModuleType> ModuleTypes => Dispatch.Call.EnumControlModuleTypes();
+        public IEnumerable<ControlModuleType> ModuleTypes => from controlModule in Dispatch.Call.EnumControlModuleTypes() where controlModule.BusTypeNames.Contains(BusFamilyName) select controlModule;
 
         /// <summary>
         /// Get a list of all module types of this bus that can be connected to the given connection destination (component/connection description)
@@ -1629,7 +1629,7 @@ namespace LayoutManager.Model {
         public IList<string> GetConnectableControlModuleTypeNames(ControlConnectionPointDestination connectionDestination) {
             List<string> applicableModuleTypes = new();
 
-            Dispatch.Call.RecommendControlModuleTypes(connectionDestination, applicableModuleTypes, BusFamilyName, BusTypeName);
+            Dispatch.Call.RecommendControlModuleTypes(connectionDestination, applicableModuleTypes, BusTypeName, BusFamilyName);
 
             return applicableModuleTypes.AsReadOnly();
         }

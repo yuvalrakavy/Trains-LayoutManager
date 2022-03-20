@@ -567,7 +567,7 @@ namespace LayoutManager.View {
 
             LayoutTextInfo nameProvider = new(regions.Component);
 
-            if (nameProvider.Element != null && nameProvider.Visible)
+            if (nameProvider.OptionalElement != null && nameProvider.Visible)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, nameProvider));
         }
 
@@ -829,7 +829,7 @@ namespace LayoutManager.View {
 
             LayoutTrackPowerConnectorInfo textProvider = new(regions.Component);
 
-            if (textProvider.Element != null && textProvider.Visible)
+            if (textProvider.OptionalElement != null && textProvider.Visible)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
@@ -869,7 +869,7 @@ namespace LayoutManager.View {
 
             var textProvider = new LayoutPowerSelectorComponent.LayoutPowerSelectorNameInfo(regions.Component);
 
-            if (textProvider.Element != null && textProvider.Visible)
+            if (textProvider.OptionalElement != null && textProvider.Visible)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
 
             regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View));
@@ -919,7 +919,7 @@ namespace LayoutManager.View {
 
             LayoutTrackLinkTextInfo textProvider = new(regions.Component, "Name");
 
-            if (textProvider.Element != null && textProvider.Visible)
+            if (textProvider.OptionalElement != null && textProvider.Visible)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
@@ -959,7 +959,7 @@ namespace LayoutManager.View {
         void GetModelComponentDrawingRegions_Text([DispatchFilter] LayoutTextComponent component, LayoutGetDrawingRegions regions) {
             LayoutTextInfo textProvider = new(regions.Component, "Text");
 
-            if (textProvider.Element != null)
+            if (textProvider.OptionalElement != null)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 
@@ -1172,7 +1172,7 @@ namespace LayoutManager.View {
 
             LayoutTextInfo nameProvider = new(regions.Component);
 
-            if (nameProvider.Element != null && nameProvider.Visible)
+            if (nameProvider.OptionalElement != null && nameProvider.Visible)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, nameProvider));
 
             regions.AddRegion(new LayoutDrawingRegionNotConnected(regions.Component, regions.View));
@@ -1229,7 +1229,7 @@ namespace LayoutManager.View {
 
             LayoutTextInfo nameProvider = new(regions.Component);
 
-            if (nameProvider.Element != null && nameProvider.Visible)
+            if (nameProvider.OptionalElement != null && nameProvider.Visible)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, nameProvider));
         }
 

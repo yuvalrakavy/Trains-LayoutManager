@@ -47,7 +47,7 @@ namespace DiMAX {
         }
 
         [DispatchTarget]
-        private ModelComponent CreateModelComponent_DiMax(XmlElement _, [DispatchFilter] string name = "DiMax") => new DiMAXcommandStation();
+        private ModelComponent CreateModelComponent_DiMax(XmlElement _, [DispatchFilter] string name = "DiMAX") => new DiMAXcommandStation();
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace DiMAX {
 
             var textProvider = new LayoutTextInfo(regions.Component);
 
-            if (textProvider.Element != null)
+            if (textProvider.OptionalElement != null)
                 regions.AddRegion(new LayoutDrawingRegionText(regions, textProvider));
         }
 

@@ -45,7 +45,7 @@ namespace TrainDetector {
 
         public override ModelComponentKind Kind => ModelComponentKind.ControlComponent;
 
-        public override bool DrawOutOfGrid => NameProvider.Element != null && NameProvider.Visible;
+        public override bool DrawOutOfGrid => NameProvider.OptionalElement != null && NameProvider.Visible;
 
         #endregion
 

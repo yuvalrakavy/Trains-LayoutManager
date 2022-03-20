@@ -361,7 +361,7 @@ namespace LayoutManager.View {
         public override void Draw(ILayoutView view, ViewDetailLevel detailLevel, ILayoutSelectionLook? selectionLook, Graphics g) {
             base.Draw(view, detailLevel, selectionLook, g);
 
-            if (textProvider.Element != null && (textProvider.Visible || ForceDraw)) {
+            if (textProvider.OptionalElement != null && (textProvider.Visible || ForceDraw)) {
                 int width = textProvider.PositionProvider.Width;
                 Color fontColor = textProvider.FontProvider.Color;
 
@@ -388,7 +388,7 @@ namespace LayoutManager.View {
         }
 
         static private SizeF MeasureProviderString(Graphics g, ViewDetailLevel detailLevel, LayoutTextInfo textProvider) {
-            if (textProvider.Element != null) {
+            if (textProvider.OptionalElement != null) {
                 int width = textProvider.PositionProvider.Width;
 
                 if (width == 0) {

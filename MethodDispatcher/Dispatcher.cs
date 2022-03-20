@@ -141,15 +141,22 @@ namespace MethodDispatcher {
                         where method.GetCustomAttribute(typeof(DispatchTargetAttribute), true) != null
                         select method;
 
-            foreach (var method in query) {
-                foreach (var dispatchTargetAttribute in (DispatchTargetAttribute[])method.GetCustomAttributes(typeof(DispatchTargetAttribute), true)) {
-                    try {
-                        GetDispatchSource(dispatchTargetAttribute, method).VerifyTarget(method, dispatchTargetAttribute);
-                    }
-                    catch (DispatcherException ex) {
-                        errors.Add(ex);
+            MethodInfo? aMethod;
+
+            try {
+                foreach (var method in query) {
+                    aMethod = method;
+                    foreach (var dispatchTargetAttribute in (DispatchTargetAttribute[])method.GetCustomAttributes(typeof(DispatchTargetAttribute), true)) {
+                        try {
+                            GetDispatchSource(dispatchTargetAttribute, method).VerifyTarget(method, dispatchTargetAttribute);
+                        }
+                        catch (DispatcherException ex) {
+                            errors.Add(ex);
+                        }
                     }
                 }
+            } catch(Exception) {
+                throw;
             }
 
             if (errors.Count > 0)
@@ -364,7 +371,7 @@ namespace MethodDispatcher {
         override public string ToString() => $"{Filename} (Line {LineNumber}) - {MemberName}";
     }
 
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Method)]
     public class DispatchTargetAttribute : Attribute {
         public SourceFileLocation SourceFile { get; private set; }
 
@@ -611,7 +618,7 @@ namespace MethodDispatcher {
         public void RemoveTargetsInObjectInstance(object instance) {
             var removeList = from target in _targets where target is ObjectInstanceDispatchTarget instanceTarget && instanceTarget.Instance == instance select target;
 
-            foreach (var target in removeList)
+            foreach (var target in removeList.ToArray())
                 Remove(target);
         }
 
@@ -710,7 +717,7 @@ namespace MethodDispatcher {
                             resultSummary &= result;
 
                         if (!invokeAll) {
-                            if (invokeUntil ^ resultSummary)
+                            if (invokeUntil == resultSummary)
                                 return resultSummary;
                         }
                     }

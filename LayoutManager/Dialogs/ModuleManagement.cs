@@ -124,7 +124,7 @@ namespace LayoutManager.Dialogs {
             UpdateButtons();
         }
 
-        private void ModuleManagement_Closed(object? sender, EventArgs e) {
+        private void ModuleManagement_FormClosed(object sender, FormClosedEventArgs e) {
             if (needToSaveState)
                 LayoutController.ModuleManager.SaveState();
         }
