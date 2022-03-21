@@ -650,7 +650,7 @@ namespace MethodDispatcher {
             List<object?> results = new();
 
             try {
-                foreach (var target in _targets) {
+                foreach (var target in Targets) {
                     if (target.IsAlive && target.ShouldInvoke(parameters)) {
                         results.Add(target.Invoke(parameters));
                     }
@@ -707,7 +707,7 @@ namespace MethodDispatcher {
             bool resultSummary = !invokeUntil;
 
             try {
-                foreach (var target in _targets) {
+                foreach (var target in Targets) {
                     if (target.IsAlive && target.ShouldInvoke(parameters)) {
                         var result = target.Invoke(parameters) as bool? ?? false;
 
@@ -740,7 +740,7 @@ namespace MethodDispatcher {
             List<DispatchTarget>? invalidTargets = null;
 
             try {
-                foreach (var target in _targets) {
+                foreach (var target in Targets) {
                     if (target.IsAlive && target.ShouldInvoke(parameters)) {
                         var result = target.Invoke(parameters);
 
