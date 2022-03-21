@@ -45,7 +45,7 @@ namespace LayoutManager.ControlComponents {
 
         [DispatchTarget]
         private void RecommendControlModuleTypes_DiMAXBus(ControlConnectionPointDestination connectionDestination, List<string> moduleTypeNames, string busTypeName, [DispatchFilter] string busFamilyName = "DiMAXBus") {
-            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact"))
+            if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "DryContact", "DryTrigger"))
                 moduleTypeNames.Add("Massoth8170001");
             if (connectionDestination.ConnectionDescription.IsCompatibleWith("Feedback", "Level"))
                 moduleTypeNames.Add("Massoth8170001level");

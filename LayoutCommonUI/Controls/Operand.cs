@@ -31,10 +31,10 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         public void Initialize() {
-            if (Element == null || AllowedTypes == null)
+            if (OptionalElement == null || AllowedTypes == null)
                 throw new ArgumentException("Element or AllowedTypes not set");
 
-            operandValueOf.Element = Element;
+            operandValueOf.OptionalElement = Element;
             operandValueOf.AllowedTypes = AllowedTypes;
             operandValueOf.Suffix = Suffix;
             operandValueOf.Initialize();

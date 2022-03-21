@@ -1529,15 +1529,8 @@ namespace LayoutManager {
 
         private EventHandler? simulateEventHandler;
         private EventHandler? verifyLayoutEventHandler;
-
-        private void LayoutToolStripMenuItem_DropDownOpening(object sender, EventArgs e) {
-            bool allSuspended = Dispatch.Call.AreAllTripsSuspended();
-
-            if (allSuspended)
-                stopLocomotivesToolStripMenuItem.Text = "&Resume train operation";
-            else
-                stopLocomotivesToolStripMenuItem.Text = "&Stop trains";
-
+        
+        private void SetLayoutSimulationMenu() {
             var simulateEntries = GetPhasesEntries(Simulate);
             simulationToolStripMenuItem.DropDownItems.Clear();
 
@@ -1552,6 +1545,18 @@ namespace LayoutManager {
             else
                 simulationToolStripMenuItem.Enabled = false;
 
+        }
+
+        private void LayoutToolStripMenuItem_DropDownOpening(object sender, EventArgs e) {
+            bool allSuspended = Dispatch.Call.AreAllTripsSuspended();
+
+            if (allSuspended)
+                stopLocomotivesToolStripMenuItem.Text = "&Resume train operation";
+            else
+                stopLocomotivesToolStripMenuItem.Text = "&Stop trains";
+
+            SetLayoutSimulationMenu();
+
             var verifyLayoutEntries = GetPhasesEntries(Verify);
             verifyLayoutToolStripMenuItem.DropDownItems.Clear();
 
@@ -1564,6 +1569,7 @@ namespace LayoutManager {
         }
 
         private void MenuItemSimulation_Click(object? sender, EventArgs e) {
+            SetLayoutSimulationMenu();
             simulateEventHandler?.Invoke(sender, e);
         }
 

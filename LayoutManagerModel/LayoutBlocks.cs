@@ -184,9 +184,9 @@ namespace LayoutManager.Model {
         public ILayoutPower? Power {
             get {
                 if (BlockDefinintion != null)
-                    return BlockDefinintion.Track.GetPower(BlockDefinintion.Track.ConnectionPoints[0]);
+                    return BlockDefinintion.Track.GetOptionalPower(BlockDefinintion.Track.ConnectionPoints[0]);
                 else if (TrackEdges.Count > 0)
-                    return TrackEdges[0].Track.GetPower(TrackEdges[0].ConnectionPoint);
+                    return TrackEdges[0].Track.GetOptionalPower(TrackEdges[0].ConnectionPoint);
                 return null;
             }
         }

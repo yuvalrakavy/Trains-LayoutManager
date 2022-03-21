@@ -722,7 +722,7 @@ namespace LayoutManager.Components {
         private LayoutComponentConnectionPoint straight, branch;
 
         private static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsNoFeedback = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
-            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription("Solenoid", "Turnout", "Turnout Control") });
+            new ModelComponentControlConnectionDescription[] { new ModelComponentControlConnectionDescription(ControlConnectionPointTypes.OutputSolenoid, "Turnout", "Turnout Control") });
 
         private static readonly IList<ModelComponentControlConnectionDescription> controlConnectionsWithFeedback = Array.AsReadOnly<ModelComponentControlConnectionDescription>(
             new ModelComponentControlConnectionDescription[] {

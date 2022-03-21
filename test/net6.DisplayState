@@ -1,10 +1,10 @@
-<DisplayState Mode="Design" ActiveWindowIndex="0">
+<DisplayState Phases="Operational" Mode="Simulation" ActiveWindowIndex="0">
   <WindowStates>
-    <WindowState WindowState="Normal" Left="397" Top="270" Width="1283" Height="799" ActiveAreaIndex="0" LocomotiveViewerVisible="false" LocomotiveViewerWidth="402" ControlViewerVisible="true" ControlViewerWidth="332" MessagesViewerVisible="false" MessagesViewerHeight="523" TripsViewerHeight="181">
+    <WindowState WindowState="Normal" Left="595" Top="419" Width="1567" Height="799" ActiveAreaIndex="0" LocomotiveViewerVisible="false" LocomotiveViewerWidth="402" ControlViewerVisible="true" ControlViewerWidth="406" MessagesViewerVisible="true" MessagesViewerHeight="523" TripsViewerHeight="181">
       <AreaStates>
         <AreaState ID="28e049ed-ea12-4c3a-93ac-666d87e6fe4c" ActiveViewIndex="0">
           <ViewStates>
-            <ViewState Name="Overview" Zoom="1" DefaultZoom="1" OriginX="-1" OriginY="-1" DefaultOriginX="0" DefaultOriginY="0" Grid="AutoHide" ShowCoordinates="false" ShowActivePhases="false" />
+            <ViewState Name="Overview" Zoom="1" DefaultZoom="1" OriginX="-1" OriginY="2" DefaultOriginX="0" DefaultOriginY="0" Grid="AutoHide" ShowCoordinates="false" ShowActivePhases="false" />
           </ViewStates>
         </AreaState>
       </AreaStates>

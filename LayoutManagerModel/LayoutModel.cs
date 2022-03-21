@@ -702,13 +702,13 @@ namespace LayoutManager.Model {
         private const string A_OutletId = "OutletId";
 
         public LayoutPowerInlet(ModelComponent component, string elementName) : base(component, elementName) {
-            if (Element == null)
+            if (OptionalElement == null)
                 Element = CreateProviderElement(component, elementName);
         }
 
         public LayoutPowerInlet(XmlElement containerElement, string name)
             : base(containerElement, name) {
-            if (Element == null)
+            if (OptionalElement == null)
                 Element = CreateProviderElement(containerElement, name);
         }
 

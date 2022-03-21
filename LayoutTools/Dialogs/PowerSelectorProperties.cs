@@ -121,7 +121,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             var powerSelectorNameInfo = new LayoutPowerSelectorComponent.LayoutPowerSelectorNameInfo(XmlInfo.DocumentElement);
 
-            if (powerSelectorNameInfo.Element == null)
+            if (powerSelectorNameInfo.OptionalElement == null)
                 powerSelectorNameInfo.CreateElement(XmlInfo);
 
             powerSelectorNameInfo.Name = textBoxName.Text;
@@ -148,7 +148,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             CommonUI.Dialogs.TextProviderSettings settings = new(XmlInfo, powerSelectorNameInfo);
 
-            if (powerSelectorNameInfo.Element == null)
+            if (powerSelectorNameInfo.OptionalElement == null)
                 powerSelectorNameInfo.CreateElement(XmlInfo);
 
             settings.ShowDialog(this);

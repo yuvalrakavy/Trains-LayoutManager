@@ -411,7 +411,7 @@ namespace LayoutManager.View {
                         }
                     }
                     else {
-                        var power = edge.Track?.GetPower(edge.ConnectionPoint);
+                        var power = edge.Track?.GetOptionalPower(edge.ConnectionPoint);
 
                         if (power != null) {
                             if (power.Type == LayoutPowerType.Disconnected)

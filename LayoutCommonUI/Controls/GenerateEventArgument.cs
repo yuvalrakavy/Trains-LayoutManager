@@ -17,15 +17,15 @@ namespace LayoutManager.CommonUI.Controls {
             InitializeComponent();
         }
 
-        public XmlElement? Element { get; set; }
+        public XmlElement? OptionalElement { get; set; }
 
         public string Prefix { get; set; } = "Arg";
 
         public void Initialize() {
-            if (Element == null)
+            if (OptionalElement == null)
                 throw new ArgumentException("Element property not set");
 
-            operandValueOf.Element = Element;
+            operandValueOf.OptionalElement = OptionalElement;
             operandValueOf.Suffix = Prefix;
             operandValueOf.Initialize();
 
@@ -66,7 +66,7 @@ namespace LayoutManager.CommonUI.Controls {
                     break;
             }
 
-            string constant = Element.GetAttribute($"{A_Value}{Prefix}");
+            string constant = OptionalElement.GetAttribute($"{A_Value}{Prefix}");
 
             comboBoxBooleanConstant.SelectedIndex = 0;
 
@@ -158,23 +158,23 @@ namespace LayoutManager.CommonUI.Controls {
             }
             else if (radioButtonConstant.Checked) {
                 SetAttribute(A_Type, "ValueOf");
-                Element?.SetAttribute("Symbol" + Prefix + "Access", A_Value);
+                OptionalElement?.SetAttribute("Symbol" + Prefix + "Access", A_Value);
 
                 switch (linkMenuConstantType.SelectedIndex) {
                     case 0:
-                        Element?.SetAttribute(A_Type + Prefix, "String");
+                        OptionalElement?.SetAttribute(A_Type + Prefix, "String");
                         break;
 
                     case 1:
-                        Element?.SetAttribute(A_Type + Prefix, "Integer");
+                        OptionalElement?.SetAttribute(A_Type + Prefix, "Integer");
                         break;
 
                     case 2:
-                        Element?.SetAttribute(A_Type + Prefix, "Double");
+                        OptionalElement?.SetAttribute(A_Type + Prefix, "Double");
                         break;
 
                     case 3:
-                        Element?.SetAttribute(A_Type + Prefix, "Boolean");
+                        OptionalElement?.SetAttribute(A_Type + Prefix, "Boolean");
                         break;
 
                     default:
@@ -182,9 +182,9 @@ namespace LayoutManager.CommonUI.Controls {
                 }
 
                 if (linkMenuConstantType.SelectedIndex == 3)
-                    Element?.SetAttributeValue(A_Value + Prefix, comboBoxBooleanConstant.SelectedIndex == 1);
+                    OptionalElement?.SetAttributeValue(A_Value + Prefix, comboBoxBooleanConstant.SelectedIndex == 1);
                 else
-                    Element?.SetAttribute(A_Value + Prefix, textBoxConstantValue.Text);
+                    OptionalElement?.SetAttribute(A_Value + Prefix, textBoxConstantValue.Text);
             }
             else if (radioButtonContext.Checked)
                 SetAttribute(A_Type, "Context");
@@ -207,13 +207,13 @@ namespace LayoutManager.CommonUI.Controls {
         protected string? GetAttribute(string name, string? defaultValue) {
             string attributeName = Prefix + name;
 
-            return Element == null || !Element.HasAttribute(attributeName) ? defaultValue : Element.GetAttribute(attributeName);
+            return OptionalElement == null || !OptionalElement.HasAttribute(attributeName) ? defaultValue : OptionalElement.GetAttribute(attributeName);
         }
 
         protected string? GetAttribute(string name) => GetAttribute(name, null);
 
         protected void SetAttribute(string name, string value) {
-            Element?.SetAttribute(Prefix + name, value);
+            OptionalElement?.SetAttribute(Prefix + name, value);
         }
 
         /// <summary> 

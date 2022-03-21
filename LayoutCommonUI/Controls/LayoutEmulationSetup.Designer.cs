@@ -66,6 +66,9 @@
             // 
             // LayoutEmulationSetup
             // 
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.Controls.Add(this.groupBoxEmulationServices);
             this.Name = "LayoutEmulationSetup";
             this.Size = new System.Drawing.Size(338, 97);

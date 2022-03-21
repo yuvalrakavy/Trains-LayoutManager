@@ -15,7 +15,7 @@ namespace LayoutManager.Model {
     /// to what type of connection point it may be connected
     /// </summary>
     public static class ControlConnectionPointTypes {
-        public const string Output = "Output;";
+        public const string Output = "Output";
         public const string OutputOnOff = Output + "OnOff";
         public const string OutputSolenoid = Output + "Solenoid";
         public const string OutputRelay = Output + "Relay";
@@ -241,7 +241,7 @@ namespace LayoutManager.Model {
         public bool IsCompatibleWith(params string[] connectionTypes) {
             string myConnectionTypes = ConnectionTypes;
 
-            return connectionTypes.Any(connectionType => connectionType.Contains(myConnectionTypes));
+            return connectionTypes.Any(connectionType => myConnectionTypes.Contains(connectionType));
         }
     }
 
@@ -595,7 +595,7 @@ namespace LayoutManager.Model {
                     }
             }
 
-            return moduleTypeFound && Dispatch.Call.CanControlBeConnected(connectionDestination, module.Id, index, module.ModuleTypeName);
+            return moduleTypeFound && (Dispatch.Call.CanControlBeConnected(connectionDestination, module.Id, index, module.ModuleTypeName) ?? true);
         }
 
         /// <summary>

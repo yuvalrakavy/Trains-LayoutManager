@@ -1285,9 +1285,9 @@ namespace LayoutManager {
 
         static DispatchSource? ds_CanControlBeConnected = null;
         [DispatchSource]
-        public static bool CanControlBeConnected(this Dispatcher d, ControlConnectionPointDestination destination, Guid moduleId, int index, string moduleTypeName) {
+        public static bool? CanControlBeConnected(this Dispatcher d, ControlConnectionPointDestination destination, Guid moduleId, int index, string moduleTypeName) {
             ds_CanControlBeConnected ??= d[nameof(CanControlBeConnected)];
-            return ds_CanControlBeConnected.CallBoolFunctions(invokeUntil: true, invokeAll: false, destination, moduleId, index, moduleTypeName);
+            return ds_CanControlBeConnected.Call<bool?>(destination, moduleId, index, moduleTypeName);
         }
 
         static DispatchSource? ds_GetControlConnectPointLabel = null;

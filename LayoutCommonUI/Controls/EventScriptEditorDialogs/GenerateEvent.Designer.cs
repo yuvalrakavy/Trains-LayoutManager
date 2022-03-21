@@ -58,7 +58,7 @@
             // generateEventArgumentSender
             // 
             this.generateEventArgumentSender.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.generateEventArgumentSender.Element = null;
+            this.generateEventArgumentSender.OptionalElement = null;
             this.generateEventArgumentSender.Location = new System.Drawing.Point(3, 16);
             this.generateEventArgumentSender.Name = "generateEventArgumentSender";
             this.generateEventArgumentSender.Prefix = "Arg";
@@ -78,7 +78,7 @@
             // generateEventArgumentInfo
             // 
             this.generateEventArgumentInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.generateEventArgumentInfo.Element = null;
+            this.generateEventArgumentInfo.OptionalElement = null;
             this.generateEventArgumentInfo.Location = new System.Drawing.Point(3, 16);
             this.generateEventArgumentInfo.Name = "generateEventArgumentInfo";
             this.generateEventArgumentInfo.Prefix = "Arg";

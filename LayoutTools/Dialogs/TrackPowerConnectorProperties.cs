@@ -20,7 +20,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             var info = new LayoutTrackPowerConnectorInfo(XmlInfo.Element);
 
-            if (info.Element == null)
+            if (info.OptionalElement == null)
                 info.Element = LayoutInfo.CreateProviderElement(XmlInfo.Element, "TrackPowerConnector", null);
 
             foreach (IModelComponentHasPowerOutlets componentWithPowerSources in LayoutModel.Components<IModelComponentHasPowerOutlets>(LayoutPhase.All)) {
@@ -103,7 +103,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             CommonUI.Dialogs.TextProviderSettings settings = new(XmlInfo, powerSourceNameInfo);
 
-            if (powerSourceNameInfo.Element == null)
+            if (powerSourceNameInfo.OptionalElement == null)
                 powerSourceNameInfo.Element = LayoutInfo.CreateProviderElement(XmlInfo.Element, "PowerSourceName", null);
 
             settings.ShowDialog(this);

@@ -117,6 +117,7 @@ namespace LayoutManager.Tools.Dialogs {
 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(364, 222);
             this.ControlBox = false;
             this.Controls.Add(this.checkBoxDetectReverseLoops);

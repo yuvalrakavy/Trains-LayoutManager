@@ -71,7 +71,7 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             }
 
             numericValue.Element = element;
-            operandValueOf.Element = element;
+            operandValueOf.OptionalElement = element;
             operandValueOf.Suffix = "To";
             operandValueOf.AllowedTypes = new Type[] { typeof(string), typeof(Enum), typeof(int) };
             operandValueOf.Initialize();

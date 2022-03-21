@@ -896,7 +896,6 @@
             // 
             // toolStrip
             // 
-            this.toolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolBarButtonOpenLayout,
             this.toolBarButtonSaveLayout,
@@ -988,6 +987,7 @@
             this.toolBarButtonSimulation.Name = "toolBarButtonSimulation";
             this.toolBarButtonSimulation.Size = new System.Drawing.Size(46, 36);
             this.toolBarButtonSimulation.Text = "toolBarButtonSimulation";
+            this.toolBarButtonSimulation.ToolTipText = "Emulate layout operation";
             this.toolBarButtonSimulation.Click += new System.EventHandler(this.MenuItemSimulation_Click);
             // 
             // toolStripSeparator17
@@ -1294,7 +1294,6 @@
             // 
             // tabAreas
             // 
-            this.tabAreas.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.tabAreas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabAreas.Location = new System.Drawing.Point(2, 2);
             this.tabAreas.Name = "tabAreas";
@@ -1307,9 +1306,9 @@
             this.messageViewer.AutoSize = true;
             this.messageViewer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.messageViewer.BackColor = System.Drawing.SystemColors.Control;
-            this.messageViewer.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.messageViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.messageViewer.Location = new System.Drawing.Point(0, 4);
+            this.messageViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.messageViewer.Name = "messageViewer";
             this.messageViewer.Size = new System.Drawing.Size(844, 287);
             this.messageViewer.TabIndex = 0;
@@ -1319,7 +1318,6 @@
             this.locomotivesViewer.AutoSize = true;
             this.locomotivesViewer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.locomotivesViewer.BackColor = System.Drawing.SystemColors.Control;
-            this.locomotivesViewer.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.locomotivesViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.locomotivesViewer.Location = new System.Drawing.Point(4, 0);
             this.locomotivesViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);

@@ -333,7 +333,7 @@ namespace LayoutManager {
 
         public bool IsTrue {
             get {
-                if (element == null || element.ChildNodes.Count < 1)
+                if (element.ChildNodes.Count < 1)
                     return defaultValue;
 
                 using LayoutEventScriptTask task = new(this, (XmlElement)element.ChildNodes[0]!, ScriptContext);

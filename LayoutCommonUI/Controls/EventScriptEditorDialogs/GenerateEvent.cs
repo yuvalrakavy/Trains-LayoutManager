@@ -24,10 +24,10 @@ namespace LayoutManager.CommonUI.Controls.EventScriptEditorDialogs {
             if (element.HasAttribute("EventName"))
                 comboBoxEventName.Text = element.GetAttribute("EventName");
 
-            generateEventArgumentSender.Element = element;
+            generateEventArgumentSender.OptionalElement = element;
             generateEventArgumentSender.Prefix = "Sender";
 
-            generateEventArgumentInfo.Element = element;
+            generateEventArgumentInfo.OptionalElement = element;
             generateEventArgumentInfo.Prefix = "Info";
 
             generateEventArgumentSender.Initialize();

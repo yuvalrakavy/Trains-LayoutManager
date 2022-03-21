@@ -475,7 +475,7 @@ namespace LayoutManager.Model {
         }
 
         public override void Commit() {
-            if (ProgrammingTarget.AddressProvider.Element == null)
+            if (ProgrammingTarget.AddressProvider.OptionalElement == null)
                 ProgrammingTarget.AddressProvider.Element = LayoutInfo.CreateProviderElement(ProgrammingTarget.Element, A_Address, null);
 
             ProgrammingTarget.AddressProvider.Unit = Address;

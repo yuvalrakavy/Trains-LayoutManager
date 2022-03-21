@@ -278,7 +278,7 @@ namespace LayoutManager.Model {
         private const string A_Origin = "Origin";
 
         public LocomotiveCatalogInfo() : base(Ensure.NotNull<XmlElement>(LayoutModel.Instance.XmlInfo.DocumentElement[E_LocomotiveCatalog])) {
-            if (Element == null) {
+            if (OptionalElement == null) {
                 Element = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, E_LocomotiveCatalog, null);
 
                 Element.InnerXml = "<Stores DefaultStore='0'><Store Name='Standard Locomotives' File='" +
@@ -354,7 +354,7 @@ namespace LayoutManager.Model {
         private const string E_Train = "Train";
 
         public LocomotiveCollectionInfo() : base(Ensure.NotNull<XmlElement>(LayoutModel.Instance.XmlInfo.DocumentElement["LocomotiveCollection"])) {
-            if (Element == null) {
+            if (OptionalElement == null) {
                 Element = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "LocomotiveCollection", null);
 
                 Element.InnerXml = "<Stores DefaultStore='0'><Store Name='My collection' File='" +

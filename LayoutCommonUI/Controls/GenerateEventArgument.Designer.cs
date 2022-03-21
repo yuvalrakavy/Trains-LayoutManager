@@ -50,7 +50,7 @@
             // 
             this.operandValueOf.AllowedTypes = null;
             this.operandValueOf.DefaultAccess = "Property";
-            this.operandValueOf.Element = null;
+            this.operandValueOf.OptionalElement = null;
             this.operandValueOf.Location = new System.Drawing.Point(8, 45);
             this.operandValueOf.Name = "operandValueOf";
             this.operandValueOf.Size = new System.Drawing.Size(176, 64);

@@ -90,7 +90,7 @@ namespace LayoutManager.Logic {
                     for (int i = 0; i < locomotives.Count; i++) {
                         LocomotiveInfo loco1 = locomotives[i].Locomotive;
 
-                        if (loco1.AddressProvider.Element == null) {
+                        if (loco1.AddressProvider.OptionalElement == null) {
                             return new CanPlaceTrainResult {
                                 Status = CanPlaceTrainStatus.LocomotiveHasNoAddress,
                                 Locomotive = loco1,
@@ -151,7 +151,7 @@ namespace LayoutManager.Logic {
                     LocomotiveInfo loco = new(placeableElement);
 
                     if (!loco.NotManaged) {
-                        if (loco.AddressProvider.Element == null || loco.AddressProvider.Unit <= 0) {
+                        if (loco.AddressProvider.OptionalElement == null || loco.AddressProvider.Unit <= 0) {
                             return new CanPlaceTrainResult() {
                                 Status = CanPlaceTrainStatus.LocomotiveHasNoAddress,
                                 Locomotive = loco,

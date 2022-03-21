@@ -25,7 +25,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         public string Suffix { get; set; } = "";
 
-        public XmlElement? Element { get; set; } = null;
+        public XmlElement? OptionalElement { get; set; } = null;
 
         public string DefaultAccess { get; set; } = "Property";
 
@@ -34,18 +34,18 @@ namespace LayoutManager.CommonUI.Controls {
         #endregion
 
         public void Initialize() {
-            if (Element == null)
+            if (OptionalElement == null)
                 throw new ArgumentException("Element not set");
 
-            string symbolAccess = Element.GetAttribute("Symbol" + Suffix + "Access");
+            string symbolAccess = OptionalElement.GetAttribute("Symbol" + Suffix + "Access");
 
             if (symbolAccess == null || symbolAccess == "")
                 symbolAccess = DefaultAccess;
 
             InitializePropertyOrAttributeSelector();
 
-            comboBoxSymbol.Text = Element.GetAttribute("Symbol" + Suffix);
-            comboBoxTag.Text = Element.GetAttribute("Name" + Suffix);
+            comboBoxSymbol.Text = OptionalElement.GetAttribute("Symbol" + Suffix);
+            comboBoxTag.Text = OptionalElement.GetAttribute("Name" + Suffix);
 
             if (symbolAccess == "Property")
                 linkMenuPropertyOrAttribute.SelectedIndex = 0;
@@ -77,9 +77,9 @@ namespace LayoutManager.CommonUI.Controls {
                 return false;
 
             if (linkMenuPropertyOrAttribute.SelectedIndex == 0)
-                Element?.SetAttribute(accessAttribute, "Property");
+                OptionalElement?.SetAttribute(accessAttribute, "Property");
             else
-                Element?.SetAttribute(accessAttribute, "Attribute");
+                OptionalElement?.SetAttribute(accessAttribute, "Attribute");
 
             if (comboBoxTag.SelectedItem == null) {
                 foreach (TagEntry entry in comboBoxTag.Items) {
@@ -90,11 +90,11 @@ namespace LayoutManager.CommonUI.Controls {
                 }
             }
 
-            Element?.SetAttribute("Symbol" + Suffix, comboBoxSymbol.Text);
-            Element?.SetAttribute("Name" + Suffix, comboBoxTag.Text);
+            OptionalElement?.SetAttribute("Symbol" + Suffix, comboBoxSymbol.Text);
+            OptionalElement?.SetAttribute("Name" + Suffix, comboBoxTag.Text);
 
             if (comboBoxTag.SelectedItem != null)
-                Element?.SetAttribute("Type" + Suffix, ((TagEntry)comboBoxTag.SelectedItem).TypeName);
+                OptionalElement?.SetAttribute("Type" + Suffix, ((TagEntry)comboBoxTag.SelectedItem).TypeName);
 
             return ok;
         }
