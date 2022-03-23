@@ -84,6 +84,9 @@
             this.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                           this.groupBoxFont});
             this.Name = "TextProviderFontDefinition";
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoSize = true;
             this.Size = new System.Drawing.Size(320, 112);
             this.groupBoxFont.ResumeLayout(false);
             this.ResumeLayout(false);

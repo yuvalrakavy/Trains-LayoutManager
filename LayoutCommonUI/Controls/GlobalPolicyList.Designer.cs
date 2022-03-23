@@ -26,6 +26,9 @@
             // 
             this.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                           this.buttonStartStop});
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.Name = "GlobalPolicyList";
             this.ResumeLayout(false);
         }

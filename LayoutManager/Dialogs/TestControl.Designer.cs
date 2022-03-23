@@ -44,6 +44,7 @@ namespace LayoutManager.Dialogs {
             this.AcceptButton = this.buttonClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonClose;
             this.ClientSize = new System.Drawing.Size(292, 266);
             this.Controls.Add(this.selectTripPlanIcon1);

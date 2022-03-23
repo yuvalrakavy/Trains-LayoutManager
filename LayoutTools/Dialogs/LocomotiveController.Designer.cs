@@ -45,9 +45,10 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             this.panelInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelInfo.Location = new System.Drawing.Point(3, 1);
+            this.panelInfo.Location = new System.Drawing.Point(8, 2);
+            this.panelInfo.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.panelInfo.Name = "panelInfo";
-            this.panelInfo.Size = new System.Drawing.Size(188, 56);
+            this.panelInfo.Size = new System.Drawing.Size(489, 138);
             this.panelInfo.TabIndex = 0;
             // 
             // imageListMotionButtons
@@ -67,9 +68,10 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonBackward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonBackward.ImageIndex = 0;
             this.buttonBackward.ImageList = this.imageListMotionButtons;
-            this.buttonBackward.Location = new System.Drawing.Point(5, 64);
+            this.buttonBackward.Location = new System.Drawing.Point(13, 158);
+            this.buttonBackward.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonBackward.Name = "buttonBackward";
-            this.buttonBackward.Size = new System.Drawing.Size(32, 23);
+            this.buttonBackward.Size = new System.Drawing.Size(83, 57);
             this.buttonBackward.TabIndex = 1;
             this.toolTips.SetToolTip(this.buttonBackward, "Backward");
             // 
@@ -78,9 +80,10 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonStop.ImageIndex = 1;
             this.buttonStop.ImageList = this.imageListMotionButtons;
-            this.buttonStop.Location = new System.Drawing.Point(40, 64);
+            this.buttonStop.Location = new System.Drawing.Point(104, 158);
+            this.buttonStop.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(32, 23);
+            this.buttonStop.Size = new System.Drawing.Size(83, 57);
             this.buttonStop.TabIndex = 2;
             this.toolTips.SetToolTip(this.buttonStop, "Stop");
             // 
@@ -89,18 +92,20 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonForward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonForward.ImageIndex = 2;
             this.buttonForward.ImageList = this.imageListMotionButtons;
-            this.buttonForward.Location = new System.Drawing.Point(76, 64);
+            this.buttonForward.Location = new System.Drawing.Point(198, 158);
+            this.buttonForward.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonForward.Name = "buttonForward";
-            this.buttonForward.Size = new System.Drawing.Size(32, 23);
+            this.buttonForward.Size = new System.Drawing.Size(83, 57);
             this.buttonForward.TabIndex = 3;
             this.toolTips.SetToolTip(this.buttonForward, "Forward");
             // 
             // buttonFunction
             // 
             this.buttonFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonFunction.Location = new System.Drawing.Point(165, 64);
+            this.buttonFunction.Location = new System.Drawing.Point(429, 158);
+            this.buttonFunction.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonFunction.Name = "buttonFunction";
-            this.buttonFunction.Size = new System.Drawing.Size(56, 23);
+            this.buttonFunction.Size = new System.Drawing.Size(146, 57);
             this.buttonFunction.TabIndex = 5;
             this.buttonFunction.Text = "Function";
             // 
@@ -111,9 +116,10 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonLight.ImageIndex = 3;
             this.buttonLight.ImageList = this.imageListMotionButtons;
-            this.buttonLight.Location = new System.Drawing.Point(133, 64);
+            this.buttonLight.Location = new System.Drawing.Point(346, 158);
+            this.buttonLight.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonLight.Name = "buttonLight";
-            this.buttonLight.Size = new System.Drawing.Size(26, 23);
+            this.buttonLight.Size = new System.Drawing.Size(68, 57);
             this.buttonLight.TabIndex = 4;
             this.toolTips.SetToolTip(this.buttonLight, "Turn lights on/off");
             // 
@@ -143,9 +149,10 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonLocate.ImageIndex = 4;
             this.buttonLocate.ImageList = this.imageListMotionButtons;
-            this.buttonLocate.Location = new System.Drawing.Point(193, 27);
+            this.buttonLocate.Location = new System.Drawing.Point(502, 66);
+            this.buttonLocate.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonLocate.Name = "buttonLocate";
-            this.buttonLocate.Size = new System.Drawing.Size(26, 23);
+            this.buttonLocate.Size = new System.Drawing.Size(68, 57);
             this.buttonLocate.TabIndex = 6;
             this.toolTips.SetToolTip(this.buttonLocate, "Locate locomotive");
             // 
@@ -154,9 +161,10 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonProperties.ImageIndex = 5;
             this.buttonProperties.ImageList = this.imageListMotionButtons;
-            this.buttonProperties.Location = new System.Drawing.Point(193, 1);
+            this.buttonProperties.Location = new System.Drawing.Point(502, 2);
+            this.buttonProperties.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonProperties.Name = "buttonProperties";
-            this.buttonProperties.Size = new System.Drawing.Size(26, 23);
+            this.buttonProperties.Size = new System.Drawing.Size(68, 57);
             this.buttonProperties.TabIndex = 7;
             this.toolTips.SetToolTip(this.buttonProperties, "Edit train configuration");
             // 
@@ -167,9 +175,10 @@ namespace LayoutManager.Tools.Dialogs {
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelDriverInstructions.BackColor = System.Drawing.SystemColors.Control;
             this.labelDriverInstructions.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.labelDriverInstructions.Location = new System.Drawing.Point(5, 104);
+            this.labelDriverInstructions.Location = new System.Drawing.Point(13, 256);
+            this.labelDriverInstructions.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.labelDriverInstructions.Name = "labelDriverInstructions";
-            this.labelDriverInstructions.Size = new System.Drawing.Size(173, 18);
+            this.labelDriverInstructions.Size = new System.Drawing.Size(450, 44);
             this.labelDriverInstructions.TabIndex = 8;
             this.labelDriverInstructions.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -177,50 +186,56 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             this.panelSpeedLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelSpeedLimit.Controls.Add(this.labelSpeedLimit);
-            this.panelSpeedLimit.Location = new System.Drawing.Point(185, 94);
+            this.panelSpeedLimit.Location = new System.Drawing.Point(481, 231);
+            this.panelSpeedLimit.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.panelSpeedLimit.Name = "panelSpeedLimit";
-            this.panelSpeedLimit.Size = new System.Drawing.Size(34, 34);
+            this.panelSpeedLimit.Size = new System.Drawing.Size(88, 84);
             this.panelSpeedLimit.TabIndex = 9;
             // 
             // labelSpeedLimit
             // 
             this.labelSpeedLimit.BackColor = System.Drawing.Color.Transparent;
             this.labelSpeedLimit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.labelSpeedLimit.Location = new System.Drawing.Point(2, 7);
+            this.labelSpeedLimit.Location = new System.Drawing.Point(5, 17);
+            this.labelSpeedLimit.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.labelSpeedLimit.Name = "labelSpeedLimit";
-            this.labelSpeedLimit.Size = new System.Drawing.Size(30, 20);
+            this.labelSpeedLimit.Size = new System.Drawing.Size(78, 49);
             this.labelSpeedLimit.TabIndex = 0;
             this.labelSpeedLimit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // buttonBackwardMenu
             // 
             this.buttonBackwardMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonBackwardMenu.Location = new System.Drawing.Point(5, 87);
+            this.buttonBackwardMenu.Location = new System.Drawing.Point(13, 214);
+            this.buttonBackwardMenu.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonBackwardMenu.Name = "buttonBackwardMenu";
-            this.buttonBackwardMenu.Size = new System.Drawing.Size(32, 10);
+            this.buttonBackwardMenu.Size = new System.Drawing.Size(83, 25);
             this.buttonBackwardMenu.TabIndex = 10;
             // 
             // buttonStopMenu
             // 
             this.buttonStopMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonStopMenu.Location = new System.Drawing.Point(40, 87);
+            this.buttonStopMenu.Location = new System.Drawing.Point(104, 214);
+            this.buttonStopMenu.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonStopMenu.Name = "buttonStopMenu";
-            this.buttonStopMenu.Size = new System.Drawing.Size(32, 10);
+            this.buttonStopMenu.Size = new System.Drawing.Size(83, 25);
             this.buttonStopMenu.TabIndex = 10;
             // 
             // buttonForwardMenu
             // 
             this.buttonForwardMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonForwardMenu.Location = new System.Drawing.Point(76, 87);
+            this.buttonForwardMenu.Location = new System.Drawing.Point(198, 214);
+            this.buttonForwardMenu.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.buttonForwardMenu.Name = "buttonForwardMenu";
-            this.buttonForwardMenu.Size = new System.Drawing.Size(32, 10);
+            this.buttonForwardMenu.Size = new System.Drawing.Size(83, 25);
             this.buttonForwardMenu.TabIndex = 10;
             // 
             // LocomotiveController
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(224, 130);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(582, 320);
             this.Controls.Add(this.buttonBackwardMenu);
             this.Controls.Add(this.panelSpeedLimit);
             this.Controls.Add(this.labelDriverInstructions);
@@ -235,7 +250,8 @@ namespace LayoutManager.Tools.Dialogs {
             this.Controls.Add(this.buttonStopMenu);
             this.Controls.Add(this.buttonForwardMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MinimumSize = new System.Drawing.Size(220, 104);
+            this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.MinimumSize = new System.Drawing.Size(530, 152);
             this.Name = "LocomotiveController";
             this.Text = "LocomotiveController";
             this.contextMenuLights.ResumeLayout(false);

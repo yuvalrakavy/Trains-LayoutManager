@@ -146,6 +146,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(206, 175);
             this.Controls.Add(this.buttonSwap);
             this.Controls.Add(this.buttonDisconnect);

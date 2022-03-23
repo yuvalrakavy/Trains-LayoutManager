@@ -130,6 +130,9 @@
             this.Controls.Add(this.radioButtonNull);
             this.Controls.Add(this.operandValueOf);
             this.Name = "GenerateEventArgument";
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.Size = new System.Drawing.Size(264, 160);
             this.ResumeLayout(false);
         }

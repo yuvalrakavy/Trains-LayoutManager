@@ -152,6 +152,9 @@
 			// 
 			// FindComponents
 			// 
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+			this.AutoSize = true;
 			this.AcceptButton = this.buttonSearch;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(292, 213);

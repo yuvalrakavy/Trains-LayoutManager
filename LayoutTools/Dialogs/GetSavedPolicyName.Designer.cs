@@ -80,8 +80,9 @@ namespace LayoutManager.Tools.Dialogs {
 			// GetSavedPolicyName
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(5F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(292, 87);
 			this.ControlBox = false;

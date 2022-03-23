@@ -186,6 +186,7 @@
             this.AcceptButton = this.buttonPassed;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(223, 168);
             this.Controls.Add(this.radioButtonOff);
             this.Controls.Add(this.buttonConnect);

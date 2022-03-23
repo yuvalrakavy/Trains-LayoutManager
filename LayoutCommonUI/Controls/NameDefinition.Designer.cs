@@ -59,6 +59,9 @@
                                                                           this.buttonSettings,
                                                                           this.labelName});
             this.Name = "NameDefinition";
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoSize = true;
             this.Size = new System.Drawing.Size(280, 53);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);

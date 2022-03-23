@@ -78,7 +78,6 @@ namespace LayoutManager.Tools.Dialogs {
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoSize = true;
             this.AcceptButton = this.buttonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(312, 78);
             this.ControlBox = false;

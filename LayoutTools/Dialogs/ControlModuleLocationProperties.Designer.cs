@@ -152,7 +152,9 @@ namespace LayoutManager.Tools.Dialogs {
             // ControlModuleLocationProperties
             // 
             this.AcceptButton = this.buttonOK;
+            this.AutoScaleMode = AutoScaleMode.Font;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(386, 325);
             this.ControlBox = false;

@@ -92,6 +92,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.AcceptButton = this.buttonClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(645, 665);
             this.ControlBox = false;
             this.Controls.Add(this.buttonClose);

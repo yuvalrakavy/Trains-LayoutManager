@@ -155,6 +155,7 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(290, 306);
             this.ControlBox = false;
             this.Controls.Add(this.buttonCancel);

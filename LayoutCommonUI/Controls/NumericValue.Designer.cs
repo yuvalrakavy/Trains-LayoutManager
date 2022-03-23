@@ -42,6 +42,9 @@
             this.Controls.Add(this.textBoxValue);
             this.Controls.Add(this.linkMenuOperation);
             this.Name = "NumericValue";
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoSize = true;
             this.Size = new System.Drawing.Size(168, 27);
             this.ResumeLayout(false);
         }

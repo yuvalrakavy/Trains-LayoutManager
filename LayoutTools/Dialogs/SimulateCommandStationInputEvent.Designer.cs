@@ -150,6 +150,7 @@
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+			this.AutoSize = true;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(367, 124);
 			this.ControlBox = false;

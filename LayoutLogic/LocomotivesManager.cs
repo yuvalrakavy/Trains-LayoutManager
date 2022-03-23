@@ -1370,13 +1370,13 @@ namespace LayoutManager.Logic {
 
         public bool RebuildComponentsState(LayoutPhase phase) {
             ArrayList removeList = new();
+            bool allComonentsFound = true;
 
             LayoutModel.StateManager.Components.IdToComponentStateElement.Clear();
 
             foreach (XmlElement componentStateElement in LayoutModel.StateManager.Components.Element) {
                 var componentID = (Guid)componentStateElement.AttributeValue(A_Id);
                 var component = LayoutModel.Component<ModelComponent>(componentID, LayoutPhase.All);
-                bool validStateComponent = true;
                 var topicRemoveList = new List<XmlElement>();
 
                 if (component != null) {
@@ -1389,24 +1389,21 @@ namespace LayoutManager.Logic {
                         componentStateElement.RemoveChild(topicElementToRemove);
 
                     if (componentStateElement.ChildNodes.Count == 0)        // No topics, remove it
-                        validStateComponent = false;
-
-                    if (validStateComponent)
+                        removeList.Add(componentStateElement);
+                    else
                         LayoutModel.StateManager.Components.IdToComponentStateElement.Add(componentID, componentStateElement);
                 }
                 else {
                     Warning("Component was removed from layout - its runtime state is ignored");
-                    validStateComponent = false;
-                }
-
-                if (!validStateComponent)
+                    allComonentsFound = false;
                     removeList.Add(componentStateElement);
+                }
             }
 
             foreach (XmlElement componentStateElement in removeList)
                 LayoutModel.StateManager.Components.Element.RemoveChild(componentStateElement);
 
-            return removeList.Count == 0;
+            return allComonentsFound;
         }
 
         private bool VerifyTrackContactState(LayoutPhase phase) {

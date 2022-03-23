@@ -134,6 +134,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.AcceptButton = this.buttonClose;
             this.AutoScaleMode = AutoScaleMode.Font;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(336, 230);
             this.ControlBox = false;
             this.Controls.AddRange(new System.Windows.Forms.Control[] {

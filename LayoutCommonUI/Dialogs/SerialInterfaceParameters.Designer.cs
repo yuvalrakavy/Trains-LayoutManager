@@ -342,6 +342,9 @@
 			// 
 			this.AcceptButton = this.buttonOK;
 			this.CancelButton = this.buttonCancel;
+			this.AutoScaleMode = AutoScaleMode.Font;
+			this.AutoScaleDimensions = new SizeF(5, 13);
+			this.AutoSize = true;
 			this.ClientSize = new System.Drawing.Size(316, 441);
 			this.ControlBox = false;
 			this.Controls.Add(this.groupBox1);

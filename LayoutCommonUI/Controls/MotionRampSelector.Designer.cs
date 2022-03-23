@@ -58,6 +58,9 @@
             this.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                           this.groupBoxRampSelector});
             this.Name = "MotionRampSelector";
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoSize = true;
             this.Size = new System.Drawing.Size(272, 41);
             this.groupBoxRampSelector.ResumeLayout(false);
             this.ResumeLayout(false);

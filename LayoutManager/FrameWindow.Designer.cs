@@ -1192,6 +1192,7 @@
             // 
             this.splitControlViewer.Panel1.BackColor = System.Drawing.Color.MidnightBlue;
             this.splitControlViewer.Panel1.Controls.Add(this.layoutControlViewer);
+            this.splitControlViewer.Panel1.Cursor = System.Windows.Forms.Cursors.Default;
             this.splitControlViewer.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
             // 
             // splitControlViewer.Panel2
@@ -1225,11 +1226,13 @@
             // splitContainerLocomotivesViewer.Panel1
             // 
             this.splitContainerLocomotivesViewer.Panel1.Controls.Add(this.splitContainerMessageViewer);
+            this.splitContainerLocomotivesViewer.Panel1.Cursor = System.Windows.Forms.Cursors.Default;
             // 
             // splitContainerLocomotivesViewer.Panel2
             // 
             this.splitContainerLocomotivesViewer.Panel2.BackColor = System.Drawing.Color.MidnightBlue;
             this.splitContainerLocomotivesViewer.Panel2.Controls.Add(this.locomotivesViewer);
+            this.splitContainerLocomotivesViewer.Panel2.Cursor = System.Windows.Forms.Cursors.Default;
             this.splitContainerLocomotivesViewer.Panel2.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
             this.splitContainerLocomotivesViewer.Size = new System.Drawing.Size(1383, 1022);
             this.splitContainerLocomotivesViewer.SplitterDistance = 844;
@@ -1247,11 +1250,13 @@
             // splitContainerMessageViewer.Panel1
             // 
             this.splitContainerMessageViewer.Panel1.Controls.Add(this.splitContainerTripsMonitor);
+            this.splitContainerMessageViewer.Panel1.Cursor = System.Windows.Forms.Cursors.Default;
             // 
             // splitContainerMessageViewer.Panel2
             // 
             this.splitContainerMessageViewer.Panel2.BackColor = System.Drawing.Color.Teal;
             this.splitContainerMessageViewer.Panel2.Controls.Add(this.messageViewer);
+            this.splitContainerMessageViewer.Panel2.Cursor = System.Windows.Forms.Cursors.Default;
             this.splitContainerMessageViewer.Panel2.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.splitContainerMessageViewer.Size = new System.Drawing.Size(844, 1022);
             this.splitContainerMessageViewer.SplitterDistance = 725;

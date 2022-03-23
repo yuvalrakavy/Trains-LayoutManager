@@ -308,6 +308,9 @@ namespace LayoutManager.Tools.Controls {
             // 
             // TripPlanEditor
             // 
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.Controls.Add(this.tabControl1);
             this.Name = "TripPlanEditor";
             this.Size = new System.Drawing.Size(336, 224);

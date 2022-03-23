@@ -88,8 +88,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // CommandStationStopped
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(405, 137);
             this.ControlBox = false;
             this.Controls.Add(this.buttonAbortTrips);

@@ -66,6 +66,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.CancelButton = this.buttonCancel;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(177, 179);
             this.ControlBox = false;
             this.Controls.Add(this.locomotiveFrontControl);

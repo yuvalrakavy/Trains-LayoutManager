@@ -150,7 +150,9 @@
 // LearnLayout
 // 
 			this.AcceptButton = this.buttonClose;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+			this.AutoSize = true;
 			this.CancelButton = this.buttonClose;
 			this.ClientSize = new System.Drawing.Size(529, 337);
 			this.Controls.Add(this.checkBoxOnlyShowNotConnected);

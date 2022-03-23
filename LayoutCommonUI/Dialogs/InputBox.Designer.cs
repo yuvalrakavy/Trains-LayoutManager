@@ -58,6 +58,9 @@
                                                                           this.textBox,
                                                                           this.labelPrompt});
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(5, 13);
+            this.AutoSize = true;
             this.Name = "InputBox";
             this.ShowInTaskbar = false;
             this.Text = "InputBox";

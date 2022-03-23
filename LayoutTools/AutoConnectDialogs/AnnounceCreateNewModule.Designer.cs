@@ -58,6 +58,8 @@ namespace LayoutManager.Tools.AutoConnectDialogs {
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(304, 134);
             this.ControlBox = false;

@@ -337,6 +337,8 @@ namespace LayoutManager {
                     }
 
                     Dispatch.Call.EnterOperationModeAsync().Wait(500);
+                    Dispatch.Notification.OnEnteredOperationMode(settings);
+
                     LayoutModel.Instance.Redraw();
                 }
                 catch (AggregateException ex) {

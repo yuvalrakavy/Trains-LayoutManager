@@ -91,6 +91,9 @@
                                                                           this.buttonEdit,
                                                                           this.buttonRemove});
             this.Name = "AttributesEditor";
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.Size = new System.Drawing.Size(256, 200);
             this.ResumeLayout(false);
         }

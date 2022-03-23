@@ -45,9 +45,10 @@
 			this.buttonCancel.TabIndex = 1;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
-// 
-// PickComponentToConnectToAddress
-// 
+			// 
+			// PickComponentToConnectToAddress
+			// 
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
 			this.AutoSize = true;
 			this.ClientSize = new System.Drawing.Size(159, 67);

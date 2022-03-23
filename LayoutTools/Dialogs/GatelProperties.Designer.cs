@@ -365,6 +365,9 @@ namespace LayoutManager.Tools.Dialogs {
             // 
             // GateProperties
             // 
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(290, 306);
             this.ControlBox = false;
             this.Controls.Add(this.buttonCancel);
