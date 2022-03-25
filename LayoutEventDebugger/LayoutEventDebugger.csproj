@@ -75,6 +75,13 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="TraceManager.cs" />
+    <Compile Remove="TraceManager.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="TraceManager.resx" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\LayoutManagerModel\LayoutManagerModel.csproj" />
     <Reference Update="System">
       <Name>System</Name>

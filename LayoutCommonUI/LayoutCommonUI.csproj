@@ -197,6 +197,9 @@
     <Compile Update="Controls\XmlQueryListbox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Dialogs\TraceManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="LayoutControlBusViewer.cs" />
     <Compile Update="Controls\TrainLengthDiagram.cs">
       <SubType>UserControl</SubType>
