@@ -1,6 +1,6 @@
 <DisplayState Mode="Design" ActiveWindowIndex="0">
   <WindowStates>
-    <WindowState WindowState="Normal" Left="486" Top="283" Width="1476" Height="802" ActiveAreaIndex="0" LocomotiveViewerVisible="false" LocomotiveViewerWidth="503" ControlViewerVisible="false" ControlViewerWidth="290" MessagesViewerVisible="false" MessagesViewerHeight="651" TripsViewerHeight="346">
+    <WindowState WindowState="Normal" Left="486" Top="283" Width="1476" Height="802" ActiveAreaIndex="0" LocomotiveViewerVisible="false" LocomotiveViewerWidth="503" ControlViewerVisible="false" ControlViewerWidth="290" MessagesViewerVisible="true" MessagesViewerHeight="651" TripsViewerHeight="118">
       <AreaStates>
         <AreaState ID="28e049ed-ea12-4c3a-93ac-666d87e6fe4c" ActiveViewIndex="0">
           <ViewStates>

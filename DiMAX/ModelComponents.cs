@@ -103,10 +103,6 @@ namespace DiMAX {
             outputManager = new OutputManager(Name, 1);
             OutputManager.Start();
 
-            // Until every one is really happy...
-            TraceDiMAX.Level = TraceLevel.Off;
-            TraceRawData.Level = TraceLevel.Off;
-
             // And finally begin an asynchronous read
             CommunicationStream?.BeginRead(lengthAndCommand, 0, lengthAndCommand.Length, new AsyncCallback(this.OnReadLengthAndCommandDone), null);
 

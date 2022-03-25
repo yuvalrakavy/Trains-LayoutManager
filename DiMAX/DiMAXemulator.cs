@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,8 +16,8 @@ namespace DiMAX {
         private readonly string pipeName;
         private readonly CancellationTokenSource stopInterfaceThrad;
         private readonly Task interfaceTask;
+        private NamedPipeServerStream? commStream;
 
-        private FileStream? commStream;
         private readonly ILayoutEmulatorServices layoutEmulationServices;
         private readonly ILayoutInterThreadEventInvoker interThreadEventInvoker;
         private readonly Dictionary<int, PositionEntry> positions = new();
@@ -26,8 +27,6 @@ namespace DiMAX {
             this.commandStationId = commandStation.Id;
             this.pipeName = pipeName;
             this.interThreadEventInvoker = Dispatch.Call.GetInterthreadInvoker();
-
-            traceDiMAXemulator.Level = TraceLevel.Off;      // Until it seems to work
 
             layoutEmulationServices = Dispatch.Call.GetLayoutEmulationServices();
             Dispatch.Call.InitializeLayoutEmulation(commandStation.EmulateTrainMotion, commandStation.EmulationTickTime);
@@ -46,12 +45,17 @@ namespace DiMAX {
         }
 
         private async Task InterfaceThreadFunction(CancellationToken stopMe) {
-            commStream = Dispatch.Call.WaitNamedPipeRequest(pipeName, true);
+            commStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+
             layoutEmulationServices.LocomotiveMoved += LayoutEmulationServices_LocomotiveMoved;
             layoutEmulationServices.LocomotiveFallFromTrack += (s, ea) => InterfaceThreadError(ea.Location.Track, $"Locomotive (address {ea.Unit}) fall from track");
 
             try {
-                while (true) {
+                Trace.WriteLineIf(traceDiMAXemulator.TraceInfo, $"DiMAX Emulator: waiting for connection on named pipe {pipeName}");
+                await commStream.WaitForConnectionAsync(stopMe);
+                Trace.WriteLineIf(traceDiMAXemulator.TraceInfo, "DiMAX Emulator: connected");
+
+                while (!stopMe.IsCancellationRequested) {
                     var commandAndLengthBuffer = new byte[1];
 
                     await commStream.ReadAsync(commandAndLengthBuffer.AsMemory(0, 1), stopMe);
@@ -60,7 +64,9 @@ namespace DiMAX {
 
                     byte commandAndLength = commandAndLengthBuffer[0];
 
+
                     int length = (commandAndLength & 0xe0) >> 5;
+
                     byte[] buffer = new byte[length + 1];       // 1 more byte for the xor byte
 
                     for (int i = 0; i < buffer.Length;) {

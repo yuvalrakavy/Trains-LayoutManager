@@ -298,7 +298,7 @@ namespace LayoutEmulation {
                                         LocomotiveOrientation.Forward;
                             }
                             else
-                                Warning($"A previouslly used locomotive is no longer defined");
+                                Warning($"A previously used locomotive is no longer defined");
                         }
                     }
                 }

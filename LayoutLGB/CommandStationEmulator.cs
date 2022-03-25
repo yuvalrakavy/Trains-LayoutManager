@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace LayoutLGB {
         private readonly CancellationTokenSource stopInterfaceThrad;
         private readonly Task interfaceTask;
 
-        private volatile FileStream? commStream;
+        private volatile NamedPipeServerStream? commStream;
         private readonly ILayoutEmulatorServices layoutEmulationServices;
 
         public MTScommandStationEmulator(IModelComponentIsCommandStation commandStation, string pipeName) {
@@ -46,11 +47,13 @@ namespace LayoutLGB {
 
         private async Task InterfaceThreadFunction(CancellationToken stopMe) {
             // Create the pipe for communication
-            commStream = Dispatch.Call.WaitNamedPipeRequest(pipeName, true);
+            commStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
             layoutEmulationServices.LocomotiveMoved += LayoutEmulationServices_LocomotiveMoved;
 
             try {
-                while (true) {
+                await commStream.WaitForConnectionAsync(stopMe);
+
+                while (!stopMe.IsCancellationRequested) {
                     byte[] buffer = new byte[4];
 
                     await commStream.ReadAsync(buffer.AsMemory(0, 4), stopMe);

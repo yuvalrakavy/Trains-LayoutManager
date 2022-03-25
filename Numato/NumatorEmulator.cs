@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace NumatoController {
     public class NumatorEmulator : ILayoutCommandStationEmulator {
         private readonly string pipeName;
 
-        private FileStream? commStream;
+        private NamedPipeServerStream? commStream;
         private readonly ILayoutEmulatorServices layoutEmulationServices;
         private readonly CancellationTokenSource stopInterfaceThrad;
         private readonly Task interfaceTask;
@@ -41,7 +42,7 @@ namespace NumatoController {
         }
 
         private async Task InterfaceThreadFunction(CancellationToken stopMe) {
-            commStream = Dispatch.Call.WaitNamedPipeRequest(pipeName, true);
+            commStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
             state = NumatoState.GetUser;
 
             async Task<byte> ReadByte() {
@@ -55,6 +56,8 @@ namespace NumatoController {
             }
 
             try {
+                await commStream.WaitForConnectionAsync(stopMe);
+
                 while (!stopMe.IsCancellationRequested) {
                     byte[]? prompt = null;
 

@@ -88,23 +88,6 @@ namespace LayoutManager.Components {
         }
 
         [DispatchTarget]
-        private SafeFileHandle CreateNamedPipeRequest(string pipeName, bool overlappedIO) {
-            PipeOpenModes pipeOpenMode = PipeOpenModes.AccessDuplex;
-
-            if (overlappedIO)
-                pipeOpenMode |= PipeOpenModes.Overlapped;
-
-            System.IntPtr handle = NativeMethods.CreateNamedPipe(pipeName,
-                pipeOpenMode, 0, 2, 0, 0, 1000, 0);
-
-            if ((int)handle == -1)
-                throw new IOException("Unable to create named pipe: " + pipeName);
-
-            return new SafeFileHandle(handle, true);
-        }
-
-
-        [DispatchTarget]
         private FileStream WaitNamedPipeClientToConnectRequest(SafeFileHandle safeHandle, bool overlappedIO) {
 
             // Wait for the client to connect
@@ -113,40 +96,7 @@ namespace LayoutManager.Components {
             return new FileStream(safeHandle, FileAccess.ReadWrite, 4, overlappedIO);
         }
 
-        [DispatchTarget]
-        private void DisconnectNamedPipeRequest(object handleObject) {
-            IntPtr handle;
-
-            handle = handleObject switch {
-                SafeFileHandle h => h.DangerousGetHandle(),
-                IntPtr i => i,
-                FileStream s => s.SafeFileHandle.DangerousGetHandle(),
-                _ => throw new ArgumentException("Invalid pipe handle")
-            };
-
-            NativeMethods.DisconnectNamedPipe(handle);
-        }
-
-        [DispatchTarget]
-        private FileStream WaitNamedPipeRequest(string pipeName, bool overlappedIO) {
-            Win32createFileFlags flags = 0;
-
-            NativeMethods.WaitNamedPipe(pipeName, WaitForever);
-
-            if (overlappedIO)
-                flags |= Win32createFileFlags.Overlapped;
-
-            System.IntPtr handle = NativeMethods.CreateFile(pipeName, Win32accessModes.GenericRead | Win32accessModes.GenericWrite,
-                0, 0, Win32createDisposition.OpenExisting, flags, (IntPtr)null);
-            int error = Marshal.GetLastWin32Error();
-
-            if (handle.ToInt32() == -1)
-                throw new IOException($"Unable to open named pipe {pipeName} (error {error})");
-
-            return new FileStream(new SafeFileHandle(handle, true), FileAccess.ReadWrite, 4, overlappedIO);
-        }
-
-        #region System structures and flags
+#region System structures and flags
 
         [Flags]
         internal enum Win32accessModes : uint {
@@ -277,9 +227,9 @@ namespace LayoutManager.Components {
 
         internal const System.UInt32 WaitForever = 0xffffffff;
 
-        #endregion
+#endregion
 
-        #region External method definitions
+#region External method definitions
 
         internal class NativeMethods {
             private NativeMethods() { }
@@ -355,7 +305,7 @@ namespace LayoutManager.Components {
                 System.UInt32 timeout);
         }
 
-        #endregion
+#endregion
 
     }
 }

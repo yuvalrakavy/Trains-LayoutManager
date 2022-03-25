@@ -71,7 +71,7 @@
             this.layoutControlBusViewer.ModuleLocationID = new System.Guid("00000000-0000-0000-0000-000000000000");
             this.layoutControlBusViewer.Name = "layoutControlBusViewer";
             this.layoutControlBusViewer.ShowOnlyNotInLocation = false;
-            this.layoutControlBusViewer.Size = new System.Drawing.Size(520, 1567);
+            this.layoutControlBusViewer.Size = new System.Drawing.Size(520, 2967);
             this.layoutControlBusViewer.StartingPoint = ((System.Drawing.PointF)(resources.GetObject("layoutControlBusViewer.StartingPoint")));
             this.layoutControlBusViewer.TabIndex = 8;
             this.layoutControlBusViewer.Zoom = 1F;
@@ -178,7 +178,7 @@
             this.Controls.Add(this.panel1);
             this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.Name = "LayoutControlViewer";
-            this.Size = new System.Drawing.Size(520, 1974);
+            this.Size = new System.Drawing.Size(520, 3374);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

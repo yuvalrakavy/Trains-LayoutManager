@@ -764,15 +764,12 @@ namespace LayoutManager {
         }
 
         private void UpdateTripsMonitorVisible() {
-            bool previousState = tripsMonitorVisible;
+            splitContainerTripsMonitor.Panel1Collapsed = !tripsMonitorVisible;
 
-            tripsMonitorVisible = tripsMonitor.Height > 10;
-            if (tripsMonitorVisible != previousState) {
-                if (tripsMonitorVisible)
-                    Dispatch.Notification.OnTripsMonitorShown(Id);
-                else
-                    Dispatch.Notification.OnTripsMonitorHidden(Id);
-            }
+            if (tripsMonitorVisible)
+                Dispatch.Notification.OnTripsMonitorShown(Id);
+            else
+                Dispatch.Notification.OnTripsMonitorHidden(Id);
         }
 
         private void UpdateMessageVisible() {
@@ -838,13 +835,13 @@ namespace LayoutManager {
 
         [DispatchTarget]
         private void ShowTripsMonitor([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
-            tripsMonitor.Height = ClientSize.Height * 12 / 100;
+            tripsMonitorVisible = true;
             UpdateTripsMonitorVisible();
         }
 
         [DispatchTarget]
         private void HideTripsMonitor([DispatchFilter(Type = "IsMyId")] Guid frameWindowId) {
-            tripsMonitor.Height = 0;
+            tripsMonitorVisible = false;
             UpdateTripsMonitorVisible();
         }
 

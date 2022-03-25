@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Pipes;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,13 +44,23 @@ namespace LayoutManager.Components {
 
         protected override void OpenCommunicationStream() {
             if (EmulateLayout && LayoutEmulationSupported) {
-                string pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
-                var overlappedIO = (bool)Element.AttributeValue("OverlappedIO");
+                //string pipeName = @"\\.\pipe\CommandStationEmulationFor_" + Name;
+                string pipeName = @"CommandStationEmulationFor_" + Name;
 
-                var handle = Dispatch.Call.CreateNamedPipeRequest(pipeName, overlappedIO);
+                Trace.WriteLine($"Connecting to named pipe {pipeName} to access command station emulation");
+
+                var pipeClientStream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
                 commandStationEmulator = CreateCommandStationEmulator(pipeName);
 
-                commStream = Dispatch.Call.WaitNamedPipeClientToConnectRequest(handle, overlappedIO);
+                try {
+                    pipeClientStream.Connect(500);
+                    Trace.WriteLine($"Emulator named pipe {pipeName} is connected");
+                } catch(TimeoutException) {
+                    Trace.WriteLine($"Connection to named pipe {pipeName} timeout");
+                    throw;
+                }
+
+                commStream = pipeClientStream;
             }
             else if (InterfaceType == CommunicationInterfaceType.Serial)
                 commStream = Dispatch.Call.OpenSerialCommunicationDeviceRequest(Element);
@@ -62,8 +73,10 @@ namespace LayoutManager.Components {
                 commandStationEmulator.Dispose();
                 commandStationEmulator = null;
 
-                if (CommunicationStream != null)
-                    Dispatch.Call.DisconnectNamedPipeRequest(CommunicationStream);
+                if (CommunicationStream != null) {
+                    CommunicationStream.Close();
+                    commStream = null;
+                }
             }
 
             if (commStream != null) {

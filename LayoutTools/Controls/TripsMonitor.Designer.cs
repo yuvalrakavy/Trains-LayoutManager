@@ -188,7 +188,7 @@ namespace LayoutManager.Tools.Controls {
             this.Size = new System.Drawing.Size(672, 160);
             this.AutoScaleDimensions = new System.Drawing.SizeF(5, 13);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.AutoSize = true;
+            //this.AutoSize = true;
             this.ResumeLayout(false);
         }
         #endregion

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace MarklinDigital {
         private readonly Guid commandStationId;
         private readonly string pipeName;
 
-        private FileStream? commStream;
+        private NamedPipeServerStream? commStream;
         private readonly ILayoutEmulatorServices layoutEmulationServices;
         private readonly CancellationTokenSource stopInterfaceThrad;
         private readonly Task interfaceTask;
@@ -47,10 +48,12 @@ namespace MarklinDigital {
         private async Task InterfaceThreadFunction(CancellationToken stopMe) {
             // Create the pipe for communication
 
-            commStream = Dispatch.Call.WaitNamedPipeRequest(pipeName, false);
+            commStream = new NamedPipeServerStream(pipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
 
             try {
-                while (true) {
+                await commStream.WaitForConnectionAsync(stopMe);
+
+                while (!stopMe.IsCancellationRequested) {
                     var byteBuffer = new byte[1];
 
                     await commStream.ReadAsync(byteBuffer, stopMe);
