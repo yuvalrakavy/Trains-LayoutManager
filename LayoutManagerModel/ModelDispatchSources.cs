@@ -102,10 +102,12 @@ namespace LayoutManager {
             d[nameof(LayoutLockResourceReady)].CallVoid(resource);
         }
 
+        [DispatchSource]
         public static void OnLayoutLockGranted(this Dispatcher d, LayoutLockRequest lockRequest) {
             d[nameof(OnLayoutLockGranted)].CallVoid(lockRequest);
         }
 
+        [DispatchSource]
         public static void OnLayoutLockReleased(this Dispatcher d, Guid resourceId) {
             d[nameof(OnLayoutLockReleased)].CallVoid(resourceId);
         }
