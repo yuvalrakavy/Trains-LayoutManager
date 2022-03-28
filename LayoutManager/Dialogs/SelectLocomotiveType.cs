@@ -1,5 +1,7 @@
 using LayoutManager.CommonUI;
+using LayoutManager.CommonUI.Controls;
 using LayoutManager.Model;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -9,6 +11,7 @@ namespace LayoutManager.Dialogs {
     /// </summary>
     public partial class SelectLocomotiveType : Form {
         private readonly LocomotiveCatalogInfo catalog;
+        readonly LocomotiveTypeList locomotiveTypeList;
 
         public SelectLocomotiveType() {
             //
@@ -19,9 +22,12 @@ namespace LayoutManager.Dialogs {
             catalog = LayoutModel.LocomotiveCatalog;
             catalog.Load();
 
+            locomotiveTypeList = new(xmlQueryList);
             locomotiveTypeList.Initialize();
-            locomotiveTypeList.ContainerElement = catalog.CollectionElement;
-            locomotiveTypeList.CurrentListLayoutIndex = 0;
+
+            xmlQueryList.ContainerElement = catalog.CollectionElement;
+            xmlQueryList.CurrentListLayoutIndex = 0;
+            xmlQueryList.ListBox.SelectedIndexChanged += new EventHandler(this.LocomotiveTypeList_SelectedIndexChanged);
 
             UpdateButtons();
         }
@@ -61,7 +67,7 @@ namespace LayoutManager.Dialogs {
         private void ButtonArrangeBy_Click(object? sender, System.EventArgs e) {
             var m = new ContextMenuStrip();
 
-            locomotiveTypeList.AddLayoutMenuItems(new MenuOrMenuItem(m));
+            xmlQueryList.AddLayoutMenuItems(new MenuOrMenuItem(m));
             m.Show(this, new Point(buttonArrangeBy.Left, buttonArrangeBy.Bottom));
         }
     }

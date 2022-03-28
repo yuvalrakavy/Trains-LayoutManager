@@ -549,7 +549,7 @@ namespace LayoutManager.Dialogs {
             this.AutoSize = true;
             this.AcceptButton = this.buttonOk;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(354, 266);
+            this.ClientSize = new System.Drawing.Size(380, 330);
             this.ControlBox = false;
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.tabControl1);

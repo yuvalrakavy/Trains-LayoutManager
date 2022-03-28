@@ -130,12 +130,8 @@
     <Compile Update="Controls\LocomotiveFront.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Controls\LocomotiveList.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\LocomotiveTypeList.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="Controls\LocomotiveList.cs" />
+    <Compile Update="Controls\LocomotiveTypeList.cs" />
     <Compile Update="Controls\MotionRampEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -194,8 +190,8 @@
     <Compile Update="Controls\XmlQueryCombobox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Controls\XmlQueryListbox.cs">
-      <SubType>Component</SubType>
+    <Compile Update="Controls\XmlQueryList.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Dialogs\TraceManager.cs">
       <SubType>Form</SubType>

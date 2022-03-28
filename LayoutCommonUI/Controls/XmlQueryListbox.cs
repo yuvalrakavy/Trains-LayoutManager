@@ -3,51 +3,9 @@ using System.ComponentModel;
 using System.Xml;
 using System.Xml.XPath;
 
+//OBSOLETE - Replaced by XmlQueryList
+//
 namespace LayoutManager.CommonUI.Controls {
-    /// <summary>
-    /// An interface that must be implemented by a class that represents an item in
-    /// a XmlQueryListbox
-    /// </summary>
-    public interface IXmlQueryListboxItem {
-        /// <summary>
-        /// Draw the item.
-        /// </summary>
-        /// <param name="e">The event arguments for OnOwnerDraw event</param>
-        void Draw(DrawItemEventArgs e);
-
-        /// <summary>
-        /// Measure (return) the drawn item size
-        /// </summary>
-        /// <param name="e">The event arguments for OnMeasureItem event</param>
-        void Measure(MeasureItemEventArgs e);
-
-        /// <summary>
-        /// A bookmark that represnt the item. If two items have the same bookmark
-        /// then they should refer to the same data. Since class that represents Xml
-        /// element are created and deleted when the list is collapsed/expanded, instances
-        /// of item classes cannot be used for comparison. A common implementation for
-        /// this property is to return a reference to the item's underlying XML element object.
-        /// Bookmarks are used for example, to relocate the selected element after updating the
-        /// list.
-        /// </summary>
-        object Bookmark { get; }
-
-        /// <summary>
-        /// Check if a given bookmark is the same as the current instance bookmark
-        /// </summary>
-        /// <param name="bookmark">The bookmark to check</param>
-        /// <returns>True if the bookmark is for this instance, false otherwise</returns>
-        bool IsBookmarkEqual(object bookmark);
-    }
-
-    public interface IXmlQueryListBoxXmlElementItem : IXmlQueryListboxItem {
-        /// <summary>
-        /// Return the XML element represented by the item
-        /// </summary>
-        XmlElement Element {
-            get;
-        }
-    }
 
     /// <summary>
     /// Base class for list box showing a tree-like representation of owner draw
@@ -63,7 +21,7 @@ namespace LayoutManager.CommonUI.Controls {
         private XmlElement? containerElement;
         private XPathNavigator? containerNavigator;
         private readonly ArrayList layouts = new();
-        private ListLayout currentLayout;
+        private XmlQueryListLayout currentLayout;
         private int canUpdateNesting;
 
         #region Constructors
@@ -122,7 +80,7 @@ namespace LayoutManager.CommonUI.Controls {
         [Browsable(false)]
         public virtual XPathNavigator? ContainerNavigator => containerNavigator;
 
-        public ListLayout CurrentListLayout {
+        public XmlQueryListLayout CurrentListLayout {
             get {
                 return currentLayout;
             }
@@ -141,7 +99,7 @@ namespace LayoutManager.CommonUI.Controls {
 
             set {
                 if (value >= 0)
-                    CurrentListLayout = (ListLayout?)layouts[value] ?? throw new IndexOutOfRangeException("Layouts");
+                    CurrentListLayout = (XmlQueryListLayout?)layouts[value] ?? throw new IndexOutOfRangeException("Layouts");
             }
         }
 
@@ -216,7 +174,7 @@ namespace LayoutManager.CommonUI.Controls {
             object? parentBookmark = null;
 
             if (SelectedItem != null)
-                selectedBookmark = ((IXmlQueryListboxItem)SelectedItem).Bookmark;
+                selectedBookmark = ((IXmlQueryListItem)SelectedItem).Bookmark;
 
             for (int i = SelectedIndex - 1; i >= 0; i--) {
                 if (Items[i] is QueryItem item) {
@@ -263,7 +221,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #endregion
 
-        #region Methods/Properties that must/should/can be overriden in derived controls
+        #region Methods/Properties that must/should/can be overridden in derived controls
 
         /// <summary>
         /// Create an object that represents an item in the list. The object must implement
@@ -272,7 +230,7 @@ namespace LayoutManager.CommonUI.Controls {
         /// <param name="queryItem">The query under which this item is created</param>
         /// <param name="itemElement">The XML element representing the item</param>
         /// <returns>The new item object</returns>
-        public abstract IXmlQueryListboxItem CreateItem(QueryItem queryItem, XmlElement itemElement);
+        public abstract IXmlQueryListItem CreateItem(QueryItem queryItem, XmlElement itemElement);
 
         /// <summary>
         /// Create a new query node item. You should override this method if you define
@@ -325,7 +283,7 @@ namespace LayoutManager.CommonUI.Controls {
         private int LocateBookmark(int index, object? bookmark) {
             if (bookmark != null) {
                 for (int i = index; i < Items.Count; i++)
-                    if (((IXmlQueryListboxItem)Items[i]).IsBookmarkEqual(bookmark))
+                    if (((IXmlQueryListItem)Items[i]).IsBookmarkEqual(bookmark))
                         return i;
             }
 
@@ -340,7 +298,7 @@ namespace LayoutManager.CommonUI.Controls {
             base.OnDrawItem(e);
 
             if (!DesignMode && e.Index >= 0) {
-                IXmlQueryListboxItem item = (IXmlQueryListboxItem)Items[e.Index];
+                IXmlQueryListItem item = (IXmlQueryListItem)Items[e.Index];
 
                 item.Draw(e);
             }
@@ -354,7 +312,7 @@ namespace LayoutManager.CommonUI.Controls {
             base.OnMeasureItem(e);
 
             if (!DesignMode && e.Index >= 0) {
-                IXmlQueryListboxItem item = (IXmlQueryListboxItem)Items[e.Index];
+                IXmlQueryListItem item = (IXmlQueryListItem)Items[e.Index];
 
                 item.Measure(e);
             }
@@ -393,7 +351,7 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region Default implementation of Query node item
 
-        public class QueryItem : IXmlQueryListboxItem {
+        public class QueryItem : IXmlQueryListItem {
             protected int level;
             protected bool expanded = false;
             protected XmlQueryListbox? list;
@@ -405,11 +363,11 @@ namespace LayoutManager.CommonUI.Controls {
             protected string? sortField = null;
 
             /// <summary>
-            /// Add a subquery. The added query will not have any items. It may have
-            /// subqueries
+            /// Add a sub-query. The added query will not have any items. It may have
+            /// sub-queries
             /// </summary>
-            /// <param name="name">The subquery name</param>
-            /// <returns>The added subquery object</returns>
+            /// <param name="name">The sub-query name</param>
+            /// <returns>The added sub-query object</returns>
             public QueryItem Add(String name) {
                 QueryItem q = List.CreateQueryItem();
 
@@ -625,15 +583,15 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region ListLayout methods and classes
 
-        public void AddLayout(ListLayout layout) {
+        public void AddLayout(XmlQueryListLayout layout) {
             layouts.Add(layout);
         }
 
-        public ListLayout[] Layouts => (ListLayout[])layouts.ToArray(typeof(ListLayout));
+        public XmlQueryListLayout[] Layouts => (XmlQueryListLayout[])layouts.ToArray(typeof(XmlQueryListLayout));
 
-        protected void ApplyLayout(ListLayout layout) {
+        protected void ApplyLayout(XmlQueryListLayout layout) {
             Root?.ClearItems();
-            layout.ApplyLayout(this);
+            //layout.ApplyLayout(null);
             UpdateList();
         }
 
@@ -642,34 +600,16 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         public void AddLayoutMenuItems(MenuOrMenuItem m) {
-            foreach (ListLayout layout in Layouts)
+            foreach (XmlQueryListLayout layout in Layouts)
                 m.Items.Add(new XmlLayoutMenuItem(this, layout));
         }
 
-        /// <summary>
-        /// Base class for XmlQueryListbox layout. A layout is a set of query items that
-        /// define what and how items are shown in the list box.
-        /// </summary>
-        abstract public class ListLayout {
-            /// <summary>
-            /// Apply the layout on a given list
-            /// </summary>
-            /// <param name="list">The list on which the layout should be applied</param>
-            public abstract void ApplyLayout(XmlQueryListbox list);
-
-            /// <summary>
-            /// Return a display name for the layout. For example: "Locomotive by Origin"
-            /// </summary>
-            public abstract string LayoutName {
-                get;
-            }
-        }
 
         private class XmlLayoutMenuItem : LayoutMenuItem {
             private readonly XmlQueryListbox list;
-            private readonly ListLayout layout;
+            private readonly XmlQueryListLayout layout;
 
-            public XmlLayoutMenuItem(XmlQueryListbox list, ListLayout layout) {
+            public XmlLayoutMenuItem(XmlQueryListbox list, XmlQueryListLayout layout) {
                 this.list = list;
                 this.layout = layout;
 

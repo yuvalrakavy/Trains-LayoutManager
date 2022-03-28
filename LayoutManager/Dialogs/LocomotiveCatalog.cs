@@ -1,4 +1,5 @@
 using LayoutManager.CommonUI;
+using LayoutManager.CommonUI.Controls;
 using LayoutManager.Model;
 using System.Drawing;
 using System.Windows.Forms;
@@ -9,6 +10,7 @@ namespace LayoutManager.Dialogs {
     /// </summary>
     public partial class LocomotiveCatalog : Form {
         private readonly LocomotiveCatalogInfo catalog;
+        private readonly LocomotiveTypeList locomotiveTypeList;
 
         public LocomotiveCatalog() {
             catalog = LayoutModel.LocomotiveCatalog;
@@ -19,17 +21,20 @@ namespace LayoutManager.Dialogs {
             InitializeComponent();
 
             catalog.Load();
-            locomotiveTypeList.Initialize();
-            locomotiveTypeList.ContainerElement = catalog.CollectionElement;
-            locomotiveTypeList.DefaultSortField = "TypeName";
-            locomotiveTypeList.CurrentListLayoutIndex = 0;
-            locomotiveTypeList.AddLayoutMenuItems(new MenuOrMenuItem(menuItemArrange));
+            locomotiveTypeList = new(xmlQueryList);
 
+            locomotiveTypeList.Initialize();
+            xmlQueryList.ContainerElement = catalog.CollectionElement;
+            xmlQueryList.DefaultSortField = "TypeName";
+            xmlQueryList.CurrentListLayoutIndex = 0;
+            xmlQueryList.AddLayoutMenuItems(new MenuOrMenuItem(menuItemArrange));
+            xmlQueryList.ListBox.DoubleClick += LocomotiveTypeList_DoubleClick;
+            xmlQueryList.ListBox.SelectedIndexChanged += LocomotiveTypeList_SelectedIndexChanged;
             UpdateButtons();
         }
 
         private void UpdateButtons() {
-            if (locomotiveTypeList.SelectedItem == null) {
+            if (xmlQueryList.SelectedXmlItem == null) {
                 buttonEdit.Text = "Edit...";
 
                 buttonEdit.Visible = true;
@@ -50,7 +55,7 @@ namespace LayoutManager.Dialogs {
                     buttonEdit.Enabled = true;
                     buttonRemove.Visible = false;
 
-                    if (locomotiveTypeList.IsSelectedExpanded())
+                    if (xmlQueryList.IsSelectedExpanded())
                         buttonEdit.Text = "Collapse";
                     else
                         buttonEdit.Text = "Expand";
@@ -77,7 +82,7 @@ namespace LayoutManager.Dialogs {
             new LocomotiveCollectionStores("Locomotive Catalog", catalog.Element["Stores"]!, "Locomotive Catalog", catalog.DefaultStoreDirectory, ".LocomotiveCatalog").ShowDialog(this);
 
             catalog.Load();
-            locomotiveTypeList.ContainerElement = catalog.CollectionElement;
+            xmlQueryList.ContainerElement = catalog.CollectionElement;
         }
 
         private void ButtonClose_Click(object? sender, System.EventArgs e) {
@@ -98,7 +103,7 @@ namespace LayoutManager.Dialogs {
             if (locomotiveTypeList.SelectedLocomotiveType != null)
                 new LocomotiveTypeProperties(locomotiveTypeList.SelectedLocomotiveType).ShowDialog(this);
             else
-                locomotiveTypeList.ToggleSelectedExpansion();
+                xmlQueryList.ToggleSelectedExpansion();
 
             UpdateButtons();
         }
@@ -129,7 +134,7 @@ namespace LayoutManager.Dialogs {
         }
 
         private void ButtonOptions_Click(object? sender, System.EventArgs e) {
-            contextMenuOptions.Show(this, new Point(buttonOptions.Left, buttonOptions.Bottom));
+            contextMenuOptions.Show(buttonOptions, new Point(buttonOptions.Left, buttonOptions.Bottom));
         }
 
         private void MenuItemStandardLocomotiveFunctions_Click(object? sender, System.EventArgs e) {

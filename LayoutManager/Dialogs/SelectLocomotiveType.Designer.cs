@@ -16,7 +16,7 @@ namespace LayoutManager.Dialogs {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.locomotiveTypeList = new CommonUI.Controls.LocomotiveTypeList();
+            this.xmlQueryList = new CommonUI.Controls.XmlQueryList();
             this.buttonSelect = new Button();
             this.buttonCancel = new Button();
             this.buttonArrangeBy = new Button();
@@ -24,19 +24,17 @@ namespace LayoutManager.Dialogs {
             // 
             // locomotiveTypeList
             // 
-            this.locomotiveTypeList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+            this.xmlQueryList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
                 | System.Windows.Forms.AnchorStyles.Left
                 | System.Windows.Forms.AnchorStyles.Right;
-            this.locomotiveTypeList.ContainerElement = null;
-            this.locomotiveTypeList.CurrentListLayout = null;
-            this.locomotiveTypeList.CurrentListLayoutIndex = -1;
-            this.locomotiveTypeList.DefaultSortField = "TypeName";
-            this.locomotiveTypeList.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.locomotiveTypeList.Location = new Point(8, 8);
-            this.locomotiveTypeList.Name = "locomotiveTypeList";
-            this.locomotiveTypeList.Size = new Size(376, 376);
-            this.locomotiveTypeList.TabIndex = 0;
-            this.locomotiveTypeList.SelectedIndexChanged += new EventHandler(this.LocomotiveTypeList_SelectedIndexChanged);
+            this.xmlQueryList.ContainerElement = null;
+            this.xmlQueryList.CurrentListLayout = null;
+            this.xmlQueryList.CurrentListLayoutIndex = -1;
+            this.xmlQueryList.DefaultSortField = "TypeName";
+            this.xmlQueryList.Location = new Point(8, 8);
+            this.xmlQueryList.Name = "xmlQueryList";
+            this.xmlQueryList.Size = new Size(376, 376);
+            this.xmlQueryList.TabIndex = 0;
             // 
             // buttonSelect
             // 
@@ -80,7 +78,7 @@ namespace LayoutManager.Dialogs {
             this.Controls.AddRange(new Control[] {
                                                                           this.buttonArrangeBy,
                                                                           this.buttonSelect,
-                                                                          this.locomotiveTypeList,
+                                                                          this.xmlQueryList,
                                                                           this.buttonCancel});
             this.Name = "SelectLocomotiveType";
             this.ShowInTaskbar = false;
@@ -89,7 +87,7 @@ namespace LayoutManager.Dialogs {
         }
         #endregion
 
-        private CommonUI.Controls.LocomotiveTypeList locomotiveTypeList;
+        private CommonUI.Controls.XmlQueryList xmlQueryList;
         private Button buttonSelect;
         private Button buttonCancel;
         private Button buttonArrangeBy;

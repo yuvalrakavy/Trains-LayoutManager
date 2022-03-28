@@ -17,6 +17,7 @@ namespace LayoutManager {
         private const string A_Id = "ID";
         private const string A_Store = "Store";
         private const string E_Train = "Train";
+        private readonly LocomotiveList locomotiveList;
 
         private LocomotiveCollectionInfo? locomotiveCollection;
         private bool operationMode = false;
@@ -24,14 +25,16 @@ namespace LayoutManager {
         public LocomotivesViewer() {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
-        }
+            locomotiveList = new(xmlQueryList);
+       }
 
-        public LocomotiveCollectionInfo LocomotiveCollection {
+
+       public LocomotiveCollectionInfo LocomotiveCollection {
             set {
                 locomotiveCollection = value;
                 if (locomotiveCollection != null)
-                    locomotiveList.ContainerElement = locomotiveCollection.CollectionElement;
-                locomotiveList.CurrentListLayoutIndex = 0;
+                    //locomotiveList.ContainerElement = locomotiveCollection.CollectionElement;
+                //locomotiveList.CurrentListLayoutIndex = 0;
                 UpdateButtons();
             }
 
@@ -82,8 +85,9 @@ namespace LayoutManager {
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             locomotiveList.Initialize();
-            locomotiveList.AddLayoutMenuItems(new MenuOrMenuItem(menuItemArrange));
-            locomotiveList.AddLayoutMenuItems(new MenuOrMenuItem(contextMenuArrange));
+
+            xmlQueryList.AddLayoutMenuItems(new MenuOrMenuItem(menuItemArrange));
+            xmlQueryList.AddLayoutMenuItems(new MenuOrMenuItem(contextMenuArrange));
         }
 
         [DispatchTarget]
@@ -110,12 +114,12 @@ namespace LayoutManager {
 
         [DispatchTarget]
         private void DisableLocomotiveListUpdate() {
-            locomotiveList.DisableUpdate();
+            xmlQueryList.DisableUpdate();
         }
 
         [DispatchTarget]
         private void EnableLocomotiveListUpdate() {
-            locomotiveList.EnableUpdate();
+            xmlQueryList.EnableUpdate();
         }
 
         protected void SaveModelDocument() {
@@ -286,7 +290,9 @@ namespace LayoutManager {
             locomotiveCollection.EnsureReferentialIntegrity();
 
             // Force to re-layout the list
+#if notyet
             locomotiveList.ContainerElement = locomotiveCollection.CollectionElement;
+#endif
             SaveModelDocument();
         }
 
@@ -295,22 +301,27 @@ namespace LayoutManager {
         }
 
         private void ButtonEdit_Click(object? sender, EventArgs e) {
+#if notyet
             var selectedElement = locomotiveList.SelectedXmlElement;
 
             if(selectedElement != null)
                 Dispatch.Call.EditLocomotiveCollectionItem(selectedElement);
+#endif
         }
 
         private void ButtonDelete_Click(object? sender, EventArgs e) {
+#if notyet
             var selectedElement = locomotiveList.SelectedXmlElement;
 
             if(selectedElement != null)
                 Dispatch.Call.DeleteLocomotiveCollectionItem(selectedElement);
+#endif
         }
 
         private void MenuItemAddTrain_Click(object? sender, EventArgs e) => Dispatch.Call.AddNewTrainToCollection();
 
         private void LocomotiveList_MouseDown(object? sender, MouseEventArgs e) {
+#if notyet
             if ((e.Button & MouseButtons.Right) != 0) {
                 int clickedIndex = locomotiveList.IndexFromPoint(e.X, e.Y);
 
@@ -328,10 +339,19 @@ namespace LayoutManager {
                     }
                 }
             }
+#endif
         }
 
         private void ButtonClose_Click(object? sender, EventArgs e) {
             Dispatch.Call.HideLocomotives(LayoutController.ActiveFrameWindow.Id);
+        }
+
+        private void LocomotivesViewer_Load(object sender, EventArgs e) {
+
+        }
+
+        private void LocomotiveList_Load(object sender, EventArgs e) {
+
         }
     }
 }

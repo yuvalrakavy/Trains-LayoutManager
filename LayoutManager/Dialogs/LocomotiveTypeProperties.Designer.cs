@@ -458,7 +458,7 @@ namespace LayoutManager.Dialogs {
             this.AutoSize = true;
             this.AcceptButton = this.buttonOk;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(334, 296);
+            this.ClientSize = new System.Drawing.Size(400, 350);
             this.ControlBox = false;
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.tabControl1);

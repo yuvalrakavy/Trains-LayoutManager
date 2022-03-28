@@ -7,7 +7,7 @@ namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LocomotiveList.
     /// </summary>
-    public class LocomotiveList : XmlQueryListbox {
+    public class LocomotiveList {
         private const string A_OnTrack = "OnTrack";
         private const string A_Reason = "Reason";
         private const string A_CanPlaceOnTrack = "CanPlaceOnTrack";
@@ -16,26 +16,32 @@ namespace LayoutManager.CommonUI.Controls {
         private bool operationMode = false;
         private Rectangle dragSourceRect = Rectangle.Empty;
         private IXmlQueryListBoxXmlElementItem? draggedItem = null;
+        private readonly XmlQueryList xmlQueryList;
 
-        public LocomotiveList() {
-            if (!DesignMode) {
-                AddLayout(new ListLayoutSimple());
-                AddLayout(new ListLayoutByType());
-                AddLayout(new ListLayoutByOrigin());
-            }
+        public LocomotiveList(XmlQueryList xmlQueryList) {
+            this.xmlQueryList = xmlQueryList;
         }
 
         public void Initialize() {
-            AddLayout(new ListLayoutByStorage());
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
+
+            xmlQueryList.AddLayout(new ListLayoutSimple());
+            xmlQueryList.AddLayout(new ListLayoutByType());
+            xmlQueryList.AddLayout(new ListLayoutByOrigin());
+            xmlQueryList.AddLayout(new ListLayoutByStorage());
+
+            xmlQueryList.CreateItem = (queryItem, itemElement) => new LocomotiveItem(this, queryItem, itemElement);
+
+            var listBox = xmlQueryList.ListBox;
+            listBox.MouseDown += OnMouseDown;
+            listBox.MouseUp += OnMouseUp;
+            listBox.MouseMove += OnMouseMove;
         }
 
         public bool ShowOnlyLocomotives { set; get; } = false;
 
-        public override IXmlQueryListboxItem CreateItem(QueryItem queryItem, XmlElement itemElement) => new LocomotiveItem(this, queryItem, itemElement);
 
-        public XmlElement? SelectedXmlElement => SelectedXmlItem != null ? ((IXmlQueryListBoxXmlElementItem)SelectedXmlItem).Element : null;
+        public XmlElement? SelectedXmlElement => xmlQueryList.SelectedXmlItem != null ? ((IXmlQueryListBoxXmlElementItem)xmlQueryList.SelectedXmlItem).Element : null;
 
         protected LocomotiveCatalogInfo Catalog => catalog ??= LayoutModel.LocomotiveCatalog;
 
@@ -110,10 +116,10 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         protected void UpdateElements() {
-            if (ContainerElement != null) {
+            if (xmlQueryList.ContainerElement != null) {
                 Dispatch.Call.DisableLocomotiveListUpdate();
 
-                foreach (XmlElement element in ContainerElement)
+                foreach (XmlElement element in xmlQueryList.ContainerElement)
                     UpdateElementState(element);
 
                 Dispatch.Call.EnableLocomotiveListUpdate();
@@ -121,9 +127,11 @@ namespace LayoutManager.CommonUI.Controls {
         }
 
         protected void InvalidateElement(XmlElement element) {
-            for (int i = 0; i < Items.Count; i++) {
-                if (Items[i] is IXmlQueryListBoxXmlElementItem item && item.Element == element) {
-                    Invalidate(GetItemRectangle(i));
+            var listBox = xmlQueryList.ListBox;
+
+            for (int i = 0; i < xmlQueryList.ListBox.Items.Count; i++) {
+                if (listBox.Items[i] is IXmlQueryListBoxXmlElementItem item && item.Element == element) {
+                    listBox.Invalidate(listBox.GetItemRectangle(i));
                     break;
                 }
             }
@@ -140,13 +148,14 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region Drag/Drop support
 
-        protected override void OnMouseDown(MouseEventArgs e) {
-            base.OnMouseDown(e);
+        private void OnMouseDown(object? sender, MouseEventArgs e) {
+            var listBox = xmlQueryList.ListBox;
 
-            int index = IndexFromPoint(new Point(e.X, e.Y));
+            int index = listBox.IndexFromPoint(new Point(e.X, e.Y));
 
-            if (index != ListBox.NoMatches) {
-                draggedItem = Items[index] as IXmlQueryListBoxXmlElementItem;
+            // Bug - listBix.IndexFromPoint return 0xffff and not 32 bits -1...
+            if (index != ListBox.NoMatches && index < listBox.Items.Count) {
+                draggedItem = listBox.Items[index] as IXmlQueryListBoxXmlElementItem;
 
                 if (draggedItem != null) {
                     Size dragAreaSize = SystemInformation.DragSize;
@@ -156,21 +165,17 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        protected override void OnMouseUp(MouseEventArgs e) {
-            base.OnMouseUp(e);
-
+        private void OnMouseUp(object? sender, MouseEventArgs e) {
             dragSourceRect = Rectangle.Empty;
             draggedItem = null;
         }
 
-        protected override void OnMouseMove(MouseEventArgs e) {
-            base.OnMouseMove(e);
-
+        private void OnMouseMove(object? sender, MouseEventArgs e) {
             if ((e.Button & MouseButtons.Left) == MouseButtons.Left && dragSourceRect != Rectangle.Empty) {
                 if (!dragSourceRect.Contains(e.X, e.Y)) {
                     // Drag operation has begun
                     if (draggedItem != null)
-                        DoDragDrop(draggedItem.Element, DragDropEffects.Link);
+                        xmlQueryList.ListBox.DoDragDrop(draggedItem.Element, DragDropEffects.Link);
                 }
             }
         }
@@ -181,25 +186,25 @@ namespace LayoutManager.CommonUI.Controls {
         private void OnEnteredOperationMode(OperationModeParameters settings) {
             operationMode = true;
             UpdateElements();
-            Invalidate();
+            xmlQueryList.ListBox.Invalidate();
         }
 
         [DispatchTarget]
         private void OnEnteredDesignMode() {
             operationMode = false;
-            Invalidate();
+            xmlQueryList.ListBox.Invalidate();
         }
 
         [DispatchTarget]
         private void OnTrainPlacedOnTrack(TrainStateInfo train) {
             UpdateElements();
-            Invalidate();
+            xmlQueryList.ListBox.Invalidate();
         }
 
         [DispatchTarget]
         private void OnLocomotiveRemovedFromTrain(TrainStateInfo train) {
             UpdateElements();
-            Invalidate();
+            xmlQueryList.ListBox.Invalidate();
         }
 
         [DispatchTarget]
@@ -215,13 +220,13 @@ namespace LayoutManager.CommonUI.Controls {
         [DispatchTarget]
         private void OnTrainSavedInCollection(TrainInCollectionInfo trainInCollection) {
             UpdateElements();
-            Invalidate();
+            xmlQueryList.ListBox.Invalidate();
         }
 
         [DispatchTarget]
         private void OnLocomotiveAddressChanged(LocomotiveInfo locomotive, int address) {
             UpdateElements();
-            Invalidate();
+            xmlQueryList.ListBox.Invalidate();
         }
 
         #region Item classes
@@ -229,7 +234,7 @@ namespace LayoutManager.CommonUI.Controls {
         private class LocomotiveItem : IXmlQueryListBoxXmlElementItem {
             private readonly LocomotiveList list;
 
-            public LocomotiveItem(LocomotiveList list, QueryItem queryItem, XmlElement element) {
+            public LocomotiveItem(LocomotiveList list, XmlQueryListItem queryItem, XmlElement element) {
                 this.list = list;
                 this.Element = element;
             }
@@ -258,29 +263,29 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region ListLayout classes
 
-        private class ListLayoutSimple : ListLayout {
+        private class ListLayoutSimple : XmlQueryListLayout {
             public override string LayoutName => "Simple";
 
-            public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryList list) {
                 list.AddQuery("Locomotives", "Locomotive")?.Expand();
                 list.AddQuery("Trains", "Train")?.Expand();
             }
         }
 
-        private class ListLayoutByOrigin : ListLayout {
+        private class ListLayoutByOrigin : XmlQueryListLayout {
             public override string LayoutName => "Locomotive origin";
 
-            public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryList list) {
                 list.AddQuery("European", "Locomotive[@Origin='Europe']");
                 list.AddQuery("American", "Locomotive[@Origin='US']");
                 list.AddQuery("Trains", "Train");
             }
         }
 
-        private class ListLayoutByType : ListLayout {
+        private class ListLayoutByType : XmlQueryListLayout {
             public override string LayoutName => "Locomotive type";
 
-            public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryList list) {
                 list.AddQuery("Steam", "Locomotive[@Kind='Steam']");
                 list.AddQuery("Diesel", "Locomotive[@Kind='Diesel']");
                 list.AddQuery("Electric", "Locomotive[@Kind='Electric']");
@@ -289,10 +294,10 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private class ListLayoutByStorage : ListLayout {
+        private class ListLayoutByStorage : XmlQueryListLayout {
             public override string LayoutName => "By locomotive storage file";
 
-            public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryList list) {
                 LocomotiveCollectionInfo collection = LayoutModel.LocomotiveCollection;
 
                 int iStore = 0;

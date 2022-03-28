@@ -189,8 +189,9 @@
             this.toolsToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(16, 5, 0, 5);
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.menuStrip.Size = new System.Drawing.Size(1816, 40);
+            this.menuStrip.Size = new System.Drawing.Size(4722, 46);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -469,12 +470,14 @@
             this.locomotiveCatalogToolStripMenuItem.Name = "locomotiveCatalogToolStripMenuItem";
             this.locomotiveCatalogToolStripMenuItem.Size = new System.Drawing.Size(420, 44);
             this.locomotiveCatalogToolStripMenuItem.Text = "&Locomotive Catalog...";
+            this.locomotiveCatalogToolStripMenuItem.Click += new System.EventHandler(this.MenuItemLocomotiveCatalog_Click);
             // 
             // accelerationProfilesToolStripMenuItem
             // 
             this.accelerationProfilesToolStripMenuItem.Name = "accelerationProfilesToolStripMenuItem";
             this.accelerationProfilesToolStripMenuItem.Size = new System.Drawing.Size(420, 44);
             this.accelerationProfilesToolStripMenuItem.Text = "&Acceleration Profiles...";
+            this.accelerationProfilesToolStripMenuItem.Click += new System.EventHandler(this.MenuItemAccelerationProfiles_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -922,9 +925,10 @@
             this.toolStripInOperateMode2,
             this.toolBarButtonStopAllLocomotives,
             this.toolBarButtonEmergencyStop});
-            this.toolStrip.Location = new System.Drawing.Point(0, 40);
+            this.toolStrip.Location = new System.Drawing.Point(0, 46);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(1816, 42);
+            this.toolStrip.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
+            this.toolStrip.Size = new System.Drawing.Size(4722, 42);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "toolStrip";
             // 
@@ -1175,9 +1179,10 @@
             // statusStrip
             // 
             this.statusStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
-            this.statusStrip.Location = new System.Drawing.Point(0, 1104);
+            this.statusStrip.Location = new System.Drawing.Point(0, 2750);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1816, 22);
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(3, 0, 36, 0);
+            this.statusStrip.Size = new System.Drawing.Size(4722, 22);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "statusStrip";
             // 
@@ -1185,7 +1190,8 @@
             // 
             this.splitControlViewer.Cursor = System.Windows.Forms.Cursors.VSplit;
             this.splitControlViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitControlViewer.Location = new System.Drawing.Point(0, 82);
+            this.splitControlViewer.Location = new System.Drawing.Point(0, 88);
+            this.splitControlViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.splitControlViewer.Name = "splitControlViewer";
             // 
             // splitControlViewer.Panel1
@@ -1193,15 +1199,15 @@
             this.splitControlViewer.Panel1.BackColor = System.Drawing.Color.MidnightBlue;
             this.splitControlViewer.Panel1.Controls.Add(this.layoutControlViewer);
             this.splitControlViewer.Panel1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.splitControlViewer.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.splitControlViewer.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
             // 
             // splitControlViewer.Panel2
             // 
             this.splitControlViewer.Panel2.Controls.Add(this.splitContainerLocomotivesViewer);
             this.splitControlViewer.Panel2.Cursor = System.Windows.Forms.Cursors.PanSouth;
-            this.splitControlViewer.Size = new System.Drawing.Size(1816, 1022);
-            this.splitControlViewer.SplitterDistance = 427;
-            this.splitControlViewer.SplitterWidth = 6;
+            this.splitControlViewer.Size = new System.Drawing.Size(4722, 2662);
+            this.splitControlViewer.SplitterDistance = 1110;
+            this.splitControlViewer.SplitterWidth = 16;
             this.splitControlViewer.TabIndex = 3;
             // 
             // layoutControlViewer
@@ -1211,9 +1217,9 @@
             this.layoutControlViewer.BackColor = System.Drawing.SystemColors.Control;
             this.layoutControlViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControlViewer.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.layoutControlViewer.Margin = new System.Windows.Forms.Padding(21, 17, 21, 17);
             this.layoutControlViewer.Name = "layoutControlViewer";
-            this.layoutControlViewer.Size = new System.Drawing.Size(423, 1022);
+            this.layoutControlViewer.Size = new System.Drawing.Size(1100, 2662);
             this.layoutControlViewer.TabIndex = 0;
             // 
             // splitContainerLocomotivesViewer
@@ -1221,6 +1227,7 @@
             this.splitContainerLocomotivesViewer.Cursor = System.Windows.Forms.Cursors.VSplit;
             this.splitContainerLocomotivesViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainerLocomotivesViewer.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerLocomotivesViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.splitContainerLocomotivesViewer.Name = "splitContainerLocomotivesViewer";
             // 
             // splitContainerLocomotivesViewer.Panel1
@@ -1233,10 +1240,10 @@
             this.splitContainerLocomotivesViewer.Panel2.BackColor = System.Drawing.Color.MidnightBlue;
             this.splitContainerLocomotivesViewer.Panel2.Controls.Add(this.locomotivesViewer);
             this.splitContainerLocomotivesViewer.Panel2.Cursor = System.Windows.Forms.Cursors.Default;
-            this.splitContainerLocomotivesViewer.Panel2.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.splitContainerLocomotivesViewer.Size = new System.Drawing.Size(1383, 1022);
-            this.splitContainerLocomotivesViewer.SplitterDistance = 844;
-            this.splitContainerLocomotivesViewer.SplitterWidth = 6;
+            this.splitContainerLocomotivesViewer.Panel2.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            this.splitContainerLocomotivesViewer.Size = new System.Drawing.Size(3596, 2662);
+            this.splitContainerLocomotivesViewer.SplitterDistance = 2194;
+            this.splitContainerLocomotivesViewer.SplitterWidth = 16;
             this.splitContainerLocomotivesViewer.TabIndex = 0;
             // 
             // splitContainerMessageViewer
@@ -1244,6 +1251,7 @@
             this.splitContainerMessageViewer.Cursor = System.Windows.Forms.Cursors.HSplit;
             this.splitContainerMessageViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainerMessageViewer.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerMessageViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.splitContainerMessageViewer.Name = "splitContainerMessageViewer";
             this.splitContainerMessageViewer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -1257,16 +1265,17 @@
             this.splitContainerMessageViewer.Panel2.BackColor = System.Drawing.Color.Teal;
             this.splitContainerMessageViewer.Panel2.Controls.Add(this.messageViewer);
             this.splitContainerMessageViewer.Panel2.Cursor = System.Windows.Forms.Cursors.Default;
-            this.splitContainerMessageViewer.Panel2.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.splitContainerMessageViewer.Size = new System.Drawing.Size(844, 1022);
-            this.splitContainerMessageViewer.SplitterDistance = 725;
-            this.splitContainerMessageViewer.SplitterWidth = 6;
+            this.splitContainerMessageViewer.Panel2.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
+            this.splitContainerMessageViewer.Size = new System.Drawing.Size(2194, 2662);
+            this.splitContainerMessageViewer.SplitterDistance = 1888;
+            this.splitContainerMessageViewer.SplitterWidth = 15;
             this.splitContainerMessageViewer.TabIndex = 0;
             // 
             // splitContainerTripsMonitor
             // 
             this.splitContainerTripsMonitor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainerTripsMonitor.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerTripsMonitor.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.splitContainerTripsMonitor.Name = "splitContainerTripsMonitor";
             this.splitContainerTripsMonitor.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -1274,15 +1283,15 @@
             // 
             this.splitContainerTripsMonitor.Panel1.BackColor = System.Drawing.Color.Teal;
             this.splitContainerTripsMonitor.Panel1.Controls.Add(this.tripsMonitor);
-            this.splitContainerTripsMonitor.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.splitContainerTripsMonitor.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
             // 
             // splitContainerTripsMonitor.Panel2
             // 
             this.splitContainerTripsMonitor.Panel2.Controls.Add(this.tabAreas);
-            this.splitContainerTripsMonitor.Panel2.Padding = new System.Windows.Forms.Padding(2);
-            this.splitContainerTripsMonitor.Size = new System.Drawing.Size(844, 725);
-            this.splitContainerTripsMonitor.SplitterDistance = 274;
-            this.splitContainerTripsMonitor.SplitterWidth = 6;
+            this.splitContainerTripsMonitor.Panel2.Padding = new System.Windows.Forms.Padding(5);
+            this.splitContainerTripsMonitor.Size = new System.Drawing.Size(2194, 1888);
+            this.splitContainerTripsMonitor.SplitterDistance = 713;
+            this.splitContainerTripsMonitor.SplitterWidth = 15;
             this.splitContainerTripsMonitor.TabIndex = 0;
             // 
             // tripsMonitor
@@ -1292,18 +1301,19 @@
             this.tripsMonitor.BackColor = System.Drawing.SystemColors.Control;
             this.tripsMonitor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tripsMonitor.Location = new System.Drawing.Point(0, 0);
-            this.tripsMonitor.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.tripsMonitor.Margin = new System.Windows.Forms.Padding(21, 17, 21, 17);
             this.tripsMonitor.Name = "tripsMonitor";
-            this.tripsMonitor.Size = new System.Drawing.Size(844, 270);
+            this.tripsMonitor.Size = new System.Drawing.Size(2194, 703);
             this.tripsMonitor.TabIndex = 0;
             // 
             // tabAreas
             // 
             this.tabAreas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabAreas.Location = new System.Drawing.Point(2, 2);
+            this.tabAreas.Location = new System.Drawing.Point(5, 5);
+            this.tabAreas.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.tabAreas.Name = "tabAreas";
             this.tabAreas.SelectedIndex = 0;
-            this.tabAreas.Size = new System.Drawing.Size(840, 441);
+            this.tabAreas.Size = new System.Drawing.Size(2184, 1150);
             this.tabAreas.TabIndex = 0;
             // 
             // messageViewer
@@ -1312,34 +1322,34 @@
             this.messageViewer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.messageViewer.BackColor = System.Drawing.SystemColors.Control;
             this.messageViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.messageViewer.Location = new System.Drawing.Point(0, 4);
-            this.messageViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.messageViewer.Location = new System.Drawing.Point(0, 10);
+            this.messageViewer.Margin = new System.Windows.Forms.Padding(21, 17, 21, 17);
             this.messageViewer.Name = "messageViewer";
-            this.messageViewer.Size = new System.Drawing.Size(844, 287);
+            this.messageViewer.Size = new System.Drawing.Size(2194, 749);
             this.messageViewer.TabIndex = 0;
             // 
             // locomotivesViewer
             // 
-            this.locomotivesViewer.AutoSize = true;
             this.locomotivesViewer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.locomotivesViewer.BackColor = System.Drawing.SystemColors.Control;
             this.locomotivesViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.locomotivesViewer.Location = new System.Drawing.Point(4, 0);
-            this.locomotivesViewer.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.locomotivesViewer.Location = new System.Drawing.Point(10, 0);
+            this.locomotivesViewer.Margin = new System.Windows.Forms.Padding(143, 103, 143, 103);
             this.locomotivesViewer.Name = "locomotivesViewer";
-            this.locomotivesViewer.Size = new System.Drawing.Size(529, 1022);
+            this.locomotivesViewer.Size = new System.Drawing.Size(1376, 2662);
             this.locomotivesViewer.TabIndex = 0;
             // 
             // FrameWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1816, 1126);
+            this.ClientSize = new System.Drawing.Size(4722, 2772);
             this.Controls.Add(this.splitControlViewer);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
+            this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.Name = "FrameWindow";
             this.Text = "Layout Manager";
             this.menuStrip.ResumeLayout(false);
@@ -1353,7 +1363,6 @@
             this.splitControlViewer.ResumeLayout(false);
             this.splitContainerLocomotivesViewer.Panel1.ResumeLayout(false);
             this.splitContainerLocomotivesViewer.Panel2.ResumeLayout(false);
-            this.splitContainerLocomotivesViewer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerLocomotivesViewer)).EndInit();
             this.splitContainerLocomotivesViewer.ResumeLayout(false);
             this.splitContainerMessageViewer.Panel1.ResumeLayout(false);

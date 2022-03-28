@@ -5,34 +5,34 @@ namespace LayoutManager.CommonUI.Controls {
     /// <summary>
     /// Summary description for LocomotiveTypeList.
     /// </summary>
-    public class LocomotiveTypeList : XmlQueryListbox {
+    public class LocomotiveTypeList {
         private LocomotiveCatalogInfo? catalog = null;
+        private readonly XmlQueryList xmlQueryList;
 
-        public LocomotiveTypeList() {
-            if (!DesignMode) {
-                AddLayout(new ListLayoutByOrigin());
-                AddLayout(new ListLayoutByKind());
-            }
+        public LocomotiveTypeList(XmlQueryList xmlQueryList) {
+            this.xmlQueryList = xmlQueryList;
         }
 
-        public LocomotiveTypeInfo? SelectedLocomotiveType => SelectedXmlItem != null ? ((LocoTypeItem)SelectedXmlItem).LocomotiveType : null;
-
-        public override IXmlQueryListboxItem CreateItem(QueryItem queryItem, XmlElement itemElement) => new LocoTypeItem(this, queryItem, itemElement);
+        public LocomotiveTypeInfo? SelectedLocomotiveType => xmlQueryList.SelectedXmlItem != null ? ((LocoTypeItem)xmlQueryList.SelectedXmlItem).LocomotiveType : null;
 
         public LocomotiveCatalogInfo Catalog => catalog ??= LayoutModel.LocomotiveCatalog;
 
         public void Initialize() {
-            AddLayout(new ListLayoutByStorage());
+            xmlQueryList.AddLayout(new ListLayoutByOrigin());
+            xmlQueryList.AddLayout(new ListLayoutByKind());
+            xmlQueryList.AddLayout(new ListLayoutByStorage());
+            xmlQueryList.CreateItem = (queryItem, itemElement) => new LocoTypeItem(this, queryItem, itemElement);
+
         }
 
         #region Item classes
 
-        private class LocoTypeItem : IXmlQueryListboxItem {
+        private class LocoTypeItem : IXmlQueryListItem {
             private readonly XmlElement locoTypeElement;
             private readonly LocomotiveTypeList list;
-            private readonly QueryItem queryItem;
+            private readonly XmlQueryListItem queryItem;
 
-            public LocoTypeItem(LocomotiveTypeList list, QueryItem queryItem, XmlElement locoTypeElement) {
+            public LocoTypeItem(LocomotiveTypeList list, XmlQueryListItem queryItem, XmlElement locoTypeElement) {
                 this.list = list;
                 this.queryItem = queryItem;
                 this.locoTypeElement = locoTypeElement;
@@ -98,11 +98,11 @@ namespace LayoutManager.CommonUI.Controls {
 
         #region ListLayout classes
 
-        private class ListLayoutByOrigin : ListLayout {
+        private class ListLayoutByOrigin : XmlQueryListLayout {
             public override string LayoutName => "Locomotive origin";
 
-            public override void ApplyLayout(XmlQueryListbox list) {
-                QueryItem? q;
+            public override void ApplyLayout(XmlQueryList list) {
+                XmlQueryListItem? q;
 
                 q = list.AddQuery("European Locomotives", null);
                 if (q != null) {
@@ -122,11 +122,11 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private class ListLayoutByKind : ListLayout {
+        private class ListLayoutByKind : XmlQueryListLayout {
             public override string LayoutName => "Locomotive type";
 
-            public override void ApplyLayout(XmlQueryListbox list) {
-                QueryItem? q;
+            public override void ApplyLayout(XmlQueryList list) {
+                XmlQueryListItem? q;
 
                 q = list.AddQuery("Steam Locomotives", null);
                 q?.Add("European Locomotives", "*[@Origin='Europe' and @Kind='Steam']");
@@ -146,10 +146,10 @@ namespace LayoutManager.CommonUI.Controls {
             }
         }
 
-        private class ListLayoutByStorage : ListLayout {
+        private class ListLayoutByStorage : XmlQueryListLayout {
             public override string LayoutName => "By locomotive type storage file";
 
-            public override void ApplyLayout(XmlQueryListbox list) {
+            public override void ApplyLayout(XmlQueryList list) {
                 LocomotiveCatalogInfo catalog = LayoutModel.LocomotiveCatalog;
 
                 int iStore = 0;
