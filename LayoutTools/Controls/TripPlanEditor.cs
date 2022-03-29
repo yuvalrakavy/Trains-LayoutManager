@@ -403,7 +403,7 @@ namespace LayoutManager.Tools.Controls {
 
         public Form? ActiveForm {
             get {
-                return activeDestinationEditor ?? (ParentForm.Enabled ? ParentForm : null);
+                return activeDestinationEditor ?? (ParentForm != null && ParentForm.Enabled ? ParentForm : null);
             }
         }
 
@@ -439,7 +439,7 @@ namespace LayoutManager.Tools.Controls {
                 TripPlanWaypointInfo wayPoint = wayPointItem.WayPoint;
 
                 foreach (LayoutBlockDefinitionComponent blockInfo in wayPoint.Destination.BlockInfoList) {
-                    // Check that each destinaion is a waitable block
+                    // Check that each destination is a waitable block
                     if (!blockInfo.Info.CanTrainWait) {
                         wayPointItem.Selected = true;
                         listViewWayPoints.Focus();
@@ -471,7 +471,7 @@ namespace LayoutManager.Tools.Controls {
 
         [DispatchTarget]
         private void QueryEditTripPlanDialog(LayoutBlockDefinitionComponent blockDefinitions, List<ITripPlanEditorDialog> dialogs) {
-            if (Enabled && !viewOnly)
+            if (Enabled && !viewOnly && ActiveForm != null)
                 dialogs.Add(this);
         }
 

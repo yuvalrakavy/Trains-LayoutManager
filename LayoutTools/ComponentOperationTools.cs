@@ -208,28 +208,29 @@ namespace LayoutManager.Tools {
 
         [DispatchTarget]
         private string? GetComponentPropertiesMenuName_StraigtTrack([DispatchFilter] LayoutStraightTrackComponent component) {
-            if (component.BlockDefinitionComponent != null)
+            if (component.BlockDefinitionComponent != null && component.Spot[ModelComponentKind.BlockInfo] == null)
                 return Dispatch.Call.GetComponentPropertiesMenuName(component.BlockDefinitionComponent);
             else
                 return null;
         }
 
         [DispatchTarget]
-        void DefaultActionCommand_StraightTrack([DispatchFilter] LayoutStraightTrackComponent component, LayoutHitTestResult hitTestResult) {
-            if (component.BlockDefinitionComponent != null)
-                Dispatch.Call.DefaultActionCommand(component.BlockDefinitionComponent, hitTestResult);
+        void DefaultActionCommand_StraightTrack([DispatchFilter] LayoutStraightTrackComponent track, LayoutHitTestResult hitTestResult) {
+            if (track.BlockDefinitionComponent != null && track.Spot[ModelComponentKind.BlockInfo] == null)
+                Dispatch.Call.DefaultActionCommand(track.BlockDefinitionComponent, hitTestResult);
         }
 
 
         [DispatchTarget]
         [DispatchFilter("InOperationMode")]
-        private bool IncludeInComponentContextMenu([DispatchFilter] LayoutStraightTrackComponent component) => component.BlockDefinitionComponent != null && Dispatch.Call.IncludeInComponentContextMenu(component.BlockDefinitionComponent);
+        private bool IncludeInComponentContextMenu([DispatchFilter] LayoutStraightTrackComponent component) => 
+            component.BlockDefinitionComponent != null && component.Spot[ModelComponentKind.BlockInfo] == null && Dispatch.Call.IncludeInComponentContextMenu(component.BlockDefinitionComponent);
 
 
         [DispatchTarget]
         [DispatchFilter("InOperationMode")]
         private void AddComponentContextMenuEntries(Guid frameWindowId, [DispatchFilter] LayoutStraightTrackComponent component, MenuOrMenuItem menu) {
-            if (component.BlockDefinitionComponent != null)
+            if (component.BlockDefinitionComponent != null && component.Spot[ModelComponentKind.BlockInfo] == null)
                 Dispatch.Call.AddComponentContextMenuEntries(frameWindowId, component.BlockDefinitionComponent, menu);
         }
 
@@ -244,19 +245,19 @@ namespace LayoutManager.Tools {
         [DispatchTarget]
         [DispatchFilter("InOperationMode")]
         private void QueryDrop([DispatchFilter] LayoutStraightTrackComponent track, DragEventArgs dragEventArgs) {
-            if (track.BlockDefinitionComponent != null)
+            if (track.BlockDefinitionComponent != null && track.Spot[ModelComponentKind.BlockInfo] == null)
                 Dispatch.Call.QueryDrop(track.BlockDefinitionComponent, dragEventArgs);
         }
         [DispatchTarget]
         private void DoDrop([DispatchFilter] LayoutStraightTrackComponent track, DragEventArgs dragEventArgs) {
-            if (track.BlockDefinitionComponent != null)
+            if (track.BlockDefinitionComponent != null && track.Spot[ModelComponentKind.BlockInfo] == null)
                 Dispatch.Call.DoDrop(track.BlockDefinitionComponent, dragEventArgs);
         }
 
         [DispatchTarget]
         [DispatchFilter("InOperationMode")]
         private object? QueryDrag([DispatchFilter] LayoutStraightTrackComponent track) {
-            return track.BlockDefinitionComponent != null ? Dispatch.Call.QueryDrag(track.BlockDefinitionComponent) : null;
+            return track.BlockDefinitionComponent != null && track.Spot[ModelComponentKind.BlockInfo] == null ? Dispatch.Call.QueryDrag(track.BlockDefinitionComponent) : null;
         }
 
         #endregion
@@ -281,7 +282,7 @@ namespace LayoutManager.Tools {
 
                 var item = new AddBlockInfoToTripPlanEditorDialog(blockDefinition, tripPlanEditorDialog, "Add &Way-point");
 
-                item.Font = new Font(item.Font, item.Font.Style | FontStyle.Bold);
+                item.DefaultItem = true;
                 defaultSet = true;
                 m.Items.Add(item);
             }
@@ -291,7 +292,7 @@ namespace LayoutManager.Tools {
                 foreach (ITripPlanEditorDialog tripPlanEditorDialog in tripPlanEditorDialogs)
                     addWayPoint.DropDownItems.Add(new AddBlockInfoToTripPlanEditorDialog(blockDefinition, tripPlanEditorDialog, tripPlanEditorDialog.DialogName));
 
-                addWayPoint.Font = new Font(addWayPoint.Font, addWayPoint.Font.Style | FontStyle.Bold);
+                addWayPoint.DefaultItem = true;
                 defaultSet = true;
                 m.Items.Add(addWayPoint);
             }
@@ -1308,10 +1309,10 @@ namespace LayoutManager.Tools {
 
             if (blockInfo == null) {
                 blockInfo = inBlockInfo;
-
-                foreach (TrainLocationInfo trainLocation in blockInfo.Block.Trains)
-                    trains.Add(trainLocation.Train);
             }
+
+            foreach (TrainLocationInfo trainLocation in blockInfo.Block.Trains)
+                trains.Add(trainLocation.Train);
 
             using var m = new ContextMenuStrip();
             AddBlockInfoMenuEntries(new MenuOrMenuItem(m), blockInfo, trains.ToArray());

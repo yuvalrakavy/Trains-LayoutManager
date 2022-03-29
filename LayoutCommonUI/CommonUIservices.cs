@@ -158,7 +158,8 @@ namespace LayoutManager.CommonUI {
         private MenuItemType CreateMenuItem(ComponentType component) {
             MenuItemType item = new() {
                 OptionalComponent = component,
-                Text = component.NameProvider.Name
+                Text = component.NameProvider.Name,
+                DisplayStyle = ToolStripItemDisplayStyle.Text,
             };
 
             if (clickHandler != null)
@@ -205,7 +206,7 @@ namespace LayoutManager.CommonUI {
         /// </summary>
         /// 
         /// <param name="xPathFilter">Optional XPath filter, only components that match the filter are added</param>
-        /// <param name="clickHandler">Optiona menu item click handler</param>
+        /// <param name="clickHandler">Optional menu item click handler</param>
         public BuildComponentsMenu(LayoutPhase phase, string xPathFilter, EventHandler clickHandler) :
             base(LayoutModel.Components<ComponentType>(phase), xPathFilter, null, clickHandler) {
         }
@@ -214,13 +215,13 @@ namespace LayoutManager.CommonUI {
         /// Construct a component menu builder
         /// </summary>
         /// 
-        /// <param name="clickHandler">Optiona menu item click handler</param>
+        /// <param name="clickHandler">Optional menu item click handler</param>
         public BuildComponentsMenu(LayoutPhase phase, EventHandler clickHandler) :
             base(LayoutModel.Components<ComponentType>(phase), null, null, clickHandler) {
         }
     }
 
-    public class ModelComponentMenuItemBase<ComponentType> : ToolStripItem where ComponentType : IModelComponentHasName {
+    public class ModelComponentMenuItemBase<ComponentType> : ToolStripMenuItem where ComponentType : IModelComponentHasName {
         public ModelComponentMenuItemBase() {
         }
 
