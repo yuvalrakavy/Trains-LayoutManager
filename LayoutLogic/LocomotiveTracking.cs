@@ -79,6 +79,91 @@ namespace LayoutManager.Logic {
             }
         }
 
+        [DispatchTarget]
+        private void OnBlockEdgeSensorNotActive(LayoutTriggerableBlockEdgeBase blockEdge) {
+            var track = blockEdge.Track;
+
+            // Get the blocks from which the train should be removed:
+            //
+            // Any block that contains the train for which there is not any trigerrable edge that is active.
+            // If block's edge is not trigerrable (logical block edge), the test is extended to the edges of the neighboring edge (as if
+            // the logical block edge is ignored and the two blocks are treated as one larger block)
+            //
+            static bool GetBlocksWithTraintoRemove(LayoutBlock block, LayoutBlockEdgeBase originEdge, TrainStateInfo train, List<LayoutBlock> blocksWithTrainToRemove) {
+                if (block.HasTrains && block.Trains[0].Train.Id == train.Id) {
+                    bool hasTriggedEdge = false;
+
+                    foreach (var bEdge in block.BlockEdges) {
+                        if (bEdge.Id != originEdge.Id) {
+                            if (bEdge is LayoutTriggerableBlockEdgeBase sensorEdge) {
+                                if (sensorEdge.IsTriggered) {
+                                    hasTriggedEdge = true;
+                                    break;
+                                }
+                            }
+                            else {
+                                var neighboringBlock = bEdge.GetNeighboringBlock(block);
+                                if (GetBlocksWithTraintoRemove(neighboringBlock, bEdge, train, blocksWithTrainToRemove)) {
+                                    hasTriggedEdge = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!hasTriggedEdge)
+                        blocksWithTrainToRemove.Add(block);
+
+                    return hasTriggedEdge;
+                }
+                else
+                    return false;
+            }
+
+            var surroundingBlocks = new LayoutBlock[] { track.GetBlock(track.ConnectionPoints[0]), track.GetBlock(track.ConnectionPoints[1]) };
+            var blocksWithTrainToRemove = new List<LayoutBlock>();
+
+            foreach (var block in surroundingBlocks) {
+                var trainLocation = block.Trains.FirstOrDefault();
+
+                if (trainLocation != null)
+                    GetBlocksWithTraintoRemove(block, blockEdge, trainLocation.Train, blocksWithTrainToRemove);
+            }
+
+            if (blocksWithTrainToRemove.Count == 0)
+                Warning(blockEdge, "Block edge sensor was deactivated, however there are no trains in surrounding blocks");
+            else {
+                var train = blocksWithTrainToRemove[0].Trains[0].Train;
+
+                if (blocksWithTrainToRemove.All(b => b.Trains[0].Train.Id == train.Id)) {
+                    bool retainLatestBlockWithTrain = train.Locations.Count == blocksWithTrainToRemove.Count;
+
+                    // Sort based on train entry time, so latest block is last
+                    blocksWithTrainToRemove.Sort((b1, b2) => (int)((b1.TrainEntryTime ?? 0) - (b2.TrainEntryTime ?? 0)));
+
+                    if (retainLatestBlockWithTrain && traceLocomotiveTracking.TraceVerbose) {
+                        Trace.WriteLine("All blocks from which train should be removed");
+                        foreach (var b in blocksWithTrainToRemove)
+                            Trace.WriteLine($"   entry time {b.TrainEntryTime} block {b} ");
+                    }
+
+                    if (retainLatestBlockWithTrain)
+                        blocksWithTrainToRemove.RemoveAt(blocksWithTrainToRemove.Count - 1);
+
+                    if (traceLocomotiveTracking.TraceInfo) {
+                        Trace.WriteLine(traceLocomotiveTracking.TraceInfo, "Train will be removed from");
+                        foreach (var b in blocksWithTrainToRemove)
+                            Trace.WriteLine($"   entry time {b.TrainEntryTime} block {b} ");
+                    }
+
+                    foreach (var b in blocksWithTrainToRemove)
+                        train.LeaveBlock(b, true);
+                }
+                else
+                    Error(blockEdge, "Unexpected: blocks with train to remove refer to more than one train");
+            }
+        }
+
         #region Track Contact Component
 
         [DispatchTarget]

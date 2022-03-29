@@ -167,6 +167,11 @@ namespace LayoutManager.Logic {
 
         [DispatchTarget]
         private void DriverTrainGo([DispatchFilter(Type = "IsAutomaticTrainDriver")] TrainStateInfo train, LocomotiveOrientation direction) {
+            var driver = new TrainAutoDriverInfo(train) {
+                Direction = direction,
+                State = AutoDriverState.Go
+            };
+
             int effectiveSpeed = CalculateEffectiveTargetSpeed(train);
 
             if (direction == LocomotiveOrientation.Backward)
