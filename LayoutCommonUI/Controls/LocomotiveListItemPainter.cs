@@ -1,6 +1,7 @@
 using LayoutManager.Model;
 using System.Drawing.Drawing2D;
 using System.Xml;
+using System.Diagnostics;
 
 namespace LayoutManager.CommonUI.Controls {
     public static class LocomotiveListItemPainter {
@@ -118,9 +119,9 @@ namespace LayoutManager.CommonUI.Controls {
                 using Font typeFont = new("Arial", 7, FontStyle.Regular);
                 string typeText = " (" + typeName + ")";
                 SizeF typeSize = e.Graphics.MeasureString(typeText, typeFont);
+                var typeLocation = new PointF(xText + textSize.Width, yText + Math.Max(0, textSize.Height - typeSize.Height));
 
-                e.Graphics.DrawString(typeText, typeFont, textBrush,
-                    new PointF(xText + textSize.Width, yText + textSize.Height - typeSize.Height));
+                e.Graphics.DrawString(typeText, typeFont, textBrush, typeLocation);
             }
 
             yText += textSize.Height;

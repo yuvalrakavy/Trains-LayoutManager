@@ -33,8 +33,8 @@ namespace LayoutManager {
             set {
                 locomotiveCollection = value;
                 if (locomotiveCollection != null)
-                    //locomotiveList.ContainerElement = locomotiveCollection.CollectionElement;
-                //locomotiveList.CurrentListLayoutIndex = 0;
+                    xmlQueryList.ContainerElement = locomotiveCollection.CollectionElement;
+                xmlQueryList.CurrentListLayoutIndex = 0;
                 UpdateButtons();
             }
 
@@ -88,6 +88,9 @@ namespace LayoutManager {
 
             xmlQueryList.AddLayoutMenuItems(new MenuOrMenuItem(menuItemArrange));
             xmlQueryList.AddLayoutMenuItems(new MenuOrMenuItem(contextMenuArrange));
+
+            xmlQueryList.ListBox.MouseDown += LocomotiveList_MouseDown;
+            xmlQueryList.ListBox.SelectedIndexChanged += LocomotiveList_SelectedIndexChanged;
         }
 
         [DispatchTarget]
@@ -290,9 +293,7 @@ namespace LayoutManager {
             locomotiveCollection.EnsureReferentialIntegrity();
 
             // Force to re-layout the list
-#if notyet
-            locomotiveList.ContainerElement = locomotiveCollection.CollectionElement;
-#endif
+            xmlQueryList.ContainerElement = locomotiveCollection.CollectionElement;
             SaveModelDocument();
         }
 
@@ -301,57 +302,43 @@ namespace LayoutManager {
         }
 
         private void ButtonEdit_Click(object? sender, EventArgs e) {
-#if notyet
             var selectedElement = locomotiveList.SelectedXmlElement;
 
             if(selectedElement != null)
                 Dispatch.Call.EditLocomotiveCollectionItem(selectedElement);
-#endif
         }
 
         private void ButtonDelete_Click(object? sender, EventArgs e) {
-#if notyet
             var selectedElement = locomotiveList.SelectedXmlElement;
 
             if(selectedElement != null)
                 Dispatch.Call.DeleteLocomotiveCollectionItem(selectedElement);
-#endif
         }
 
         private void MenuItemAddTrain_Click(object? sender, EventArgs e) => Dispatch.Call.AddNewTrainToCollection();
 
         private void LocomotiveList_MouseDown(object? sender, MouseEventArgs e) {
-#if notyet
             if ((e.Button & MouseButtons.Right) != 0) {
-                int clickedIndex = locomotiveList.IndexFromPoint(e.X, e.Y);
+                int clickedIndex = xmlQueryList.ListBox.IndexFromPoint(e.X, e.Y);
 
-                if (clickedIndex >= 0) {
-                    if (locomotiveList.Items[clickedIndex] is IXmlQueryListBoxXmlElementItem clickedItem) {
+                if (clickedIndex >= 0 && clickedIndex < xmlQueryList.ListBox.Items.Count) {
+                    if (xmlQueryList.ListBox.Items[clickedIndex] is IXmlQueryListBoxXmlElementItem clickedItem) {
                         var m = new ContextMenuStrip();
 
                         Dispatch.Call.AddLocomotiveCollectionContextMenuEntries(clickedItem.Element, new MenuOrMenuItem(m));
 
                         if (m.Items.Count > 0) {
-                            Rectangle itemRect = locomotiveList.GetItemRectangle(clickedIndex);
+                            Rectangle itemRect = xmlQueryList.ListBox.GetItemRectangle(clickedIndex);
 
                             m.Show(this, new Point(itemRect.Left, (itemRect.Top + itemRect.Bottom) / 2));
                         }
                     }
                 }
             }
-#endif
         }
 
         private void ButtonClose_Click(object? sender, EventArgs e) {
             Dispatch.Call.HideLocomotives(LayoutController.ActiveFrameWindow.Id);
-        }
-
-        private void LocomotivesViewer_Load(object sender, EventArgs e) {
-
-        }
-
-        private void LocomotiveList_Load(object sender, EventArgs e) {
-
         }
     }
 }

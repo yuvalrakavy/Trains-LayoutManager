@@ -178,7 +178,6 @@ namespace LayoutManager {
             this.xmlQueryList.Name = "xmlQueryList";
             this.xmlQueryList.Size = new System.Drawing.Size(424, 805);
             this.xmlQueryList.TabIndex = 8;
-            this.xmlQueryList.Load += new System.EventHandler(this.LocomotiveList_Load);
             // 
             // tableLayoutPanel1
             // 
@@ -231,7 +230,6 @@ namespace LayoutManager {
             this.Margin = new System.Windows.Forms.Padding(143, 103, 143, 103);
             this.Name = "LocomotivesViewer";
             this.Size = new System.Drawing.Size(446, 1000);
-            this.Load += new System.EventHandler(this.LocomotivesViewer_Load);
             this.contextMenuAdd.ResumeLayout(false);
             this.contextMenuOptions.ResumeLayout(false);
             this.panel1.ResumeLayout(false);

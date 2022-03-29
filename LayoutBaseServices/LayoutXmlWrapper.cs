@@ -144,7 +144,7 @@ namespace LayoutManager {
             }
         }
 
-        public ConvertableString AttributeValue(string name) => Element.AttributeValue(name);
+        public ConvertableString AttributeValue(string name) => OptionalElement.AttributeValue(name);
 
         public String? GetOptionalAttribute(string name) => (string?)OptionalElement?.AttributeValue(name);
 
