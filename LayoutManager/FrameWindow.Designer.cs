@@ -1339,6 +1339,14 @@
             this.locomotivesViewer.Size = new System.Drawing.Size(1376, 2662);
             this.locomotivesViewer.TabIndex = 0;
             // 
+            // timerDetailsPopup
+            // 
+            this.timerDetailsPopup.Tick += new System.EventHandler(this.TimerDetailsPopup_Tick);
+            // 
+            // timerFreeResources
+            // 
+            this.timerFreeResources.Tick += new System.EventHandler(this.TimerFreeResources_Elapsed);
+            // 
             // FrameWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 32F);

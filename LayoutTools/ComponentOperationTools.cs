@@ -236,7 +236,8 @@ namespace LayoutManager.Tools {
         [DispatchTarget]
         [DispatchFilter("InOperationMode")]
         private void AddDetailsWindowSections_StraigtTrack([DispatchFilter] LayoutStraightTrackComponent track, PopupWindowContainerSection container) {
-            if (track.BlockDefinitionComponent != null)
+            // Reflect only from track that have no block info component, otherwise details window will added twice
+            if (track.BlockDefinitionComponent != null && track.Spot[ModelComponentKind.BlockInfo] == null)
                 Dispatch.Call.AddDetailsWindowSections(track.BlockDefinitionComponent, container);
         }
 

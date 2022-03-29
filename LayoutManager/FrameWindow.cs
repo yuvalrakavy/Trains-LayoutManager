@@ -1393,7 +1393,7 @@ namespace LayoutManager {
             UpdateLocomotivesVisible();
         }
 
-        private void TimerFreeResources_Elapsed(object? sender, System.Timers.ElapsedEventArgs e) {
+        private void TimerFreeResources_Elapsed(object? sender, EventArgs e) {
             // 30 seconds (or so) were passed while the application was minimized or deactivated
             // recoverable resources can be disposed.
             Debug.WriteLine("--- LayoutManager application not active - free resources ---");
@@ -1835,7 +1835,6 @@ namespace LayoutManager {
         private void SplitterLayoutControl_SplitterMoved(object sender, SplitterEventArgs e) {
 
         }
-
     }
 
     public class LayoutFrameWindowAreaTabPage : TabPage {
