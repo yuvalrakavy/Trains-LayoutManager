@@ -58,7 +58,7 @@ namespace LayoutManager.Model {
 
         public LayoutInfo(ModelComponent component, string elementPath) {
             this.Component = component;
-            SearchProviderElement(component.Element, elementPath);
+            SearchProviderElement(component.OptionalElement, elementPath);
         }
 
         public void SearchProviderElement(XmlElement? container, string elementPath) {
