@@ -197,7 +197,7 @@ namespace LayoutManager {
 
         [DispatchSource]
         public static LayoutAction? GetAction(this Dispatcher d, object owner, XmlElement actionElement, string actionType) {
-            return d[nameof(GetAction)].CallUntilNotNull<LayoutAction>(actionType, owner, actionElement);
+            return d[nameof(GetAction)].CallUntilNotNull<LayoutAction>(owner, actionElement, actionType);
         }
 
         static DispatchSource? ds_GetControlModuleAction = null;
