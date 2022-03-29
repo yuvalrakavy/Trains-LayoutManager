@@ -1,27 +1,30 @@
 <LayoutState>
   <Trains>
-    <TrainState ID="40b0a2ad-1ebd-40a3-b990-817b52a64819" Length="Standard" LastBlockEdgeCrossingSpeed="-1" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" _TriggerCount="1">
+    <TrainState ID="40b0a2ad-1ebd-40a3-b990-817b52a64819" Length="Standard" LastBlockEdgeCrossingSpeed="3" _LocomotivesSpeedLimit="0" CurrentSpeedLimit="14" CurrentSlowDownSpeed="3" MotionDirection="Forward" _TriggerCount="1" FinalSpeed="0" Speed="0" LastCrossedBlockEdge="6caaa4da-2d74-4500-b519-e81bf0d5c20d" LastBlockEdgeCrossingTime="6.378419953948155E+17" LastEnteredBlock="4abffcc7-02f9-46b0-9848-1aae5cd2509c">
       <Locations>
-        <Block BlockID="cad9b0c1-6184-410c-863d-68296aad885b" DisplayFront="3" BlockEdgeID="6ee3f9a5-16cc-4558-944f-335db609c7f8" BlockEdgeCrossingTime="637841624025198141" />
+        <Block BlockID="4abffcc7-02f9-46b0-9848-1aae5cd2509c" BlockEdgeID="6caaa4da-2d74-4500-b519-e81bf0d5c20d" BlockEdgeCrossingTime="637841995394815795" DisplayFront="2" />
       </Locations>
       <Name>Santa Fe</Name>
       <Locomotives>
         <Locomotive LocomotiveID="6d4f1487-211b-42ff-8132-19074930ad30" Orientation="Forward" />
       </Locomotives>
       <Attributes />
-      <Driver TypeName="Automatic (by the computer)" ComputerDriven="true" Type="Automatic" AutoDriverState="Stop" />
       <FunctionStates />
+      <Driver TypeName="Automatic (by the computer)" ComputerDriven="true" Type="Automatic" AutoDriverState="Stop" Direction="Forward" />
     </TrainState>
   </Trains>
   <Components>
     <ComponentState ID="fd30e6ee-a070-435d-8f39-23a78992a14b">
       <SwitchState ValueTurnout="1" />
     </ComponentState>
-    <ComponentState ID="cad9b0c1-6184-410c-863d-68296aad885b">
-      <TrainEntry Time="637841899139386559" />
-    </ComponentState>
-    <ComponentState ID="6ee3f9a5-16cc-4558-944f-335db609c7f8">
+    <ComponentState ID="6caaa4da-2d74-4500-b519-e81bf0d5c20d">
       <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="1ebb5513-d54c-4a07-beb8-26191b9743e3">
+      <Signal State="Red" />
+    </ComponentState>
+    <ComponentState ID="4abffcc7-02f9-46b0-9848-1aae5cd2509c">
+      <TrainEntry Time="637841995394822056" />
     </ComponentState>
   </Components>
   <TripPlansCatalog>

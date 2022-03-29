@@ -1,1 +1,3 @@
-<TraceFlags />
+<TraceFlags>
+  <State Name="LocomotiveTracking" Value="Verbose" />
+</TraceFlags>

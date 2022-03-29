@@ -74,6 +74,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonBackward.Size = new System.Drawing.Size(83, 57);
             this.buttonBackward.TabIndex = 1;
             this.toolTips.SetToolTip(this.buttonBackward, "Backward");
+            this.buttonBackward.Click += new System.EventHandler(this.ButtonBackward_Click);
             // 
             // buttonStop
             // 
@@ -86,6 +87,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonStop.Size = new System.Drawing.Size(83, 57);
             this.buttonStop.TabIndex = 2;
             this.toolTips.SetToolTip(this.buttonStop, "Stop");
+            this.buttonStop.Click += new System.EventHandler(this.ButtonStop_Click);
             // 
             // buttonForward
             // 
@@ -98,6 +100,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonForward.Size = new System.Drawing.Size(83, 57);
             this.buttonForward.TabIndex = 3;
             this.toolTips.SetToolTip(this.buttonForward, "Forward");
+            this.buttonForward.Click += new System.EventHandler(this.ButtonBackward_Click);
             // 
             // buttonFunction
             // 
@@ -108,6 +111,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonFunction.Size = new System.Drawing.Size(146, 57);
             this.buttonFunction.TabIndex = 5;
             this.buttonFunction.Text = "Function";
+            this.buttonFunction.Click += new System.EventHandler(this.ButtonFunction_Click);
             // 
             // buttonLight
             // 
@@ -122,6 +126,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLight.Size = new System.Drawing.Size(68, 57);
             this.buttonLight.TabIndex = 4;
             this.toolTips.SetToolTip(this.buttonLight, "Turn lights on/off");
+            this.buttonLight.Click += new System.EventHandler(this.ButtonLight_Click);
             // 
             // contextMenuLights
             // 
@@ -155,6 +160,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonLocate.Size = new System.Drawing.Size(68, 57);
             this.buttonLocate.TabIndex = 6;
             this.toolTips.SetToolTip(this.buttonLocate, "Locate locomotive");
+            this.buttonLocate.Click += new System.EventHandler(this.ButtonLocate_Click);
             // 
             // buttonProperties
             // 
@@ -167,6 +173,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonProperties.Size = new System.Drawing.Size(68, 57);
             this.buttonProperties.TabIndex = 7;
             this.toolTips.SetToolTip(this.buttonProperties, "Edit train configuration");
+            this.buttonProperties.Click += new System.EventHandler(this.ButtonProperties_Click);
             // 
             // labelDriverInstructions
             // 
@@ -211,6 +218,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonBackwardMenu.Name = "buttonBackwardMenu";
             this.buttonBackwardMenu.Size = new System.Drawing.Size(83, 25);
             this.buttonBackwardMenu.TabIndex = 10;
+            this.buttonBackwardMenu.Click += new System.EventHandler(this.ButtonBackwardMenu_Click);
             // 
             // buttonStopMenu
             // 
@@ -220,6 +228,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonStopMenu.Name = "buttonStopMenu";
             this.buttonStopMenu.Size = new System.Drawing.Size(83, 25);
             this.buttonStopMenu.TabIndex = 10;
+            this.buttonStopMenu.Click += new System.EventHandler(this.ButtonStopMenu_Click);
             // 
             // buttonForwardMenu
             // 
@@ -229,6 +238,7 @@ namespace LayoutManager.Tools.Dialogs {
             this.buttonForwardMenu.Name = "buttonForwardMenu";
             this.buttonForwardMenu.Size = new System.Drawing.Size(83, 25);
             this.buttonForwardMenu.TabIndex = 10;
+            this.buttonForwardMenu.Click += new System.EventHandler(this.ButtonForwardMenu_Click);
             // 
             // LocomotiveController
             // 
