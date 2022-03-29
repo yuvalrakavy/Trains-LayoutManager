@@ -63,7 +63,6 @@ namespace LayoutManager.CommonUI.Controls {
                 listViewPolicies.CheckBoxes = false;
 
             UpdateButtons(null, EventArgs.Empty);
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 

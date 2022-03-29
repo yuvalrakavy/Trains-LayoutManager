@@ -43,7 +43,6 @@ namespace LayoutManager.Tools.Dialogs {
             foreach (TripPlanDestinationEntryInfo entry in destination.Entries)
                 listViewLocations.Items.Add(new LocationItem(entry));
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             destinationSelection = new LayoutSelection();

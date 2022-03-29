@@ -15,7 +15,6 @@ namespace LayoutManager.Dialogs {
             //
             InitializeComponent();
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             globalPolicyListGlobal.Scope = "Global";

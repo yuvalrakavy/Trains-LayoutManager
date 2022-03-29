@@ -20,7 +20,6 @@ namespace LayoutManager {
 
         public LayoutEditingTool() {
             InitializeComponent();
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 

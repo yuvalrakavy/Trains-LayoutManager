@@ -23,7 +23,6 @@ namespace LayoutManager.Tools.Dialogs {
             labelClickOnComponent.Text = Regex.Replace(Regex.Replace(labelClickOnComponent.Text, "BUS", csEvent.Bus.Name),
                 "ADDRESS", csEvent.AddressText);
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 

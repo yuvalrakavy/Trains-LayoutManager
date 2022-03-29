@@ -29,7 +29,6 @@ namespace LayoutManager.Tools.Dialogs {
 
             this.Owner = LayoutController.ActiveFrameWindow as Form;
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             blockEdgeSelection = new LayoutSelection();

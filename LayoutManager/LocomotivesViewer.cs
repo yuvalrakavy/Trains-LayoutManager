@@ -81,7 +81,6 @@ namespace LayoutManager {
         }
 
         public void Initialize() {
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             locomotiveList.Initialize();

@@ -93,7 +93,6 @@ namespace LayoutManager.CommonUI {
         public bool IsOperationMode => LayoutController.IsOperationMode;
 
         public void Initialize() {
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 

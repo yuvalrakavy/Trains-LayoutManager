@@ -34,7 +34,6 @@ namespace LayoutManager.Tools.Dialogs {
             tripPlanViewer.Initialize();
             tripPlanList.Initialize();
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             this.train = train;

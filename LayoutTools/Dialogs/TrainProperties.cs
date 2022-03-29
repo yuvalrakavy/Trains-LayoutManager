@@ -47,7 +47,6 @@ namespace LayoutManager.Tools.Dialogs {
 
             UpdateControls();
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 

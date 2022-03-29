@@ -18,7 +18,6 @@ namespace LayoutManager.Tools.Dialogs {
 
             buttonAbortTrips.Visible = Dispatch.Call.IsAnyActiveTripPlan();
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 

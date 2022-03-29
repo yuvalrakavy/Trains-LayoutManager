@@ -176,7 +176,6 @@ namespace LayoutManager {
             InitializeComponent();
 
             Dispatch.AddObjectInstanceDispatcherTargets(this);
-            EventManager.AddObjectSubscriptions(this);      // Will become obsolete
 
             Id = Guid.NewGuid();
 

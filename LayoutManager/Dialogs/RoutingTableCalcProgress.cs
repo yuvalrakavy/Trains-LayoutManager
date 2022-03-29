@@ -12,7 +12,6 @@ namespace LayoutManager.Dialogs {
             //
             InitializeComponent();
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             progressBar.Maximum = nTurnouts;

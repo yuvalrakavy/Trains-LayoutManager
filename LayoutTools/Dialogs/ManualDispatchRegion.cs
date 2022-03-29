@@ -49,7 +49,6 @@ namespace LayoutManager.Tools.Dialogs {
             regionSelection.Display(new LayoutSelectionLook(Color.DarkCyan));
             selectedBlockSelection.Display(new LayoutSelectionLook(Color.DarkMagenta));
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 

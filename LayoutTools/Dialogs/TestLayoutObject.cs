@@ -129,7 +129,6 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void TestLayoutObject_Load(object? sender, EventArgs e) {
             Dispatch.AddObjectInstanceDispatcherTargets(this);
-            EventManager.AddObjectSubscriptions(this);
         }
 
         private void TestLayoutObject_FormClosed(object? sender, FormClosedEventArgs e) {

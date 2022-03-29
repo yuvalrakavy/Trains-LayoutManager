@@ -143,7 +143,6 @@ namespace LayoutManager.Tools.Dialogs {
 
         private void TestThreeWayTurnout_Load(object? sender, EventArgs e) {
             Dispatch.AddObjectInstanceDispatcherTargets(this);
-            EventManager.AddObjectSubscriptions(this);
         }
 
         private void RadioButtonTop_Clicked(object? sender, EventArgs e) {

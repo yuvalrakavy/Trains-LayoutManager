@@ -25,7 +25,6 @@ namespace LayoutManager.Tools.Controls {
         }
 
         public void Initialize() {
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             autoClearTimeout = (int?)LayoutModel.StateManager.Element.AttributeValue(A_TripsMonitorAutoClearTimeout) ?? 15;

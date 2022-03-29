@@ -24,7 +24,6 @@ namespace LayoutManager.Tools.Dialogs {
 
             buttonCancelOrClose.Text = "Cancel";
 
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 

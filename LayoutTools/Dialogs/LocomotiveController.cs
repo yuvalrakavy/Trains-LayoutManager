@@ -30,7 +30,6 @@ namespace LayoutManager.Tools.Dialogs {
             InitializeComponent();
 
             this.train = train;
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
             this.Owner = LayoutController.ActiveFrameWindow as Form;
 

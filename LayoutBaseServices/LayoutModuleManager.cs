@@ -146,10 +146,6 @@ namespace LayoutManager {
                 }
 
                 Dispatch.Notification.OnModuleEnabled();
-
-                // Create subscriptions for event handlers in the new module instance (will this one day become obsolete...)
-                EventManager.AddObjectSubscriptions(moduleInstance);
-                Dispatch.AddObjectInstanceDispatcherTargets(this);
             }
         }
 

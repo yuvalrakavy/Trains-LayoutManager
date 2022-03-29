@@ -75,7 +75,6 @@ namespace LayoutManager.CommonUI.Controls {
                 throw new ApplicationException("Initialize called");
 
             layoutControlBusViewer.Initialize();
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             UpdateSelectors();

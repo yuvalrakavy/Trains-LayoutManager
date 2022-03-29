@@ -45,7 +45,6 @@ namespace LayoutManager.Tools.Controls {
         #region Exposed properties / methods
 
         public void Initialize() {
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 

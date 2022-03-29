@@ -26,7 +26,6 @@ namespace LayoutManager.Dialogs {
             InitializeComponent();
 
             this.frameWindowId = frameWindowId;
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
 
             checkBoxEnableSound.Checked = enableSound;

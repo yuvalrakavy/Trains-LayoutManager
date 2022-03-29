@@ -11,10 +11,6 @@ namespace LayoutManager {
     /// This tool is used for editing the layout
     /// </summary>
     public class LayoutOperationTool : LayoutTool {
-        public LayoutOperationTool() {
-            EventManager.AddObjectSubscriptions(this);
-        }
-
         protected override ContextMenuStrip? GetEmptySpotMenu(LayoutModelArea area, LayoutHitTestResult hitTestResult) => null;
 
         protected override void DefaultAction(LayoutModelArea area, LayoutHitTestResult hitTestResult) {

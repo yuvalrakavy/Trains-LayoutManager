@@ -1065,6 +1065,7 @@ namespace LayoutManager {
         /// <param name="scope">The scope in which the event should be sent <see cref="LayoutEventScope"/></param>
         /// <returns>The event info field</returns>
         public object? Event(LayoutEvent e, LayoutEventScope scope) {
+            Trace.WriteLine($"NOTE: Obsolete EventManager.Event was called {e.EventName} from {new StackTrace(true)}");
             LayoutEventTraceEvent? traceEvent = null;
 
             if (TraceEvents)

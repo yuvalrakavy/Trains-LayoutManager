@@ -29,8 +29,6 @@ namespace LayoutManager.Tools.EventScriptDialogs {
             tripPlanEditor.Initialize();
             tripPlanEditor.EnablePreview = false;
 
-            EventManager.AddObjectSubscriptions(this);
-
             TripPlanInfo? selectedTripPlan = null;
 
             if (element.HasAttribute(A_TripPlanID)) {

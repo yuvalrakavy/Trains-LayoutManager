@@ -31,7 +31,6 @@ namespace LayoutManager.Tools.Dialogs {
 
             UpdateButtons(null, EventArgs.Empty);
 
-            EventManager.AddObjectSubscriptions(this);
             this.Owner = LayoutController.ActiveFrameWindow as Form;
         }
 

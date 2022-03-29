@@ -236,7 +236,6 @@ namespace LayoutManager.Logic {
             private bool operationMode;
 
             public BlockUnlockingManager() {
-                EventManager.AddObjectSubscriptions(this);
                 Dispatch.AddObjectInstanceDispatcherTargets(this);
             }
 

@@ -695,7 +695,6 @@ namespace LayoutManager {
         private LayoutEventScriptNodeActions? actions;
 
         protected LayoutEventScriptNodeEventBase(LayoutParseEventScript  parseEventInfo) : base(parseEventInfo) {
-            EventManager.AddObjectSubscriptions(this);
             Dispatch.AddObjectInstanceDispatcherTargets(this);
         }
 
