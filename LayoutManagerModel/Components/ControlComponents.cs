@@ -192,8 +192,6 @@ namespace LayoutManager.Components {
                     else
                         LayoutModel.StateManager.Components.Remove(this, Topic_TriggeredState);
 
-                    EventManager.Event("block-edge-sensor-changed", this, value);
-
                     if (value)
                         Dispatch.Notification.OnBlockEdgeSensorActive(this);
                     else

@@ -229,11 +229,6 @@ namespace LayoutManager.Tools {
             }
         }
 
-        [DispatchTarget]
-        private void OnTrainEnteredBlock(TrainStateInfo train, LayoutBlock block) {
-            EventManager.Event(new LayoutEvent("train-in-block", train, block));
-        }
-
         #endregion
 
         #region Add layout wide policies to tools menu
