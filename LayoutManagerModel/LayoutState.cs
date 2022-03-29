@@ -90,7 +90,7 @@ namespace LayoutManager.Model {
             CanPlaceTrainStatus.LocomotiveHasNoAddress => "Locomotive " + Locomotive.DisplayName + " has no assigned address",
             CanPlaceTrainStatus.TrainLocomotiveAlreadyUsed => "Locomotive " + Locomotive.DisplayName + " address is already used by another locomotive (" + Train.DisplayName + ")",
             CanPlaceTrainStatus.LocomotiveNotCompatible => "Locomotive " + Locomotive.DisplayName + " is not compatible with locomotives in train '" + Train.DisplayName + "' (e.g. # of speed steps)",
-            CanPlaceTrainStatus.LocomotiveGuageNotCompatibleWithTrack => "Locomotive " + Locomotive.DisplayName + " gage (" + Locomotive.Guage.ToString() + ") not compatible with track gage (" + BlockDefinition.Guage.ToString() + ")",
+            CanPlaceTrainStatus.LocomotiveGuageNotCompatibleWithTrack => "Locomotive " + Locomotive.DisplayName + " gage (" + Locomotive.Gauge.ToString() + ") not compatible with track gage (" + BlockDefinition.Gauge.ToString() + ")",
             CanPlaceTrainStatus.LocomotiveDigitalFormatNotCompatible => "Locomotive " + Locomotive.DisplayName + " decoder is not supported by command station",
             _ => "*No error text is defined for: " + Status.ToString(),
         };

@@ -242,7 +242,7 @@ namespace LayoutManager.Logic {
                         LocomotiveInfo loco = trainLocomotive.Locomotive;
                         var memberTrainState = LayoutModel.StateManager.Trains[trainLocomotive.LocomotiveId];
 
-                        if (blockDefinition != null && (loco.Guage & blockDefinition.Guage) == 0) {
+                        if (blockDefinition != null && (loco.Gauge & blockDefinition.Gauge) == 0) {
                             result.Status = CanPlaceTrainStatus.LocomotiveGuageNotCompatibleWithTrack;
                             result.Locomotive = loco;
                             result.BlockDefinition = blockDefinition;
@@ -276,7 +276,7 @@ namespace LayoutManager.Logic {
                     else
                         result.Train = oldTrainState;
                 }
-                else if (blockDefinition != null && (loco.Guage & blockDefinition.Guage) == 0) {
+                else if (blockDefinition != null && (loco.Gauge & blockDefinition.Gauge) == 0) {
                     result.Status = CanPlaceTrainStatus.LocomotiveGuageNotCompatibleWithTrack;
                     result.Locomotive = loco;
                     result.BlockDefinition = blockDefinition;
@@ -340,7 +340,7 @@ namespace LayoutManager.Logic {
                 LocomotiveInfo locomotive = new(locomotiveElement);
                 int locomotiveAddress = locomotive.AddressProvider.Unit;
 
-                if (locomotiveAddress >= 0 && (locomotive.Guage & gauges) != 0 && !addressMap.ContainsKey(locomotiveAddress))
+                if (locomotiveAddress >= 0 && (locomotive.Gauge & gauges) != 0 && !addressMap.ContainsKey(locomotiveAddress))
                     addressMap.Add(locomotiveAddress, new OnShelfLocomotiveAddressMapEntry(locomotive));
             }
         }

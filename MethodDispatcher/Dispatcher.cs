@@ -769,7 +769,7 @@ namespace MethodDispatcher {
 
         public int? Order { get; private set; }
 
-        public int OrderValue { get => Order ?? 1000; }
+        public int OrderValue { get => Order ?? 0; }
 
         public SourceFileLocation SourceFile { get; private set; }
 

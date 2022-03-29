@@ -48,7 +48,7 @@ namespace LayoutManager.Tools.Dialogs {
                 if (trainLocomotive.LocomotiveId == loco.Id)
                     return false;
 
-                if (trainLocomotive.Locomotive.Guage != loco.Guage)
+                if (trainLocomotive.Locomotive.Gauge != loco.Gauge)
                     return false;
 
                 if (loco.Kind == LocomotiveKind.SoundUnit)

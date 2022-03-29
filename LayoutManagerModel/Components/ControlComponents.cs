@@ -667,7 +667,7 @@ namespace LayoutManager.Components {
 
         public ILayoutPower Power => Track.GetPower(Track.ConnectionPoints[0]);
 
-        public TrackGauges Guage => PowerConnector.Info.TrackGauge;
+        public TrackGauges Gauge => PowerConnector.Info.TrackGauge;
 
         public void ClearBlockEdges() {
             if (blockEdges.Length != Track.ConnectionPoints.Count) {

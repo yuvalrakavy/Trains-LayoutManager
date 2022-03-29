@@ -498,7 +498,7 @@ namespace LayoutManager.Model {
         private const string E_Functions = "Functions";
         private const string A_Kind = "Kind";
         private const string A_Length = "Length";
-        private const string A_Guage = "Gauge";
+        private const string A_Gauge = "Gauge";
         private const string A_SpeedLimit = "SpeedLimit";
         private const string A_Origin = "Origin";
         private const string A_Store = "Store";
@@ -532,9 +532,9 @@ namespace LayoutManager.Model {
             set => SetAttributeValue(A_Length, value);
         }
 
-        public TrackGauges Guage {
-            get => AttributeValue(A_Guage).Enum<TrackGauges>() ?? TrackGauges.HO;
-            set => SetAttributeValue(A_Guage, value);
+        public TrackGauges Gauge {
+            get => AttributeValue(A_Gauge).Enum<TrackGauges>() ?? TrackGauges.HO;
+            set => SetAttributeValue(A_Gauge, value);
         }
 
         public bool HasAttributes => Element[E_Attributes] != null;
@@ -808,7 +808,7 @@ namespace LayoutManager.Model {
             if (element.Name == E_Locomotive) {
                 LocomotiveInfo otherLoco = new(element);
 
-                return SpeedSteps == otherLoco.SpeedSteps && Guage == otherLoco.Guage;
+                return SpeedSteps == otherLoco.SpeedSteps && Gauge == otherLoco.Gauge;
             }
             else if (element.Name == E_Train) {
                 TrainInCollectionInfo trainInCollection = new(element);
