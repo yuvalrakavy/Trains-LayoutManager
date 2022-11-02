@@ -166,6 +166,10 @@ namespace LayoutManager {
                     ExitThreadCore();
                     return;
 
+
+
+
+
                 case LaunchAction.NewLayout:
                     CreateNewModel(launchDialog.LayoutFilename);
                     restoreDisplayState = false;

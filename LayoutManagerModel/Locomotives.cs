@@ -89,7 +89,7 @@ namespace LayoutManager.Model {
         private bool modified;
         private int loadCount;
 
-        protected LocomotiveCollectionBaseInfo(XmlElement element) : base(element) {
+        protected LocomotiveCollectionBaseInfo(XmlElement? element) : base(element) {
         }
 
         public bool IsLoaded => collection != null;
@@ -353,7 +353,7 @@ namespace LayoutManager.Model {
         private const string E_Locomotive = "Locomotive";
         private const string E_Train = "Train";
 
-        public LocomotiveCollectionInfo() : base(Ensure.NotNull<XmlElement>(LayoutModel.Instance.XmlInfo.DocumentElement["LocomotiveCollection"])) {
+        public LocomotiveCollectionInfo() : base(LayoutModel.Instance.XmlInfo.DocumentElement["LocomotiveCollection"]) {
             if (OptionalElement == null) {
                 Element = LayoutInfo.CreateProviderElement(LayoutModel.Instance.XmlInfo, "LocomotiveCollection", null);
 

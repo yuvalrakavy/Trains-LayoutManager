@@ -93,7 +93,7 @@ namespace LayoutManager.Model {
         /// Initialize the Info provider based on a given element
         /// </summary>
         /// <param name="element"></param>
-        public LayoutInfo(XmlElement element) : base(element) {
+        public LayoutInfo(XmlElement? element) : base(element) {
         }
 
         /// <summary>

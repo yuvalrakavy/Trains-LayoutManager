@@ -85,7 +85,7 @@ namespace LayoutManager {
             InitElement(name);
         }
 
-        public LayoutXmlWrapper(XmlElement element) {
+        public LayoutXmlWrapper(XmlElement? element) {
             this.OptionalElement = element;
         }
 
