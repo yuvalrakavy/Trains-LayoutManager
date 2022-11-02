@@ -6,6 +6,7 @@ using System.Windows.Forms;
 namespace LayoutManager.Dialogs {
     public partial class LaunchDialog : Form {
         private readonly TaskCompletionSource<LaunchAction> tcs = new();
+        private bool actionWasSet = false;
 
         public LaunchDialog(string? lastLayoutFilename) {
             InitializeComponent();
@@ -21,7 +22,10 @@ namespace LayoutManager.Dialogs {
 
         private LaunchAction Action {
             set {
-                tcs.SetResult(value);
+                if(!actionWasSet) { 
+                    tcs.SetResult(value);
+                    actionWasSet = true;
+                    }
             }
         }
 
@@ -52,24 +56,24 @@ namespace LayoutManager.Dialogs {
         private void ButtonNew_Click(object? sender, EventArgs e) {
             if (saveFileDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
                 LayoutFilename = saveFileDialog.FileName;
-                Close();
                 Action = LaunchAction.NewLayout;
+                Close();
             }
         }
 
         private void ButtonOpen_Click(object? sender, EventArgs e) {
             if (openFileDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
                 LayoutFilename = openFileDialog.FileName;
-                Close();
                 Action = LaunchAction.OpenLayout;
+                Close();
             }
         }
 
         private void LinkLabelLastLayoutName_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e) {
             LayoutFilename = linkLabelLastLayoutName.Text;
             UseLastOpenLayout = true;
-            Close();
             Action = LaunchAction.OpenLayout;
+            Close();
         }
     }
 }
