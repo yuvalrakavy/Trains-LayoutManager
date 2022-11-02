@@ -44,6 +44,11 @@ namespace LayoutManager.Dialogs {
             Action = LaunchAction.Exit;
         }
 
+        private void LaunchDialog_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e) {
+            Action = LaunchAction.Exit;
+        }
+
+
         private void ButtonNew_Click(object? sender, EventArgs e) {
             if (saveFileDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
                 LayoutFilename = saveFileDialog.FileName;

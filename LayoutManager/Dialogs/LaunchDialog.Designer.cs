@@ -135,6 +135,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
 			this.Name = "LaunchDialog";
 			this.Text = "VillaRakavy - Model Train Layout Manager";
+			this.FormClosed += LaunchDialog_FormClosed;
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
