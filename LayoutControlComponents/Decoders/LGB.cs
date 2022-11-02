@@ -14,7 +14,7 @@ namespace LayoutManager.Decoders {
     [LayoutModule("LGB decoders")]
     internal class LGBdecoders : LayoutModuleBase {
         [DispatchTarget]
-        private DecoderTypeInfo GetDecoderType_LGB55020([DispatchFilter("RegEx", "(LGB55020|ALL)")] string decoderTypeName) {
+        private DecoderTypeInfo GetDecoderType_LGB55020([DispatchFilter("RegEx", "^(LGB55020|ALL)$")] string decoderTypeName) {
             return new LGBdecoderTypeInfo() {
                 Name = "55020",
                 HighestAddress = 22,
@@ -25,7 +25,7 @@ namespace LayoutManager.Decoders {
         }
 
         [DispatchTarget]
-        private DecoderTypeInfo GetDecoderType_LGB55021([DispatchFilter("RegEx", "(LGB55021|ALL)")] string decoderTypeName) {
+        private DecoderTypeInfo GetDecoderType_LGB55021([DispatchFilter("RegEx", "^(LGB55021|ALL)$")] string decoderTypeName) {
             return new LGBdecoderTypeInfo() {
                 Name = "55021",
                 Description = "MTS decoder with Back-EMF"
@@ -33,7 +33,7 @@ namespace LayoutManager.Decoders {
         }
 
         [DispatchTarget]
-        private DecoderTypeInfo GetDecoderType_LGB55022([DispatchFilter("RegEx", "(LGB55022|ALL)")] string decoderTypeName) {
+        private DecoderTypeInfo GetDecoderType_LGB55022([DispatchFilter("RegEx", "^(LGB55022|ALL)$")] string decoderTypeName) {
             return new LGBdecoderTypeInfo() {
                 Name = "55022",
                 Description = "Small loco decoder"

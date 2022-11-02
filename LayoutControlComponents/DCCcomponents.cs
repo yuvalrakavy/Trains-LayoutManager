@@ -16,7 +16,7 @@ namespace LayoutManager.ControlComponents {
     internal class DCCconrolComponents : LayoutModuleBase {
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_LGB55025([DispatchFilter("RegEx", "(LGB55025|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_LGB55025([DispatchFilter("RegEx", "^(LGB55025|ALL)$")] string moduleTypeName) {
             ControlModuleType moduleType = new("LGB55025", "LGB Switch Decoder") {
                 AddressAlignment = 4,
                 ConnectionPointsPerAddress = 1,
@@ -30,7 +30,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_Massoth8156001([DispatchFilter("RegEx", "(Massoth8156001|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_Massoth8156001([DispatchFilter("RegEx", "^(Massoth8156001|ALL)$")] string moduleTypeName) {
             ControlModuleType moduleType = new("Massoth8156001", "Massoth Switch Decoder") {
                 AddressAlignment = 1,
                 ConnectionPointsPerAddress = 1,
@@ -43,7 +43,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_Massoth8156001asFunctionDecoder([DispatchFilter("RegEx", "(Massoth8156001_AsFunctionDecoder|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_Massoth8156001asFunctionDecoder([DispatchFilter("RegEx", "^(Massoth8156001_AsFunctionDecoder|ALL)$")] string moduleTypeName) {
             ControlModuleType moduleType = new("Massoth8156001_AsFunctionDecoder", "Massoth Function Decoder") {
                 AddressAlignment = 1,
                 ConnectionPointsPerAddress = 8,
@@ -59,7 +59,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_Massoth8156501([DispatchFilter("RegEx", "(Massoth8156501|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_Massoth8156501([DispatchFilter("RegEx", "^(Massoth8156501|ALL)$")] string moduleTypeName) {
             ControlModuleType moduleType = new("Massoth8156501", "Massoth Single Switch Decoder") {
                 AddressAlignment = 1,
                 ConnectionPointsPerAddress = 1,
@@ -149,7 +149,7 @@ namespace LayoutManager.ControlComponents {
         //[LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156001']")]
         //[LayoutEvent("can-control-be-connected", IfEvent = "LayoutEvent[./Options/@ModuleTypeName='Massoth8156501']")]
         [DispatchTarget]
-        private bool CanControlBeConnected_SwitchDecoder(ControlConnectionPointDestination connectionDestination, Guid moduleId, int index, [DispatchFilter("RegEx", "(LGB55025|Massoth8156001|Massoth8156501)")] string moduleTypeName) {
+        private bool CanControlBeConnected_SwitchDecoder(ControlConnectionPointDestination connectionDestination, Guid moduleId, int index, [DispatchFilter("RegEx", "^(LGB55025|Massoth8156001|Massoth8156501)$")] string moduleTypeName) {
             var module = LayoutModel.ControlManager.GetModule(moduleId);
 
             return module != null && connectionDestination.ConnectionDescription.IsCompatibleWith(ControlConnectionPointTypes.OutputSolenoid) &&

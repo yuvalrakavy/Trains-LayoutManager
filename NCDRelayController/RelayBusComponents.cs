@@ -73,17 +73,17 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_8relays([DispatchFilter("RegEx", "(8_NCDRelays|ALL)")] string moduleTypeName) => GetRelayModuleType
+        private ControlModuleType GetControlModuleType_8relays([DispatchFilter("RegEx", "^(8_NCDRelays|ALL)$")] string moduleTypeName) => GetRelayModuleType
             (8);
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_16relays([DispatchFilter("RegEx", "(16_NCDRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(16);
+        private ControlModuleType GetControlModuleType_16relays([DispatchFilter("RegEx", "^(16_NCDRelays|ALL)$")] string moduleTypeName) => GetRelayModuleType(16);
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_24relays([DispatchFilter("RegEx", "(24_NCDRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(24);
+        private ControlModuleType GetControlModuleType_24relays([DispatchFilter("RegEx", "^(24_NCDRelays|ALL)$")] string moduleTypeName) => GetRelayModuleType(24);
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_32relays([DispatchFilter("RegEx", "(32_NCDRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(32);
+        private ControlModuleType GetControlModuleType_32relays([DispatchFilter("RegEx", "^(32_NCDRelays|ALL)$")] string moduleTypeName) => GetRelayModuleType(32);
 
 
         private ControlModuleType GetContactClosureModuleType(int nContacts) {
@@ -102,13 +102,13 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_16contacts([DispatchFilter("RegEx", "(16_NCDContactsClosure|ALL)")] string moduleType) => GetContactClosureModuleType(16);
+        private ControlModuleType GetControlModuleType_16contacts([DispatchFilter("RegEx", "^(16_NCDContactsClosure|ALL)$")] string moduleType) => GetContactClosureModuleType(16);
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_32contacts([DispatchFilter("RegEx", "(32_NCDContactsClosure|ALL)")] string moduleType) => GetContactClosureModuleType(32);
+        private ControlModuleType GetControlModuleType_32contacts([DispatchFilter("RegEx", "^(32_NCDContactsClosure|ALL)$")] string moduleType) => GetContactClosureModuleType(32);
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_48contacts([DispatchFilter("RegEx", "(48_NCDContactsClosure|ALL)")] string moduleType) => GetContactClosureModuleType(48);
+        private ControlModuleType GetControlModuleType_48contacts([DispatchFilter("RegEx", "^(48_NCDContactsClosure|ALL)$")] string moduleType) => GetContactClosureModuleType(48);
 
     }
 }

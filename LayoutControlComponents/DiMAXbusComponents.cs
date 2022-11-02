@@ -11,7 +11,7 @@ namespace LayoutManager.ControlComponents {
     internal class DiMAXBusComponents : LayoutModuleBase {
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_Massoth8170001([DispatchFilter("RegEx", "(Massoth8170001|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_Massoth8170001([DispatchFilter("RegEx", "^(Massoth8170001|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("Massoth8170001", "Massoth Trigger Feedback Interface") {
                 AddressAlignment = 4,
                 ConnectionPointsPerAddress = 2,
@@ -27,7 +27,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_Massoth8170001level([DispatchFilter("RegEx", "(Massoth8170001level|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_Massoth8170001level([DispatchFilter("RegEx", "^(Massoth8170001level|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("Massoth8170001level", "Massoth Level Feedback Interface") {
                 AddressAlignment = 4,
                 ConnectionPointsPerAddress = 1,

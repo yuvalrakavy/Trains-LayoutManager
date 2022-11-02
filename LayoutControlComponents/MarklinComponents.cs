@@ -61,7 +61,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_S88([DispatchFilter("RegEx", "(S88|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_S88([DispatchFilter("RegEx", "^(S88|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("S88", "S88 Decoder") {
                 ConnectionPointsPerAddress = 16,
                 ConnectionPointIndexBase = 1,
@@ -76,7 +76,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_K83([DispatchFilter("RegEx", "(K83|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_K83([DispatchFilter("RegEx", "^(K83|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("K83", "K83 Turnouts Decoder") {
                 ConnectionPointsPerAddress = 1,
                 DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputSolenoid,
@@ -88,7 +88,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_K73([DispatchFilter("RegEx", "(K73|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_K73([DispatchFilter("RegEx", "^(K73|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("K73", "K73 Turnout Decoder") {
                 ConnectionPointsPerAddress = 1,
                 DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputSolenoid,
@@ -100,7 +100,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_K84([DispatchFilter("RegEx", "(K84|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_K84([DispatchFilter("RegEx", "^(K84|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("K84", "K84 Accessories Decoder") {
                 ConnectionPointsPerAddress = 1,
                 DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputRelay,
@@ -112,7 +112,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_74460([DispatchFilter("RegEx", "(74460|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_74460([DispatchFilter("RegEx", "^(74460|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("74460", "C-Track Turnout Decoder") {
                 ConnectionPointsPerAddress = 1,
                 DefaultControlConnectionPointType = ControlConnectionPointTypes.OutputSolenoid,

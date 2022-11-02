@@ -50,18 +50,18 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_2_NumatoRelays([DispatchFilter("RegEx", "(2_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(2);
+        private ControlModuleType GetControlModuleType_2_NumatoRelays([DispatchFilter("RegEx", "^(2_NumatoRelays|ALL)$")] string moduleTypeName) => GetRelayModuleType(2);
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_4_NumatoRelays([DispatchFilter("RegEx", "(4_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(4);
+        private ControlModuleType GetControlModuleType_4_NumatoRelays([DispatchFilter("RegEx", "^(4_NumatoRelays|ALL)$")] string moduleTypeName) => GetRelayModuleType(4);
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_8_NumatoRelays([DispatchFilter("RegEx", "(8_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(8);
+        private ControlModuleType GetControlModuleType_8_NumatoRelays([DispatchFilter("RegEx", "^(8_NumatoRelays|ALL)$")] string moduleTypeName) => GetRelayModuleType(8);
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_16_NumatoRelays([DispatchFilter("RegEx", "(16_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(16);
+        private ControlModuleType GetControlModuleType_16_NumatoRelays([DispatchFilter("RegEx", "^(16_NumatoRelays|ALL)$")] string moduleTypeName) => GetRelayModuleType(16);
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_32_NumatoRelays([DispatchFilter("RegEx", "(32_NumatoRelays|ALL)")] string moduleTypeName) => GetRelayModuleType(32);
+        private ControlModuleType GetControlModuleType_32_NumatoRelays([DispatchFilter("RegEx", "^(32_NumatoRelays|ALL)$")] string moduleTypeName) => GetRelayModuleType(32);
     }
 }

@@ -11,7 +11,7 @@ namespace LayoutManager.ControlComponents {
     internal class LGBBUScomponents : LayoutModuleBase {
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_LGB55070([DispatchFilter("RegEx", "(LGB55070|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_LGB55070([DispatchFilter("RegEx", "^(LGB55070|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("LGB55070", "LGB Feedback Interface") {
                 AddressAlignment = 4,
                 ConnectionPointsPerAddress = 2,
@@ -27,7 +27,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType_LGB55075([DispatchFilter("RegEx", "(LGB55075|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType_LGB55075([DispatchFilter("RegEx", "^(LGB55075|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("LGB55075", "LGB Train detection module") {
                 AddressAlignment = 4,
                 ConnectionPointsPerAddress = 1,

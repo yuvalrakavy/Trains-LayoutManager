@@ -8,7 +8,7 @@ namespace LayoutManager.Decoders {
         public static string GenericDecodersVersion = "1.0";
 
         [DispatchTarget]
-        private DecoderTypeInfo GetDecoderType_GenericDcc([DispatchFilter("RegEx", "(GenericDCC|ALL)")] string decoderTypeName) {
+        private DecoderTypeInfo GetDecoderType_GenericDcc([DispatchFilter("RegEx", "^(GenericDCC|ALL)$")] string decoderTypeName) {
             return new DccDecoderTypeInfo() {
                 Manufacturer = "Generic",
                 Name = "DCC",

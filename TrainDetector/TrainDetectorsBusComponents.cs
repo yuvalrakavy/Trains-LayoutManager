@@ -35,7 +35,7 @@ namespace LayoutManager.ControlComponents {
         }
 
         [DispatchTarget]
-        private ControlModuleType GetControlModuleType([DispatchFilter("RegEx", "(TrainDetectorController|ALL)")] string moduleTypeName) {
+        private ControlModuleType GetControlModuleType([DispatchFilter("RegEx", "^(TrainDetectorController|ALL)$")] string moduleTypeName) {
             var moduleType = new ControlModuleType("TrainDetectorController", "TrainDetector Controller") {
                 DefaultControlConnectionPointType = ControlConnectionPointTypes.Level,
                 ConnectionPointIndexBase = 1,
