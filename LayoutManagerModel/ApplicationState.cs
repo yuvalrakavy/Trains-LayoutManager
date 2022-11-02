@@ -25,9 +25,9 @@ namespace LayoutManager {
                 Element.OwnerDocument.Save(filename);
         }
 
-        public string LayoutFilename {
+        public string? LayoutFilename {
             get {
-                return GetAttribute("LayoutFilename");
+                return GetOptionalAttribute("LayoutFilename");
             }
 
             set {

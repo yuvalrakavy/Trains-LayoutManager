@@ -7,7 +7,7 @@ namespace LayoutManager.Dialogs {
     public partial class LaunchDialog : Form {
         private readonly TaskCompletionSource<LaunchAction> tcs = new();
 
-        public LaunchDialog(string lastLayoutFilename) {
+        public LaunchDialog(string? lastLayoutFilename) {
             InitializeComponent();
 
             if (string.IsNullOrWhiteSpace(lastLayoutFilename) || !File.Exists(lastLayoutFilename))
